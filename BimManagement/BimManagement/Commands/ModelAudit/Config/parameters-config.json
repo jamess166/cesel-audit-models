@@ -1,0 +1,570 @@
+{
+  "parameters": [
+    {
+      "specialty": "TODOS",
+      "prefix": "PR-",
+      "parameters": [
+        {
+          "name": "ESPECIALIDAD",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "CODIGO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "ETAPA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "ESCALA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "JEFE DE PROYECTO CONSULTOR",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "PROFESION Y CAP (JEFE DE PROYECTO)",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "ESPECIALISTA(CONSULTOR)",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "PROFESION Y CAP (ESPECIALISTA)",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "JEFE DE PROYECTO SUPERVISOR",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "PROFESION Y CAP (JEFE DE PROYECTO SUP)",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "ESPECIALISTA(SUPERVISOR)",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "PROFESION Y CAP (ESPECIALISTA SUP)",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "VERSION",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "PLANO-NOTA-1",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "TITULO DE PLANO 01",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "TITULO DE PLANO 02",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "GRUPO DE VISTAS 01",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "GRUPO DE VISTAS 02",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "ORG- TABLAS 1",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "ORG- TABLAS 2",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "DOC-NOM-PARTIDA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "TIPO"
+        },
+        {
+          "name": "DOC-N°-PARTIDA 1",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "TIPO"
+        },
+        {
+          "name": "DOC-N°-PARTIDA 2",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "TIPO"
+        },
+        {
+          "name": "DOC-NOM-PARTIDA-EJ",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "DOC-N°-PARTIDA 1-EJ",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "DOC-N°-PARTIDA 2-EJ",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "CODIGO AMBIENTE",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "BLOQUE",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "SECTOR",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "NIVEL",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "ID",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "EJES",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "AMBIENTE",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        }
+      ]
+    },
+    {
+      "specialty": "INSTALACIONES",
+      "prefix": "LOI-",
+      "parameters": [
+        {
+          "name": "TIPO DE INSTALACION",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "MATERIAL",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "SISTEMA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "POTENCIA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "CAUDAL",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        }
+      ]
+    },
+    {
+      "specialty": "ARQUITECTURA",
+      "prefix": "AR-",
+      "parameters": [
+        {
+          "name": "TABIQUERIA TIPO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "CAR-TIPO ACCESORIO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "CAR-TIPO CARPINTERIA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "CAR-TIPO CERRADURA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        }
+      ]
+    },
+    {
+      "specialty": "ESTRUCTURAS",
+      "prefix": "ES-",
+      "parameters": [
+        {
+          "name": "RESISTENCIA F'C",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "ESTRUCTURA TIPO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "PR ALTURA",
+          "discipline": "COMUN",
+          "parameterType": "DIMENSION",
+          "group": "DATA",
+          "scope": "TIPO"
+        },
+        {
+          "name": "PR ANCHO",
+          "discipline": "COMUN",
+          "parameterType": "DIMENSION",
+          "group": "DATA",
+          "scope": "TIPO"
+        },
+        {
+          "name": "PR LARGO",
+          "discipline": "COMUN",
+          "parameterType": "DIMENSION",
+          "group": "DATA",
+          "scope": "TIPO"
+        },
+        {
+          "name": "PR PERIMETRO",
+          "discipline": "COMUN",
+          "parameterType": "DIMENSION",
+          "group": "DATA",
+          "scope": "TIPO"
+        },
+        {
+          "name": "PR-AREA DE ENCOFRADO",
+          "discipline": "COMUN",
+          "parameterType": "AREA",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        }
+      ]
+    },
+    {
+      "specialty": "SANITARIAS",
+      "prefix": "IS-",
+      "parameters": [
+        {
+          "name": "EQUIPO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR CISTERNA",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "TIPO DE RED",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        }
+      ]
+    },
+    {
+      "specialty": "MECANICAS",
+      "prefix": "IM-",
+      "parameters": [
+        {
+          "name": "INCLUIR-AIRE ACONDICONADO",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-VENTILACION MECANICA",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-DIESEL",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-GLP",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-GAS NATURAL",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "MONTANTE",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        }
+      ]
+    },
+    {
+      "specialty": "ELECTRICAS",
+      "prefix": "IE-",
+      "parameters": [
+        {
+          "name": "INCLUIR-ALIMENTADORES",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-ALUMBRADO",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-ALUMBRADO EXT",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-TOMACORRIENTES",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-FUERZA",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-SPAT",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "MONTANTE",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        }
+      ]
+    },
+    {
+      "specialty": "COMUNICACIONES",
+      "prefix": "IC-",
+      "parameters": [
+        {
+          "name": "INCLUIR-CANALIZACIÓN",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-BMS",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-CCTV",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-DAI",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-ICA",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-SCD",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-SCE",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "INCLUIR-SPAT",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "MONTANTE",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        }
+      ]
+    }
+  ]
+}

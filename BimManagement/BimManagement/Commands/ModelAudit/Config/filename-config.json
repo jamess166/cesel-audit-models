@@ -1,0 +1,640 @@
+{
+  "structure": {
+    "separator": "-",
+    "totalParts": 8,
+    "considerSpaces": false
+  },
+  "parts": [
+    {
+      "name": "codigoInversion",
+      "position": 0,
+      "allowedValues": [
+        {
+          "Code": "2235055",
+          "Description": "AMPLIACIÓN Y MEJORAMIENTO DEL SERVICIO DE FORMACIÓN POLICIAL DE LA ESCUELA DE OFICIALES DE LA POLICÍA NACIONAL DEL PERÚ (EOPNP) - DISTRITO DE CHORRILLOS - PROVINCIA LIMA - LIMA."
+        }
+      ],
+      "required": true
+    },
+    {
+      "name": "autor",
+      "position": 1,
+      "allowedValues": [
+        {
+          "Code": "CPA",
+          "Description": "Consorcio Pacífico"
+        },
+        {
+          "Code": "CES",
+          "Description": "CESEL Ingenieros"
+        },
+        {
+          "Code": "MIN",
+          "Description": "Ministerio del Interior"
+        },
+        {
+          "Code": "OIM",
+          "Description": "Organización Internacional para las Migraciones"
+        }
+      ],
+      "required": true
+    },
+    {
+      "name": "volumen",
+      "position": 2,
+      "allowedValues": [
+        {
+          "Code": "UT0",
+          "Description": "Demolición"
+        },
+        {
+          "Code": "UT1",
+          "Description": "Movimiento de tierras."
+        },
+        {
+          "Code": "UT2",
+          "Description": "Redes Exteriores."
+        },
+        {
+          "Code": "UT3",
+          "Description": "Bloques 2,4,5."
+        },
+        {
+          "Code": "UT4",
+          "Description": "Bloques 1,3,9,14A,14B,17,18,19,23,24,26,29."
+        },
+        {
+          "Code": "UT5",
+          "Description": "Bloques 6,7,15,16,20,21,22,25, Exteriores 6,7,8,9,10,11A,11B"
+        },
+        {
+          "Code": "UT6",
+          "Description": "Bloques 10,11,12,13,27,28, Exteriores 1,2,3,4,5,12,13,14; y Pistas, estacionamientos, alamedas, veredas, áreas verdes."
+        },
+        {
+          "Code": "UT7",
+          "Description": "Bloque 08"
+        },
+        {
+          "Code": "UT8",
+          "Description": "Suministro de Equipamiento"
+        },
+        {
+          "Code": "XX",
+          "Description": "Ninguno"
+        },
+        {
+          "Code": "YY",
+          "Description": "Varios"
+        },
+        {
+          "Code": "ZZ",
+          "Description": "Todos"
+        }
+      ],
+      "required": true
+    },
+    {
+      "name": "sistema",
+      "position": 3,
+      "allowedValues": [
+        {
+          "Code": "EXS",
+          "Description": "CONDICIONES EXISTENTES"
+        },
+        {
+          "Code": "B02",
+          "Description": "AULAS Y OFICINAS"
+        },
+        {
+          "Code": "B04",
+          "Description": "VIVIENDA DE OFICIALES"
+        },
+        {
+          "Code": "B05A",
+          "Description": "DORMITORIO CADETES - Torre A"
+        },
+        {
+          "Code": "B05B",
+          "Description": "DORMITORIO CADETES - Torre B"
+        },
+        {
+          "Code": "B01",
+          "Description": "COMANDO"
+        },
+        {
+          "Code": "B03",
+          "Description": "AUDITORIO"
+        },
+        {
+          "Code": "B09",
+          "Description": "GIMNASIO"
+        },
+        {
+          "Code": "B14A",
+          "Description": "ARMERÍA"
+        },
+        {
+          "Code": "B14B",
+          "Description": "POLÍGONO ELECTRÓNICO"
+        },
+        {
+          "Code": "B17",
+          "Description": "COMEDOR Y COCINA DE CADETES"
+        },
+        {
+          "Code": "B18",
+          "Description": "CASINO"
+        },
+        {
+          "Code": "B19",
+          "Description": "CAPILLA"
+        },
+        {
+          "Code": "B23",
+          "Description": "SERVICIOS GENERALES"
+        },
+        {
+          "Code": "B24",
+          "Description": "GUARDIA DE HONOR"
+        },
+        {
+          "Code": "B26",
+          "Description": "DATA CENTER"
+        },
+        {
+          "Code": "B29",
+          "Description": "COLISEO"
+        },
+        {
+          "Code": "B06",
+          "Description": "PISCINA TECHADA"
+        },
+        {
+          "Code": "B07",
+          "Description": "CANCHA MULTIUSO"
+        },
+        {
+          "Code": "B15",
+          "Description": "POLÍGONO DE TIRO ABIERTO"
+        },
+        {
+          "Code": "B16",
+          "Description": "POLÍGONO DE ENTRENAMIENTO TÁCTICO"
+        },
+        {
+          "Code": "B20",
+          "Description": "CABALLERIZA"
+        },
+        {
+          "Code": "B21",
+          "Description": "ADMINISTRACIÓN DE CABALLERIZA"
+        },
+        {
+          "Code": "B22",
+          "Description": "PICADERO TECHADO"
+        },
+        {
+          "Code": "B25",
+          "Description": "GUARDIA DE PREVENCIÓN DE RIESGO"
+        },
+        {
+          "Code": "EX06",
+          "Description": "PICADERO CIRCULAR 1"
+        },
+        {
+          "Code": "EX07",
+          "Description": "PICADERO CIRCULAR 2"
+        },
+        {
+          "Code": "EX08",
+          "Description": "PICADERO CIRCULAR 3"
+        },
+        {
+          "Code": "EX09",
+          "Description": "PICADERO CIRCULAR 4"
+        },
+        {
+          "Code": "EX10",
+          "Description": "PICADERO COMPETENCIAS"
+        },
+        {
+          "Code": "EX11A",
+          "Description": "PICADERO DE ARENA 30x70"
+        },
+        {
+          "Code": "EX11B",
+          "Description": "PICADERO DE ARENA 40x70"
+        },
+        {
+          "Code": "B10",
+          "Description": "CANCHA DE TENIS Y SSHH"
+        },
+        {
+          "Code": "B11",
+          "Description": "LOSA DEPORTIVA A01 Y VESTIDOR"
+        },
+        {
+          "Code": "B12",
+          "Description": "LOSA DEPORTIVA A02 Y VESTIDOR"
+        },
+        {
+          "Code": "B13",
+          "Description": "LOSA DEPORTIVA OFICIALES Y VESTIDOR"
+        },
+        {
+          "Code": "B27",
+          "Description": "SUBESTACIÓN 02"
+        },
+        {
+          "Code": "B28",
+          "Description": "SUBESTACIÓN 03"
+        },
+        {
+          "Code": "EX01",
+          "Description": "PATIO DE HONOR"
+        },
+        {
+          "Code": "EX02",
+          "Description": "CENOTAFIO"
+        },
+        {
+          "Code": "EX03",
+          "Description": "CAMPO DE ENTRENAMIENTO"
+        },
+        {
+          "Code": "EX04",
+          "Description": "LOSA DE OFICIALES"
+        },
+        {
+          "Code": "EX05",
+          "Description": "LOSA COMEDOR DE CADETES"
+        },
+        {
+          "Code": "EX12",
+          "Description": "HELIPUNTO"
+        },
+        {
+          "Code": "EX13",
+          "Description": "CERCO PERIMÉTRICO"
+        },
+        {
+          "Code": "EX14",
+          "Description": "08 TORREONES"
+        },
+        {
+          "Code": "EX15",
+          "Description": "PISTAS Y ESTACIONAMIENTOS"
+        },
+        {
+          "Code": "EX16",
+          "Description": "VEREDAS Y ALAMEDAS"
+        },
+        {
+          "Code": "EX17",
+          "Description": "ÁREAS VERDES"
+        },
+        {
+          "Code": "OEG",
+          "Description": "OBRAS EXTERIORES GENERALES"
+        },
+        {
+          "Code": "B08",
+          "Description": "CAMPO DE FÚTBOL, PISTA ATLÉTICA Y TRIBUNAS"
+        },
+        {
+          "Code": "XX",
+          "Description": "Ninguno"
+        },
+        {
+          "Code": "YY",
+          "Description": "Varios"
+        },
+        {
+          "Code": "ZZ",
+          "Description": "Todos"
+        }
+      ],
+      "required": true
+    },
+    {
+      "name": "nivelLocalizacion",
+      "position": 4,
+      "allowedValues": [
+        {
+          "Code": "CIM",
+          "Description": "Cimentaciones"
+        },
+        {
+          "Code": "S01",
+          "Description": "Sótano 01"
+        },
+        {
+          "Code": "N01",
+          "Description": "Nivel 01"
+        },
+        {
+          "Code": "N02",
+          "Description": "Nivel 02"
+        },
+        {
+          "Code": "N03",
+          "Description": "Nivel 03"
+        },
+        {
+          "Code": "N04",
+          "Description": "Nivel 04"
+        },
+        {
+          "Code": "N05",
+          "Description": "Nivel 05"
+        },
+        {
+          "Code": "N06",
+          "Description": "Nivel 06"
+        },
+        {
+          "Code": "AZT",
+          "Description": "Azotea"
+        },
+        {
+          "Code": "TCH",
+          "Description": "Techos o Cubierta"
+        },
+        {
+          "Code": "XXX",
+          "Description": "Ninguno"
+        },
+        {
+          "Code": "YYY",
+          "Description": "Varios"
+        },
+        {
+          "Code": "ZZZ",
+          "Description": "Todos"
+        }
+      ],
+      "required": true
+    },
+    {
+      "name": "tipoDocumento",
+      "position": 5,
+      "allowedValues": [
+        {
+          "Code": "P2D",
+          "Description": "Planos 2D"
+        },
+        {
+          "Code": "M3D",
+          "Description": "Modelo 3D"
+        },
+        {
+          "Code": "P4D",
+          "Description": "Planificación 4D"
+        },
+        {
+          "Code": "LIS",
+          "Description": "Enlistado de items"
+        },
+        {
+          "Code": "COT",
+          "Description": "Cotizacion"
+        },
+        {
+          "Code": "CDS",
+          "Description": "Cronograma de Desembolsos"
+        },
+        {
+          "Code": "CVL",
+          "Description": "Cronograma Valorizado"
+        },
+        {
+          "Code": "CGT",
+          "Description": "Cronograma Gantt"
+        },
+        {
+          "Code": "GG",
+          "Description": "Gastos Generales"
+        },
+        {
+          "Code": "POL",
+          "Description": "Formula Polinómica"
+        },
+        {
+          "Code": "APU",
+          "Description": "Análisis de precios unitarios"
+        },
+        {
+          "Code": "PTO",
+          "Description": "Presupuesto"
+        },
+        {
+          "Code": "EET",
+          "Description": "Especificaciones técnicas"
+        },
+        {
+          "Code": "MC",
+          "Description": "Memoria de Cálculo"
+        },
+        {
+          "Code": "CA",
+          "Description": "Cuadro de Acabados"
+        },
+        {
+          "Code": "PA",
+          "Description": "Programación Arquitectónica"
+        },
+        {
+          "Code": "MD",
+          "Description": "Memoria Descriptiva"
+        },
+        {
+          "Code": "RE",
+          "Description": "Resúmen ejecutivo"
+        },
+        {
+          "Code": "DE",
+          "Description": "Plano de Detalles"
+        },
+        {
+          "Code": "UL",
+          "Description": "Plano de Ubicación y localización"
+        },
+        {
+          "Code": "PP",
+          "Description": "Plano perimétrico"
+        },
+        {
+          "Code": "PJ",
+          "Description": "Plano paisajismo"
+        },
+        {
+          "Code": "PTR",
+          "Description": "Plano de trazo y replanteo"
+        },
+        {
+          "Code": "PPT",
+          "Description": "Presentación de exposición"
+        },
+        {
+          "Code": "SS",
+          "Description": "Plano de seguridad y señalización"
+        },
+        {
+          "Code": "AR",
+          "Description": "Acta de reunión"
+        },
+        {
+          "Code": "OM",
+          "Description": "Operación y mantenimiento"
+        },
+        {
+          "Code": "VD",
+          "Description": "Video"
+        },
+        {
+          "Code": "FO",
+          "Description": "Fotografía"
+        },
+        {
+          "Code": "DB",
+          "Description": "Dibujo - Esquema de diagrama"
+        },
+        {
+          "Code": "FR",
+          "Description": "Render fotorealista"
+        },
+        {
+          "Code": "WP",
+          "Description": "Procedimiento de trabajo"
+        },
+        {
+          "Code": "FAB",
+          "Description": "Planos de fabricación"
+        },
+        {
+          "Code": "CAR",
+          "Description": "Póliza CAR"
+        },
+        {
+          "Code": "LIQ",
+          "Description": "Liquidación de obra"
+        },
+        {
+          "Code": "RM",
+          "Description": "Reporte de Metrados"
+        },
+        {
+          "Code": "RC",
+          "Description": "Reporte de Costos"
+        },
+        {
+          "Code": "RR",
+          "Description": "Reporte de rendimiento"
+        },
+        {
+          "Code": "RI",
+          "Description": "Reporte de interferencias"
+        },
+        {
+          "Code": "MX",
+          "Description": "Matríz"
+        },
+        {
+          "Code": "MAN",
+          "Description": "Manuales o instructivos"
+        },
+        {
+          "Code": "OD",
+          "Description": "Otro tipo de documento"
+        }
+      ],
+      "required": true
+    },
+    {
+      "name": "disciplinaEspecialidad",
+      "position": 6,
+      "allowedValues": [
+        {
+          "Code": "ARQ",
+          "Description": "Arquitectura"
+        },
+        {
+          "Code": "EST",
+          "Description": "Estructuras"
+        },
+        {
+          "Code": "IEE",
+          "Description": "Instalaciones Eléctricas"
+        },
+        {
+          "Code": "ISS",
+          "Description": "Instalaciones Sanitarias"
+        },
+        {
+          "Code": "AGU",
+          "Description": "Agua fría y caliente"
+        },
+        {
+          "Code": "DES",
+          "Description": "Desagüe y ventilación"
+        },
+        {
+          "Code": "ACI",
+          "Description": "Agua contra incendios"
+        },
+        {
+          "Code": "DRE",
+          "Description": "Drenaje pluvial"
+        },
+        {
+          "Code": "IMM",
+          "Description": "Instalaciones Mecánicas, Aire Acondicionado y Combustible"
+        },
+        {
+          "Code": "COM",
+          "Description": "Instalaciones de Tecnología de la información y Comunicaciones"
+        },
+        {
+          "Code": "EQP",
+          "Description": "Equipamiento"
+        },
+        {
+          "Code": "TOP",
+          "Description": "Topografía"
+        },
+        {
+          "Code": "DEM",
+          "Description": "Demolición"
+        },
+        {
+          "Code": "SSA",
+          "Description": "Seguridad y Salud"
+        },
+        {
+          "Code": "MCP",
+          "Description": "Metrados, Costos y presupuestos"
+        },
+        {
+          "Code": "XX",
+          "Description": "Ninguno"
+        },
+        {
+          "Code": "YY",
+          "Description": "Varios"
+        },
+        {
+          "Code": "ZZ",
+          "Description": "Todos"
+        }
+      ],
+      "required": true
+    },
+    {
+      "name": "descripcion",
+      "position": 7,
+      "allowedValues": [],
+      "required": true
+    }
+  ]
+}

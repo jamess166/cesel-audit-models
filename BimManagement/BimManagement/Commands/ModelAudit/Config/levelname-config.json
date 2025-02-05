@@ -1,0 +1,15 @@
+{
+  "ValidLevelNames": [
+    "CIMENTACIÓN",
+    "SÓTANO 01",
+    "PISO 01",
+    "PISO 02",
+    "PISO 03",
+    "PISO 04",
+    "PISO 05",
+    "PISO 06",
+    "AZOTEA",
+    "TECHOS",
+    "CUBIERTA"
+  ]
+}

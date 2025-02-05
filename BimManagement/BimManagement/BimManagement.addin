@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>BimManagement</Name>
+		<FullClassName>BimManagement.App</FullClassName>
+		<Text>BimManagement</Text>
+		<Description>BimManagement</Description>
+		<VisibilityMode>AlwaysVisible</VisibilityMode>
+		<Assembly>CESEL\BimManagement.dll</Assembly>
+		<AddInId>c01af124-d4a6-4e65-a09a-81b2f9a405f3</AddInId>
+		<VendorId>CESEL</VendorId>
+		<VendorDescription>CESEL</VendorDescription>
+	</AddIn>
+
+	<AddIn Type="Command">
+		<Name>AsBuilt</Name>
+		<FullClassName>BimManagement.ConvertAsBuiltCommand</FullClassName>
+		<Text>AsBuilt</Text>
+		<Description>AsBuilt Command</Description>
+		<VisibilityMode>AlwaysVisible</VisibilityMode>
+		<Assembly>CESEL\BimManagement.dll</Assembly>
+		<AddInId>5c537903-1ab1-4a5e-944e-6d98d7be1d0e</AddInId>
+		<VendorId>CESEL</VendorId>
+		<VendorDescription>CESEL</VendorDescription>
+	</AddIn>
+
+	<AddIn Type="Command">
+		<Name>AsBuilt</Name>
+		<FullClassName>BimManagement.SetDatesCommand</FullClassName>
+		<Text>Fechas Programadas</Text>
+		<Description>Fechas Programadas Command</Description>
+		<VisibilityMode>AlwaysVisible</VisibilityMode>
+		<Assembly>CESEL\BimManagement.dll</Assembly>
+		<AddInId>0768d534-e444-408e-a6bf-6954f3cb17a2</AddInId>
+		<VendorId>CESEL</VendorId>
+		<VendorDescription>CESEL</VendorDescription>
+	</AddIn>
+	
+</RevitAddIns>
