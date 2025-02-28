@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace BimManagement.Commands.ModelAudit
 {
@@ -33,30 +34,19 @@ namespace BimManagement.Commands.ModelAudit
     public class SharedGetCoordinatesDoc
     {
         public (double norte, double este, double elevacion) GetSharedCoordinates()
-        {
-            // Obtener el punto base del proyecto
-            BasePoint projectBasePoint = null;
-            FilteredElementCollector collector = new FilteredElementCollector(RevitTools.doc)
-                .OfClass(typeof(BasePoint));
+        {         
+            // Obtener el Survey Point usando la categoría específica
+            FilteredElementCollector collector = new FilteredElementCollector(RevitTools.doc);
+            Element surveyPoint = collector
+                .OfCategory(BuiltInCategory.OST_SharedBasePoint)
+                .FirstOrDefault();
 
-            foreach (BasePoint bp in collector)
-            {
-                if (!bp.IsShared)
-                {
-                    projectBasePoint = bp;
-                    break;
-                }
-            }
-
-            if (projectBasePoint == null)
-            {
-                throw new Exception("No se pudo encontrar el punto base del proyecto");
-            }
+            if (surveyPoint == null) return (0,0,0);
 
             // Obtener las coordenadas
-            double norte = projectBasePoint.get_Parameter(BuiltInParameter.BASEPOINT_NORTHSOUTH_PARAM).AsDouble();
-            double este = projectBasePoint.get_Parameter(BuiltInParameter.BASEPOINT_EASTWEST_PARAM).AsDouble();
-            double elevacion = projectBasePoint.get_Parameter(BuiltInParameter.BASEPOINT_ELEVATION_PARAM).AsDouble();
+            double norte = surveyPoint.get_Parameter(BuiltInParameter.BASEPOINT_NORTHSOUTH_PARAM).AsDouble();
+            double este = surveyPoint.get_Parameter(BuiltInParameter.BASEPOINT_EASTWEST_PARAM).AsDouble();
+            double elevacion = surveyPoint.get_Parameter(BuiltInParameter.BASEPOINT_ELEVATION_PARAM).AsDouble();
 
             // Convertir de pies a metros (Revit usa pies internamente)
             norte = UnitUtils.ConvertFromInternalUnits(norte, UnitTypeId.Meters);
@@ -64,6 +54,7 @@ namespace BimManagement.Commands.ModelAudit
             elevacion = UnitUtils.ConvertFromInternalUnits(elevacion, UnitTypeId.Meters);
 
             return (norte, este, elevacion);
+
         }
     }
 

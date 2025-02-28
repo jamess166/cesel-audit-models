@@ -160,12 +160,12 @@ namespace BimManagement.Commands.ModelAudit.Config
 
             if (errorsGrupoVista01.Any())
             {
-                message += $"Vistas con Grupo de Vista 01 incorrecto: {string.Join(", ", errorsGrupoVista01)}.\n";
+                message += $"Vistas con Grupo de Vista 01 incorrecto: {string.Join("\n ", errorsGrupoVista01)}.\n\n";
             }
 
             if (errorsGrupoVista02.Any())
             {
-                message += $"Vistas con Grupo de Vista 02 incorrecto: {string.Join(", ", errorsGrupoVista02)}.";
+                message += $"Vistas con Grupo de Vista 02 incorrecto: {string.Join("\n ", errorsGrupoVista02)}.";
             }
 
             // Retornar el resultado de validación
