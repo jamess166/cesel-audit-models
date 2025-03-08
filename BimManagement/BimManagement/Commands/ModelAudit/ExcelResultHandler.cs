@@ -114,21 +114,41 @@ namespace BimManagement.Commands.ModelAudit
                 // Separar el bloque en líneas usando \n
                 var lines = block.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
 
-                // Si es el primer bloque (el título), lo formateamos
-                detailSheet.Cells[row, 1].Value = lines[0]; // Título
-                detailSheet.Cells[row, 1].Style.Font.Bold = true;
-                detailSheet.Cells[row, 1].Style.Font.Size = 14;
-                row++; // Avanzamos una fila después del título
-
-                // Colocamos el contenido restante en celdas separadas
-                for (int i = 1; i < lines.Length; i++)
+                // Validar que haya al menos una línea antes de acceder a lines[0]
+                if (lines.Length > 0)
                 {
-                    detailSheet.Cells[row, 1].Value = lines[i]; // Contenido
-                    row++; // Avanzamos a la siguiente fila
+                    // Si es el primer bloque (el título), lo formateamos
+                    detailSheet.Cells[row, 1].Value = lines[0]; // Título
+                    detailSheet.Cells[row, 1].Style.Font.Bold = true;
+                    detailSheet.Cells[row, 1].Style.Font.Size = 14;
+                    row++; // Avanzamos una fila después del título
+
+                    // Colocamos el contenido restante en celdas separadas
+                    for (int i = 1; i < lines.Length; i++)
+                    {
+                        detailSheet.Cells[row, 1].Value = lines[i]; // Contenido
+                        row++; // Avanzamos a la siguiente fila
+                    }
+
+                    // Añadir una fila en blanco entre bloques
+                    row++;
                 }
 
-                // Añadir una fila en blanco entre bloques
-                row++;
+                //// Si es el primer bloque (el título), lo formateamos
+                //detailSheet.Cells[row, 1].Value = lines[0]; // Título
+                //detailSheet.Cells[row, 1].Style.Font.Bold = true;
+                //detailSheet.Cells[row, 1].Style.Font.Size = 14;
+                //row++; // Avanzamos una fila después del título
+
+                //// Colocamos el contenido restante en celdas separadas
+                //for (int i = 1; i < lines.Length; i++)
+                //{
+                //    detailSheet.Cells[row, 1].Value = lines[i]; // Contenido
+                //    row++; // Avanzamos a la siguiente fila
+                //}
+
+                //// Añadir una fila en blanco entre bloques
+                //row++;
             }
 
             // Ajustar el ancho de la columna

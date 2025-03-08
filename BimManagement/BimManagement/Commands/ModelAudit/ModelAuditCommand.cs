@@ -141,12 +141,12 @@ namespace BimManagement
             result_8d = checkHaveValueGroupView.ValidateViewGroupParameters(RevitTools.doc);
 
             //Set adata Excel
-            SetDataExcel(destinationExcelPath, deliverable, dateAudit, modelName);
+            SetDataExcel(destinationExcelPath, deliverable, dateAudit, modelName, specialty);
 
             return Result.Succeeded;
         }
 
-        private void SetDataExcel(string excelPath, string deliverable, DateTime dateAudit, string modelName)
+        private void SetDataExcel(string excelPath, string deliverable, DateTime dateAudit, string modelName, Speciality specialty)
         {
             // Configuración para habilitar el uso de EPPlus (obligatorio en versiones recientes)
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -161,6 +161,7 @@ namespace BimManagement
                 worksheet.Cells["F2"].Value = deliverable;
                 worksheet.Cells["F3"].Value = dateAudit;
                 worksheet.Cells["E8"].Value = modelName;
+                worksheet.Cells["D3"].Value = specialty.ToString();
 
                 ExcelResultHandler excelResultHandler = new ExcelResultHandler();
 

@@ -84,7 +84,7 @@ namespace BimManagement.Commands.ModelAudit
                     return new ValidationResult
                     {
                         IsValid = false,
-                        Message = $"Los siguientes ID están fuera del rango: {string.Join(", ", invalidElementIds)}",
+                        Message = $"Los siguientes ID están fuera del rango: {string.Join("\n", invalidElementIds)}",
                         IsRelevant = true
                     };
                 }
