@@ -248,7 +248,7 @@ namespace BimManagement
             return Speciality.ARQUITECTURA;
         }
           
-        private void CopyTemplateXLS(string modelPath, string modelDirectory, string modelName, string destinationExcelPath)
+        public void CopyTemplateXLS(string modelPath, string modelDirectory, string modelName, string destinationExcelPath)
         {
             // Obtener la ruta del DLL
             string dllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -266,7 +266,5 @@ namespace BimManagement
             // Copiar el archivo
             File.Copy(sourceExcelPath, destinationExcelPath, true);
         }
-
-
     }
 }

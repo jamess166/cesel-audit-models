@@ -79,5 +79,28 @@ namespace BimManagement
 
             return btnData;
         }
+
+        public static PushButtonData ButtonModelAuditBuilding()
+        {
+            RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
+            {
+                AvailabilityClassName = string.Empty,
+                Icon = Properties.Resources.audit,
+                Name = "Auditar\nModelo Obra",
+                Text = "Auditar\nModelo Obra",
+                AssemblyName = Assembly.GetExecutingAssembly().Location,
+                ClassName = "BimManagement.ModelAuditBuildingCommand",
+                ShortDescription = "Realiza la auditoria del modelo de Obra",
+                LongDescription = "Utilizando el formato de auditoria de Modelo, se valida la información mínima que deberá " +
+                "tener el modelo de Obra",
+
+                Contextual = "https://www.cesel.com.pe/"
+            };
+
+            PushButtonData btnData = RevitLibrary.CreatePushButtons.PushButton(buttonData,
+                Properties.Resources.ToolTip);
+
+            return btnData;
+        }
     }
 }

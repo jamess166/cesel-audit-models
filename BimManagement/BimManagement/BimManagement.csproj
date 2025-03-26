@@ -100,6 +100,8 @@
     <Compile Include="Commands\ExportSheets\PrintPDF.cs" />
     <Compile Include="Commands\AsBuilt\ConvertAsBuiltCommand.cs" />
     <Compile Include="Commands\AsBuilt\SetDatesCommand.cs" />
+    <Compile Include="Commands\ModelAuditBuilding\CheckValueParameters.cs" />
+    <Compile Include="Commands\ModelAuditBuilding\ModelAuditBuildingCommand.cs" />
     <Compile Include="Commands\ModelAudit\CheckActiveWorkset.cs" />
     <Compile Include="Commands\ModelAudit\CheckDWGInModelAndFamily.cs" />
     <Compile Include="Commands\ModelAudit\CheckGridsWidhArchitecture.cs" />
@@ -184,6 +186,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\audit.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\ModelAuditBuilding\Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

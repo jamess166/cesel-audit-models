@@ -43,6 +43,7 @@ namespace BimManagement
             //panel.AddItem(CreatePushButtons.ButtonShareSheet());
             panel.AddItem(CreatePushButtons.ButtonUpdateConstructionData());
             panel.AddItem(CreatePushButtons.ButtonModelAudit());
+            panel.AddItem(CreatePushButtons.ButtonModelAuditBuilding());
 
             m_MyForm = null;   // no dialog needed yet; the command will bring it
             thisApp = this;  // static access to this application instance

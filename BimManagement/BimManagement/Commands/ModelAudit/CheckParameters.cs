@@ -148,7 +148,7 @@ namespace BimManagement.Commands.ModelAudit
         }
 
 
-        public ValidationResult ValidateParameters(Speciality specialty)
+        public ValidationResult ValidateParameters(Speciality specialty, bool isProyect = true)
         {
             if (_config == null || !_config.Any())
             {
@@ -170,7 +170,11 @@ namespace BimManagement.Commands.ModelAudit
 
             // Obtener los parámetros esperados(según especialidad + "TODOS") y agregando el prefijo al nombre
 
-            var matchingSpecialties = _config
+            List<SpecialtyParameters> matchingSpecialties;
+
+            if (isProyect)
+            {
+                matchingSpecialties = _config
                 .Where(s =>
                     s.Specialty.Equals(specialty.ToString(), StringComparison.Ordinal) ||
                     s.Specialty.Equals("TODOS", StringComparison.Ordinal))
@@ -186,9 +190,31 @@ namespace BimManagement.Commands.ModelAudit
                         Scope = p.Scope
                     }).ToList()
                 }).ToList();
+            }
+            else
+            {
+                matchingSpecialties = _config
+                .Where(s =>
+                    s.Specialty.Equals(specialty.ToString(), StringComparison.Ordinal) ||
+                    s.Specialty.Equals("OBRA", StringComparison.Ordinal) ||
+                    s.Specialty.Equals("TODOS", StringComparison.Ordinal))
+                .Select(s => new SpecialtyParameters
+                {
+                    Specialty = s.Specialty,
+                    Prefix = s.Prefix,
+                    Parameters = s.Parameters.Select(p => new ParameterDefinition
+                    {
+                        Name = s.Prefix + p.Name,  // Se agrega el prefijo al nombre del parámetro                        
+                        ParameterType = p.ParameterType,
+                        Group = p.Group,
+                        Scope = p.Scope
+                    }).ToList()
+                }).ToList();
+            }
+            
 
 
-            if (!matchingSpecialties.Any())
+            if (matchingSpecialties == null | !matchingSpecialties.Any())
             {
                 return new ValidationResult
                 {

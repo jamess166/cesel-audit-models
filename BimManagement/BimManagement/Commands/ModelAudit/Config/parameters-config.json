@@ -565,6 +565,159 @@
           "scope": "EJEMPLAR"
         }
       ]
+    },
+    {
+      "specialty": "OBRA",
+      "prefix": "PO-",
+      "parameters": [
+        {
+          "name": "ELEMENTO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "ESTADO CONSTRUCCIÓN",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "FECHA CONSTRUIDA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "FECHA FIN",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "FECHA INICIO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "SECTOR",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "NRO SEMANA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "SEMANA PROYECTO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "NRO REVISION",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "PLANO EN REVISION",
+          "discipline": "COMUN",
+          "parameterType": "YES/NO",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "PLANO REPLANTEO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "FECHA PROGRAMADA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "FECHA REPROGRAMADA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "ESTATUS RESTRICCION",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "RESTRICCIONES",
+          "discipline": "COMUN",
+          "parameterType": "YES/NO",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "SECTOR LIBERADO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "TIPO LOSA",
+          "discipline": "COMUN",
+          "parameterType": "NUMERO",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "VACIADO (V/H)",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "VALORIZADO",
+          "discipline": "COMUN",
+          "parameterType": "YES/NO",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "NRO VALORIZACION",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "WBS",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR"
+        }
+      ]
     }
   ]
 }
