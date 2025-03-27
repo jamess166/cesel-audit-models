@@ -31,6 +31,7 @@ namespace BimManagement
     {
         ValidationResult result_1a { get; set; }
         ValidationResult result_1b { get; set; }
+        ValidationResult result_1d { get; set; }
         ValidationResult result_2b { get; set; }
         ValidationResult result_2c { get; set; }
         ValidationResult result_2d { get; set; }
@@ -44,8 +45,6 @@ namespace BimManagement
         ValidationResult result_8a { get; set; }
         ValidationResult result_8c { get; set; }
         ValidationResult result_8d { get; set; }
-
-
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -86,7 +85,11 @@ namespace BimManagement
             //Validación 1b ----------------------------------------------------------------------------------
             result_1b = CkeckFileSize.ValidateFileSize(modelPath);
 
-            //Validación 1c ----------------------------------------------------------------------------------
+            //Validación 1d
+            var checkIsInModelList = new CheckIsInModelList();
+            result_1d = checkIsInModelList.ValidateFileNameInExcel(modelName);
+
+            //Validación 2b ----------------------------------------------------------------------------------
             var validatorLevelName = new CheckLevelNames();
             result_2b = validatorLevelName.ValidateLevelNaming();
 
@@ -143,6 +146,8 @@ namespace BimManagement
             //Set adata Excel
             SetDataExcel(destinationExcelPath, deliverable, dateAudit, modelName, specialty);
 
+            TaskDialog.Show("CESEL", "Se ha terminado la revisión");
+
             return Result.Succeeded;
         }
 
@@ -170,6 +175,9 @@ namespace BimManagement
 
                 //Item 1b
                 excelResultHandler.SetResultInCell(result_1b, worksheet, "E10", "F10");
+
+                //Item 1d
+                excelResultHandler.SetResultInCell(result_1d, worksheet, "E12", "F12");
 
                 //Item 2b
                 excelResultHandler.SetResultInCell(result_2b, worksheet, "E16", "F16");

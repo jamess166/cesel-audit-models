@@ -74,7 +74,7 @@ namespace BimManagement.Commands.ModelAuditBuilding
                 return new ValidationResult
                 {
                     IsValid = true,
-                    Message = "Todos los elementos tienen valores en los parámetros especificados.",
+                    Message = "",
                     IsRelevant = true
                 };
             }

@@ -106,6 +106,7 @@
     <Compile Include="Commands\ModelAudit\CheckDWGInModelAndFamily.cs" />
     <Compile Include="Commands\ModelAudit\CheckGridsWidhArchitecture.cs" />
     <Compile Include="Commands\ModelAudit\CheckHaveValueGroupView.cs" />
+    <Compile Include="Commands\ModelAudit\CheckIsInModelList.cs" />
     <Compile Include="Commands\ModelAudit\CheckLevelNames.cs" />
     <Compile Include="Commands\ModelAudit\CheckModelNames.cs" />
     <Compile Include="Commands\ModelAudit\CheckParameters.cs" />
