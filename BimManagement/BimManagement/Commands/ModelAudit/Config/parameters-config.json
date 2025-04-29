@@ -103,6 +103,13 @@
           "scope": "EJEMPLAR"
         },
         {
+          "name": "NOMENCLATURA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR"
+        },
+        {
           "name": "TITULO DE PLANO 01",
           "discipline": "COMUN",
           "parameterType": "TEXT",
@@ -309,6 +316,34 @@
           "parameterType": "TEXT",
           "group": "DATA",
           "scope": "EJEMPLAR"
+        },
+        {
+          "name": "CAR-TIPO BISAGRA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "CAR-TIPO PLATINA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "CAR-NUMERO HOJA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
+        },
+        {
+          "name": "CODIGO DE ACABADO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR"
         }
       ]
     },
@@ -333,28 +368,28 @@
         {
           "name": "PR ALTURA",
           "discipline": "COMUN",
-          "parameterType": "DIMENSION",
+          "parameterType": "LENGTH",
           "group": "DATA",
           "scope": "TIPO"
         },
         {
           "name": "PR ANCHO",
           "discipline": "COMUN",
-          "parameterType": "DIMENSION",
+          "parameterType": "LENGTH",
           "group": "DATA",
           "scope": "TIPO"
         },
         {
           "name": "PR LARGO",
           "discipline": "COMUN",
-          "parameterType": "DIMENSION",
+          "parameterType": "LENGTH",
           "group": "DATA",
           "scope": "TIPO"
         },
         {
           "name": "PR PERIMETRO",
           "discipline": "COMUN",
-          "parameterType": "DIMENSION",
+          "parameterType": "LENGTH",
           "group": "DATA",
           "scope": "TIPO"
         },
@@ -386,12 +421,12 @@
           "scope": "EJEMPLAR"
         },
         {
-          "name": "TIPO DE RED",
+          "name": "ANGULO",
           "discipline": "COMUN",
-          "parameterType": "TEXT",
+          "parameterType": "ANGLE",
           "group": "DATA",
           "scope": "EJEMPLAR"
-        }
+        }      
       ]
     },
     {
@@ -530,7 +565,7 @@
           "scope": "EJEMPLAR"
         },
         {
-          "name": "INCLUIR-ICA",
+          "name": "INCLUIR-SCA",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",

@@ -59,7 +59,7 @@ namespace BimManagement.Commands.ModelAudit
             if (dataType == SpecTypeId.String.Text)
                 return "TEXT";
             if (dataType == SpecTypeId.Length)
-                return "DIMENSION";
+                return "LENGTH";
             if (dataType == SpecTypeId.Area)
                 return "AREA";
             if (dataType == SpecTypeId.Volume)
@@ -68,8 +68,8 @@ namespace BimManagement.Commands.ModelAudit
                 return "NÚMERO";
             if (dataType == SpecTypeId.Int.Integer)
                 return "ENTERO";
-            if (dataType == SpecTypeId.Length)
-                return "ÁNGULO";
+            if (dataType == SpecTypeId.Angle)
+                return "ÁNGLE";
 
             return dataType.ToString();
         }
