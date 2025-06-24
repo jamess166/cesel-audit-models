@@ -123,6 +123,7 @@
     <Compile Include="Commands\ModelAudit\ModelAuditCommand.cs" />
     <Compile Include="Commands\ModelAudit\ParameterEntities.cs" />
     <Compile Include="Commands\UpdateConstructionData\UpdateConstructionDataCommand.cs" />
+    <Compile Include="Commands\WeeklyReport\WeeklyReportCommand.cs" />
     <Compile Include="Controller\AsBuilt\AddSharedParameters.cs" />
     <Compile Include="Controller\ExportSheets\ExportToPDFTools.cs" />
     <Compile Include="Controller\AsBuilt\FillSharedParameter.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Views\ShareSheetsView.xaml.cs">
       <DependentUpon>ShareSheetsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\WeeklyReportView.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\RevitLibrary\RevitLibrary.csproj">
@@ -181,6 +183,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\WeeklyReportView.xaml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\CASA-PAR-RIBA_5.txt" />

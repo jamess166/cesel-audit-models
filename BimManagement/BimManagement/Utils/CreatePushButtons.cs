@@ -102,5 +102,28 @@ namespace BimManagement
 
             return btnData;
         }
+        
+        public static PushButtonData ButtonWeeklyReport()
+        {
+            RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
+            {
+                AvailabilityClassName = string.Empty,
+                Icon = Properties.Resources.audit,
+                Name = "Reporte\nSemanal",
+                Text = "Reporte\nSemanal",
+                AssemblyName = Assembly.GetExecutingAssembly().Location,
+                ClassName = "BimManagement.WeeklyReportCommand",
+                ShortDescription = "Actualiza los modelos de Supervisión para el reporte semanal",
+                LongDescription = "Seleccionando los modelos, se actualizan filtros en vistas y tablas, asicomo " +
+                                  "datos en los planos para el reporte semanal",
+
+                Contextual = "https://www.cesel.com.pe/"
+            };
+
+            PushButtonData btnData = RevitLibrary.CreatePushButtons.PushButton(buttonData,
+                Properties.Resources.ToolTip);
+
+            return btnData;
+        }
     }
 }
