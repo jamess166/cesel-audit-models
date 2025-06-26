@@ -46,7 +46,8 @@ namespace BimManagement
             panel.AddItem(CreatePushButtons.ButtonModelAuditBuilding());
             panel.AddItem(CreatePushButtons.ButtonWeeklyReport());
 
-            m_MyForm = null;   // no dialog needed yet; the command will bring it
+            m_MyFormSheetView = null;   // no dialog needed yet; the command will bring it
+            m_WeeklyReportView = null;
             thisApp = this;  // static access to this application instance
 
             return Result.Succeeded;
@@ -55,7 +56,8 @@ namespace BimManagement
         // class instance
         public static App thisApp = null;
 
-        public static ShareSheetsView m_MyForm;
+        public static ShareSheetsView m_MyFormSheetView;
+        public static WeeklyReportView m_WeeklyReportView;
 
         /// <summary>
         /// Este metodo implementa la aplicación que sera invocada cuando Revit este cerrandodse 
@@ -65,9 +67,14 @@ namespace BimManagement
         /// <returns>Devuelve el resultado del estado de la aplicacion externa.</returns>
         public Result OnShutdown(UIControlledApplication application)
         {
-            if (m_MyForm != null && m_MyForm.Visibility.Equals(Visibility.Visible))
+            if (m_MyFormSheetView != null && m_MyFormSheetView.Visibility.Equals(Visibility.Visible))
             {
-                m_MyForm.Close();
+                m_MyFormSheetView.Close();
+            }
+            
+            if (m_WeeklyReportView != null && m_WeeklyReportView.Visibility.Equals(Visibility.Visible))
+            {
+                m_WeeklyReportView.Close();
             }
             return Result.Succeeded;
         }
@@ -75,10 +82,10 @@ namespace BimManagement
         /// <summary>
         /// Mostrar formulario principal
         /// </summary>
-        public void ShowForm()
+        public void ShowFormSheetsView()
         {
             //si no ha creado el dialogo aun y muestra
-            if (m_MyForm != null) { return; }
+            if (m_MyFormSheetView != null) { return; }
 
             //Handler principal
             ShareSheetHandler handler = new ShareSheetHandler();
@@ -87,9 +94,26 @@ namespace BimManagement
             ExternalEvent exEvent = ExternalEvent.Create(handler);
 
             //Mostrar windows
-            m_MyForm = new ShareSheetsView(exEvent);
-            m_MyForm.Closed += MyFormClosed;
-            m_MyForm.Show();
+            m_MyFormSheetView = new ShareSheetsView(exEvent);
+            m_MyFormSheetView.Closed += MyFormSheetViewSheetViewClosed;
+            m_MyFormSheetView.Show();
+        }
+
+        public void ShowWindowWeeklyReport()
+        {
+            //si no ha creado el dialogo aun y muestra
+            if (m_WeeklyReportView != null) { return; }
+
+            //Handler principal
+            UpdateFilesHandler handler = new UpdateFilesHandler();
+
+            //registro del evento
+            ExternalEvent exEvent = ExternalEvent.Create(handler);
+
+            //Mostrar windows
+            m_WeeklyReportView = new WeeklyReportView(exEvent);
+            m_WeeklyReportView.Closed += WeeklyReportViewClosed;
+            m_WeeklyReportView.Show();
         }
 
         /// <summary>
@@ -97,9 +121,19 @@ namespace BimManagement
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MyFormClosed(object sender, EventArgs e)
+        private void MyFormSheetViewSheetViewClosed(object sender, EventArgs e)
         {
-            m_MyForm = null;
+            m_MyFormSheetView = null;
+        }
+        
+        /// <summary>
+        /// Evento para vaciar el formulario luego de cerrar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WeeklyReportViewClosed(object sender, EventArgs e)
+        {
+            m_WeeklyReportView = null;
         }
     }
 }

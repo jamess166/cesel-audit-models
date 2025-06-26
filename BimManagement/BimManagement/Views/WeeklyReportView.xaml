@@ -48,7 +48,7 @@
 
         <!-- Fecha de emisión -->
         <Label Content="Semana:" Grid.Row="0" Grid.Column="0"/>
-        <TextBox Name="IssueWeek" Grid.Row="0" Grid.Column="1" IsReadOnly="False"/>
+        <TextBox Name="IssueWeek" Grid.Row="0" Grid.Column="1" IsReadOnly="False" TextChanged="IssueWeek_TextChanged"/>
         <Label Content="Periodo:" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="10,0,0,0"/>
         <TextBox Name="PeriodoBox" Grid.Row="0" Grid.Column="3" Margin="5" Grid.ColumnSpan="2"/>
 

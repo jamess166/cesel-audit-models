@@ -182,7 +182,7 @@ namespace BimManagement
         
     }
 
-    internal class ViewTools
+    public partial class WeeklyReportTools
     {
         public static ViewModel ViewModel { get; set; }
         public static string Revision { get; set; }

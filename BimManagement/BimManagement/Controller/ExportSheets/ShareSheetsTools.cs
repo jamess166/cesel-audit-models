@@ -59,20 +59,20 @@ namespace BimManagement
                 revisionPath = GetRevisionPath();
                 sharePath = GetSpecificSharePath();
 
-                List<ElementId> elementsID = ViewTools.SelectedSheets
+                List<ElementId> elementsID = WeeklyReportTools.SelectedSheets
                                             .Select(sheetDetail => sheetDetail.Sheet.Id)
                                             .ToList();
 
-                string pdfPath = ViewTools.DivideNativePDF
+                string pdfPath = WeeklyReportTools.DivideNativePDF
                                 ? System.IO.Path.Combine(revisionPath, "PDF")
                                 : revisionPath;
 
-                if (ViewTools.CreatePDFToo)
+                if (WeeklyReportTools.CreatePDFToo)
                 {
                     ExportToPDFTools.ExportSheetToPDF(elementsID, pdfPath);
                 }
 
-                string rvtPath = ViewTools.DivideNativePDF
+                string rvtPath = WeeklyReportTools.DivideNativePDF
                                 ? System.IO.Path.Combine(revisionPath, "NATIVOS")
                                 : revisionPath;
 
@@ -81,11 +81,11 @@ namespace BimManagement
                 //Eliminar backups
                 DeleteBackupsRvt(revisionPath);
 
-                string message = $"Se han copiado {ViewTools.SelectedSheets.Count()} en la carpeta de En " +
-                    $"Proceso como revision REV {ViewTools.Revision}";
+                string message = $"Se han copiado {WeeklyReportTools.SelectedSheets.Count()} en la carpeta de En " +
+                    $"Proceso como revision REV {WeeklyReportTools.Revision}";
 
                 //Copiar a las carpetas compartidas
-                if (ViewTools.CopyShared)
+                if (WeeklyReportTools.CopyShared)
                 {
                     CopyDirectory(revisionPath, sharePath);
 
@@ -116,7 +116,7 @@ namespace BimManagement
         {
             string[] archivosAEliminar;
 
-            archivosAEliminar = Directory.GetFiles(ViewTools.DivideNativePDF
+            archivosAEliminar = Directory.GetFiles(WeeklyReportTools.DivideNativePDF
                 ? (revisionPath + "\\NATIVOS") : revisionPath, "*.000*.rvt");
 
             // Elimina cada archivo
@@ -177,7 +177,7 @@ namespace BimManagement
                 throw new ArgumentNullException(nameof(destinePath)));
 
             // Ahora puedes copiar los archivos a sharePath
-            foreach (SheetDetail sheetDetail in ViewTools.SelectedSheets)
+            foreach (SheetDetail sheetDetail in WeeklyReportTools.SelectedSheets)
             {
                 Parameter revisionParam = sheetDetail.Sheet.get_Parameter(BuiltInParameter.SHEET_CURRENT_REVISION);
                 string revision = revisionParam.AsString();
@@ -232,13 +232,13 @@ namespace BimManagement
         {
             string revisionPath = ModelPath;
 
-            if (!string.IsNullOrEmpty(ViewTools.DirectoryPath))
+            if (!string.IsNullOrEmpty(WeeklyReportTools.DirectoryPath))
             {
-                revisionPath = ViewTools.DirectoryPath;
+                revisionPath = WeeklyReportTools.DirectoryPath;
             }
 
             //Agregar revision
-            revisionPath += $"\\REV {ViewTools.Revision.ToUpper()}";
+            revisionPath += $"\\REV {WeeklyReportTools.Revision.ToUpper()}";
 
             return revisionPath;
         }
@@ -253,7 +253,7 @@ namespace BimManagement
             if (!ModelPath.Contains(@"01 EN PROCESO\03 REPLANTEO")) return string.Empty;
 
             return ModelPath.Replace(@"01 EN PROCESO\03 REPLANTEO", @"02 COMPARTIDO\02 REPLANTEO")
-                + $"\\REV {ViewTools.Revision.ToUpper()}";
+                + $"\\REV {WeeklyReportTools.Revision.ToUpper()}";
         }
     }
 }

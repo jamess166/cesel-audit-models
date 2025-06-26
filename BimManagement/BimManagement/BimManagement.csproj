@@ -123,6 +123,8 @@
     <Compile Include="Commands\ModelAudit\ModelAuditCommand.cs" />
     <Compile Include="Commands\ModelAudit\ParameterEntities.cs" />
     <Compile Include="Commands\UpdateConstructionData\UpdateConstructionDataCommand.cs" />
+    <Compile Include="Commands\WeeklyReport\UpdateFilesHandler.cs" />
+    <Compile Include="Commands\WeeklyReport\WeeklyReportTools.cs" />
     <Compile Include="Commands\WeeklyReport\WeeklyReportCommand.cs" />
     <Compile Include="Controller\AsBuilt\AddSharedParameters.cs" />
     <Compile Include="Controller\ExportSheets\ExportToPDFTools.cs" />

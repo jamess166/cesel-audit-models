@@ -32,10 +32,10 @@ namespace BimManagement
             m_ExEvent = exEvent;
 
             //txtFilePath.Text = string.Empty;
-            txtFilePath.Text = !string.IsNullOrEmpty(ViewTools.DirectoryPath) ? ViewTools.DirectoryPath : string.Empty;
-            chkCopyShared.IsChecked = ViewTools.CopyShared;
-            chkDivideFiles.IsChecked = ViewTools.DivideNativePDF;
-            chkPDF.IsChecked = ViewTools.CreatePDFToo;
+            txtFilePath.Text = !string.IsNullOrEmpty(WeeklyReportTools.DirectoryPath) ? WeeklyReportTools.DirectoryPath : string.Empty;
+            chkCopyShared.IsChecked = WeeklyReportTools.CopyShared;
+            chkDivideFiles.IsChecked = WeeklyReportTools.DivideNativePDF;
+            chkPDF.IsChecked = WeeklyReportTools.CreatePDFToo;
 
 
             //ViewTools.DirectoryPath = txtFilePath.Text;
@@ -43,20 +43,20 @@ namespace BimManagement
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ViewTools.Revision = txtRevision.Text.ToString();
+            WeeklyReportTools.Revision = txtRevision.Text.ToString();
             //ViewTools.RevisionCBS = txtRevisionCBS.Text.ToString();
             //ViewTools.SendDate = dtDateSend.SelectedDate;
             //ViewTools.IsSameDate = chkIsSameDate.IsChecked;
             //ViewTools.Description = txtDescription.Text.ToString();
 
-            ViewTools.DivideNativePDF = (bool)chkDivideFiles.IsChecked;
-            ViewTools.CopyShared = (bool)chkCopyShared.IsChecked;
-            ViewTools.CreatePDFToo= (bool)chkPDF.IsChecked;
+            WeeklyReportTools.DivideNativePDF = (bool)chkDivideFiles.IsChecked;
+            WeeklyReportTools.CopyShared = (bool)chkCopyShared.IsChecked;
+            WeeklyReportTools.CreatePDFToo= (bool)chkPDF.IsChecked;
 
 
             if (Tools.ExistPath(txtFilePath.Text))
             {
-                ViewTools.DirectoryPath = txtFilePath.Text;
+                WeeklyReportTools.DirectoryPath = txtFilePath.Text;
             }
 
             //List<SheetDetail> sheets = new List<SheetDetail>();
@@ -75,7 +75,7 @@ namespace BimManagement
             btnOpenRevision.IsEnabled = true;
             btnOpenShare.IsEnabled = true;
 
-            ViewTools.SelectedSheets = sheets;
+            WeeklyReportTools.SelectedSheets = sheets;
 
             m_ExEvent.Raise();
             //ShareSheetsTools.Execute();
@@ -134,7 +134,7 @@ namespace BimManagement
             txtFilePath.Text = folderPath;
 
             //guardo el path
-            ViewTools.DirectoryPath = folderPath;   
+            WeeklyReportTools.DirectoryPath = folderPath;   
         }
     }
 }

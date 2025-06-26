@@ -3,30 +3,38 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 
 namespace BimManagement
 {
     public partial class WeeklyReportView : Window
     {
-        public WeeklyReportView()
+        private ExternalEvent m_ExEvent;
+        public static WeeklyReportView Instance { get; private set; }
+
+        public WeeklyReportView(ExternalEvent exEvent)
         {
             InitializeComponent();
-            // IssueDatePicker.SelectedDate = new DateTime(2025, 2, 1);
+            m_ExEvent = exEvent;
+            Instance = this;
         }
 
         private void SelectFolder_Click(object sender, RoutedEventArgs e)
         {
             string folderPath = string.Empty;
-        
+
             using (var openFile = new OpenFileDialog())
             {
                 openFile.ValidateNames = false;
                 openFile.CheckFileExists = false;
                 openFile.CheckPathExists = true;
                 openFile.FileName = "Folder Selection";
-            
+
                 if (openFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     folderPath = Path.GetDirectoryName(openFile.FileName);
@@ -48,16 +56,16 @@ namespace BimManagement
             try
             {
                 // Obtener todos los archivos .rvt
-                var searchOption = IncludeSubfoldersCheck.IsChecked == true 
-                    ? SearchOption.AllDirectories 
+                var searchOption = IncludeSubfoldersCheck.IsChecked == true
+                    ? SearchOption.AllDirectories
                     : SearchOption.TopDirectoryOnly;
-                
+
                 string[] files = Directory.GetFiles(path, "*.rvt", searchOption);
-             
-                 // Expresión regular para excluir los que terminan en .0001.rvt, .0012.rvt, etc.
+
+                // Expresión regular para excluir los que terminan en .0001.rvt, .0012.rvt, etc.
                 Regex backupRegex = new Regex(@"\.\d{4}\.rvt$", RegexOptions.IgnoreCase);
                 files = files.Where(f => !backupRegex.IsMatch(f)).ToArray();
-            
+
 
                 RvtFilesList.Items.Clear();
                 foreach (var file in files)
@@ -73,72 +81,78 @@ namespace BimManagement
             }
         }
 
+        private void IssueWeek_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string input = IssueWeek.Text;
+
+            if (int.TryParse(input, out int weekNumber))
+            {
+                int subWeek = weekNumber - 27;
+                string basePath =
+                    @"G:\{0}\Proyectos\BIM\2408-EOPNP_Chorrillos\OB\Informes Semanales\SEMANA {1} - {2} SUP\Modelos\Supervisión";
+
+                // Intenta con "Shared drives"
+                string path1 = string.Format(basePath, "Shared drives", weekNumber, subWeek);
+                // Intenta con "Unidades compartidas"
+                string path2 = string.Format(basePath, "Unidades compartidas", weekNumber, subWeek);
+
+                if (Directory.Exists(path1))
+                {
+                    FolderPathBox.Text = path1;
+                }
+                else if (Directory.Exists(path2))
+                {
+                    FolderPathBox.Text = path2;
+                }
+                else
+                {
+                    FolderPathBox.Text = string.Empty;
+                }
+
+                // Semana 1 = Sábado 13/11/2023 al Viernes 19/11/2023
+                // =====================================
+                DateTime inicioSemana1 = new DateTime(2023, 11, 13);
+                DateTime inicioSemanaActual = inicioSemana1.AddDays((weekNumber - 1) * 7);
+                DateTime finSemanaActual = inicioSemanaActual.AddDays(6); // viernes
+
+                string periodoTexto = $"{inicioSemanaActual:dd/MM} - {finSemanaActual:dd/MM}";
+                PeriodoBox.Text = periodoTexto;
+            }
+            else
+            {
+                FolderPathBox.Text = string.Empty;
+            }
+        }
+
+
         private async void UpdateFiles_Click(object sender, RoutedEventArgs e)
         {
-            if (RvtFilesList.Items.Count == 0)
+            string issueName = IssueWeek.Text.Trim();
+            string issueDate = PeriodoBox.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(issueName) || string.IsNullOrWhiteSpace(issueDate))
             {
-                Log("No hay archivos para procesar");
+                Log("Por favor completa ambos campos: Semana y Período.");
                 return;
             }
-            
-            Log("Iniciando actualización de archivos...");
-            
-            var selectedFiles = RvtFilesList.Items.Cast<FileInfo>()
-                .Select(fi => fi.FullName).ToList();
-            
-            // if (RvtFilesList.Items.Count == 0)
-            // {
-            //     Log("No hay archivos para procesar");
-            //     return;
-            // }
-            //
-            // if (!IssueDatePicker.SelectedDate.HasValue)
-            // {
-            //     Log("Por favor seleccione una fecha válida");
-            //     return;
-            // }
-            //
-            // var selectedDate = IssueDatePicker.SelectedDate.Value;
-            // var filePaths = new List<string>();
-            //
-            // foreach (FileInfo fileInfo in RvtFilesList.Items)
-            // {
-            //     filePaths.Add(fileInfo.FullName);
-            // }
-            //
-            // ProgressBar.IsIndeterminate = true;
-            // UpdateFiles_Click.IsEnabled = false;
-            //
-            // try
-            // {
-            //     // Aquí llamarías a tu lógica de Revit para procesar los archivos
-            //     // Esto es solo un ejemplo - necesitarás adaptarlo a tu add-in de Revit
-            //     int processedCount = 0;
-            //     int errorCount = 0;
-            //
-            //     foreach (var filePath in filePaths)
-            //     {
-            //         try
-            //         {
-            //             // Simular procesamiento (reemplazar con tu lógica real)
-            //             await Task.Delay(100);
-            //             processedCount++;
-            //             Log($"Procesado: {Path.GetFileName(filePath)}");
-            //         }
-            //         catch (Exception ex)
-            //         {
-            //             errorCount++;
-            //             Log($"Error procesando {Path.GetFileName(filePath)}: {ex.Message}");
-            //         }
-            //     }
-            //
-            //     Log($"Proceso completado. Archivos procesados: {processedCount}, errores: {errorCount}");
-            // }
-            // finally
-            // {
-            //     ProgressBar.IsIndeterminate = false;
-            //     UpdateFiles_Click.IsEnabled = true;
-            // }
+
+            var archivos = RvtFilesList.Items.OfType<FileInfo>().Where(f => f.Exists).ToList();
+            if (archivos.Count == 0)
+            {
+                Log("No hay archivos válidos para procesar.");
+                return;
+            }
+
+            Log("Iniciando Actualización de Planos");
+
+            WeeklyReportTools.IssueName = issueName;
+            WeeklyReportTools.IssueDate = issueDate;
+            WeeklyReportTools.Files = archivos;
+
+            ProgressBar.Value = 0;
+            ProgressBar.Maximum = archivos.Count;
+
+            m_ExEvent.Raise();
         }
 
         private void Log(string message)

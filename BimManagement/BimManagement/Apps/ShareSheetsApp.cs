@@ -50,7 +50,7 @@ namespace BimManagement
             //Open Window
             try
             {
-                App.thisApp.ShowForm();
+                App.thisApp.ShowFormSheetsView();
                 //ShareSheetsView shareSheetsView = new ShareSheetsView();
                 //shareSheetsView.Show();                
             }

@@ -1,3 +1,4 @@
+using System;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -27,8 +28,15 @@ namespace BimManagement
             RevitTools.sel = sel;
             RevitTools.elements = null;
             
-            WeeklyReportView view = new WeeklyReportView();
-            view.ShowDialog();
+            try
+            {
+                App.thisApp.ShowWindowWeeklyReport(); 
+            }
+            catch (Exception ex)
+            {
+                message = ex.Message;
+                return Result.Failed;
+            }
             
             return Result.Succeeded;
         }
