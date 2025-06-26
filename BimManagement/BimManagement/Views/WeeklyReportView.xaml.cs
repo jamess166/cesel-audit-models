@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Forms;
 
@@ -11,57 +13,79 @@ namespace BimManagement
         public WeeklyReportView()
         {
             InitializeComponent();
-            IssueDatePicker.SelectedDate = new DateTime(2025, 2, 1);
+            // IssueDatePicker.SelectedDate = new DateTime(2025, 2, 1);
         }
 
         private void SelectFolder_Click(object sender, RoutedEventArgs e)
         {
-            // var dialog = new CommonOpenFileDialog
-            // {
-            //     IsFolderPicker = true,
-            //     Title = "Seleccionar carpeta con modelos RVT"
-            // };
-            //
-            // if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
-            // {
-            //     FolderPathBox.Text = dialog.FileName;
-            //     FindFiles_Click(null, null);
-            // }
+            string folderPath = string.Empty;
+        
+            using (var openFile = new OpenFileDialog())
+            {
+                openFile.ValidateNames = false;
+                openFile.CheckFileExists = false;
+                openFile.CheckPathExists = true;
+                openFile.FileName = "Folder Selection";
+            
+                if (openFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    folderPath = Path.GetDirectoryName(openFile.FileName);
+                    FolderPathBox.Text = folderPath;
+                    FindFiles_Click(null, null);
+                }
+            }
         }
 
         private void FindFiles_Click(object sender, RoutedEventArgs e)
         {
-            // if (string.IsNullOrWhiteSpace(FolderPathBox.Text))
-            // {
-            //     Log("Por favor seleccione una carpeta primero");
-            //     return;
-            // }
-            //
-            // try
-            // {
-            //     var searchOption = IncludeSubfoldersCheck.IsChecked == true
-            //         ? SearchOption.AllDirectories
-            //         : SearchOption.TopDirectoryOnly;
-            //
-            //     var rvtFiles = Directory.GetFiles(FolderPathBox.Text, "*.rvt", searchOption);
-            //     RvtFilesList.Items.Clear();
-            //
-            //     foreach (var file in rvtFiles)
-            //     {
-            //         var fileInfo = new FileInfo(file);
-            //         RvtFilesList.Items.Add(fileInfo);
-            //     }
-            //
-            //     Log($"Encontrados {rvtFiles.Length} archivos RVT");
-            // }
-            // catch (Exception ex)
-            // {
-            //     Log($"Error al buscar archivos: {ex.Message}");
-            // }
+            string path = FolderPathBox.Text;
+            if (!Directory.Exists(path))
+            {
+                Log("Ruta no válida.");
+                return;
+            }
+
+            try
+            {
+                // Obtener todos los archivos .rvt
+                var searchOption = IncludeSubfoldersCheck.IsChecked == true 
+                    ? SearchOption.AllDirectories 
+                    : SearchOption.TopDirectoryOnly;
+                
+                string[] files = Directory.GetFiles(path, "*.rvt", searchOption);
+             
+                 // Expresión regular para excluir los que terminan en .0001.rvt, .0012.rvt, etc.
+                Regex backupRegex = new Regex(@"\.\d{4}\.rvt$", RegexOptions.IgnoreCase);
+                files = files.Where(f => !backupRegex.IsMatch(f)).ToArray();
+            
+
+                RvtFilesList.Items.Clear();
+                foreach (var file in files)
+                {
+                    RvtFilesList.Items.Add(new FileInfo(file));
+                }
+
+                Log($"{files.Length} archivos encontrados.");
+            }
+            catch (Exception ex)
+            {
+                Log($"Error al buscar archivos: {ex.Message}");
+            }
         }
 
         private async void UpdateFiles_Click(object sender, RoutedEventArgs e)
         {
+            if (RvtFilesList.Items.Count == 0)
+            {
+                Log("No hay archivos para procesar");
+                return;
+            }
+            
+            Log("Iniciando actualización de archivos...");
+            
+            var selectedFiles = RvtFilesList.Items.Cast<FileInfo>()
+                .Select(fi => fi.FullName).ToList();
+            
             // if (RvtFilesList.Items.Count == 0)
             // {
             //     Log("No hay archivos para procesar");

@@ -27,6 +27,9 @@ namespace BimManagement
             RevitTools.sel = sel;
             RevitTools.elements = null;
             
+            WeeklyReportView view = new WeeklyReportView();
+            view.ShowDialog();
+            
             return Result.Succeeded;
         }
     }

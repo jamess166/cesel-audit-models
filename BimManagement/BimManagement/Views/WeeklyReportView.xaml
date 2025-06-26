@@ -42,17 +42,20 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- Fecha de emisión -->
-        <Label Content="Periodo:" Grid.Row="0" Grid.Column="0"/>
-        <!--<DatePicker Name="IssueDatePicker" Grid.Row="0" Grid.Column="1" SelectedDate="2025-02-01"/>-->
-        <TextBox Name="IssueDate" Grid.Row="0" Grid.Column="1" IsReadOnly="False"/>
-        
+        <Label Content="Semana:" Grid.Row="0" Grid.Column="0"/>
+        <TextBox Name="IssueWeek" Grid.Row="0" Grid.Column="1" IsReadOnly="False"/>
+        <Label Content="Periodo:" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="10,0,0,0"/>
+        <TextBox Name="PeriodoBox" Grid.Row="0" Grid.Column="3" Margin="5" Grid.ColumnSpan="2"/>
+
         <!-- Ruta de carpeta -->
         <Label Content="Carpeta:" Grid.Row="1" Grid.Column="0"/>
-        <TextBox Name="FolderPathBox" Grid.Row="1" Grid.Column="1" IsReadOnly="False"/>
-        <Button Content="Seleccionar carpeta" Grid.Row="1" Grid.Column="2" Click="SelectFolder_Click"/>
+        <TextBox Name="FolderPathBox" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" IsReadOnly="False"/>
+        <Button Content="Seleccionar carpeta" Grid.Row="1" Grid.Column="4" Width="150" HorizontalAlignment="Left" Click="SelectFolder_Click"/>
 
         <!-- Opciones -->
         <Label Content="Opciones:" Grid.Row="2" Grid.Column="0"/>
@@ -65,28 +68,28 @@
         <Label Content="Archivos encontrados:" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3"/>
 
         <!-- Lista de archivos -->
-        <ListView Name="RvtFilesList" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3" Margin="0,5">
+        <ListView Name="RvtFilesList" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="5" Margin="0,5">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Archivo" DisplayMemberBinding="{Binding FileName}" Width="300"/>
+                    <GridViewColumn Header="Archivo" DisplayMemberBinding="{Binding Name}" Width="300"/>
                     <GridViewColumn Header="Ruta" DisplayMemberBinding="{Binding DirectoryName}" Width="400"/>
                 </GridView>
             </ListView.View>
         </ListView>
 
         <!-- Barra de progreso -->
-        <ProgressBar Name="ProgressBar" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" 
+        <ProgressBar Name="ProgressBar" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" 
                     Height="20" Margin="5" IsIndeterminate="False"/>
 
         <!-- Botones -->
-        <StackPanel Grid.Row="5" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Content="Buscar archivos" Click="FindFiles_Click" Width="120"/>
+        <StackPanel Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Buscar archivos" Click="FindFiles_Click" Width="120" Margin="10,0,0,0" />
             <Button Content="Actualizar" Click="UpdateFiles_Click" Width="120" Margin="10,0,0,0" FontWeight="Bold"/>
         </StackPanel>
 
         <!-- Log de operaciones -->
-        <Label Content="Log de operaciones:" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="3"/>
-        <TextBox Name="LogTextBox" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="3" 
+        <Label Content="Log de operaciones:" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5"/>
+        <TextBox Name="LogTextBox" Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="5" 
                  Margin="0,5" Height="80" VerticalScrollBarVisibility="Auto" 
                  HorizontalScrollBarVisibility="Auto" IsReadOnly="True" 
                  FontFamily="Consolas" Background="#FFF0F0F0"/>
