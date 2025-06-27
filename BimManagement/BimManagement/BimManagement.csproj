@@ -122,6 +122,9 @@
     <Compile Include="Commands\ModelAudit\GeometryValidator.cs" />
     <Compile Include="Commands\ModelAudit\ModelAuditCommand.cs" />
     <Compile Include="Commands\ModelAudit\ParameterEntities.cs" />
+    <Compile Include="Commands\MonthlyReport\MonthlyReport.cs" />
+    <Compile Include="Commands\MonthlyReport\MonthlyReportFilters.cs" />
+    <Compile Include="Commands\MonthlyReport\MonthlyUpdateSheet.cs" />
     <Compile Include="Commands\UpdateConstructionData\UpdateConstructionDataCommand.cs" />
     <Compile Include="Commands\WeeklyReport\UpdateFilesHandler.cs" />
     <Compile Include="Commands\WeeklyReport\WeeklyReportTools.cs" />
