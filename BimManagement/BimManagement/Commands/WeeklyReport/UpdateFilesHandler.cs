@@ -91,7 +91,31 @@ namespace BimManagement
             }
         }
 
-        private void ActualizarFiltrosTablas(Document doc, string semana)
+        //private void ActualizarFiltrosTablas(Document doc, string semana)
+        //{
+        //    var schedules = new FilteredElementCollector(doc)
+        //        .OfClass(typeof(ViewSchedule))
+        //        .Cast<ViewSchedule>();
+
+        //    foreach (var sched in schedules)
+        //    {
+        //        var def = sched.Definition;
+        //        for (int i = 0; i < def.GetFilterCount(); i++)
+        //        {
+        //            var filtro = def.GetFilter(i);
+        //            var field = def.GetField(filtro.FieldId);
+
+        //            if (field?.GetName() == "PO-SEMANAL")
+        //            {
+        //                var nuevoFiltro = new ScheduleFilter(filtro.FieldId, filtro.FilterType, semana);
+        //                def.SetFilter(i, nuevoFiltro);
+        //            }
+        //        }
+        //    }
+        //}
+        
+
+        private void ActualizarFiltrosTablas(Document doc, string valorPoCars)
         {
             var schedules = new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSchedule))
@@ -100,19 +124,146 @@ namespace BimManagement
             foreach (var sched in schedules)
             {
                 var def = sched.Definition;
-                for (int i = 0; i < def.GetFilterCount(); i++)
-                {
-                    var filtro = def.GetFilter(i);
-                    var field = def.GetField(filtro.FieldId);
+                bool tienePoCars = false;
+                ScheduleFieldId poFieldId = null;
 
-                    if (field?.GetName() == "PO-SEMANAL")
+                // Verificar si ya existe PO-CARS en la tabla
+                for (int j = 0; j < def.GetFieldCount(); j++)
+                {
+                    var field = def.GetField(j);
+                    if (field?.GetName() == "PO-CARS")
                     {
-                        var nuevoFiltro = new ScheduleFilter(filtro.FieldId, filtro.FilterType, semana);
-                        def.SetFilter(i, nuevoFiltro);
+                        tienePoCars = true;
+                        poFieldId = field.FieldId;
+                        break;
+                    }
+                }
+
+                // Si no existe PO-CARS, verificar si hay campos antiguos para remover
+                List<int> indicesARemover = new List<int>();
+                if (!tienePoCars)
+                {
+                    for (int j = 0; j < def.GetFieldCount(); j++)
+                    {
+                        var field = def.GetField(j);
+                        string fieldName = field?.GetName();
+
+                        if (fieldName == "PO-SEMANAL" || fieldName == "PO-SEMANA PROYECTO")
+                        {
+                            // Marcar este campo para remover después
+                            indicesARemover.Add(j);
+                        }
+                    }
+                }
+
+                // Si no encontramos PO-CARS, agregar el campo PO-CARS
+                if (!tienePoCars)
+                {
+                    try
+                    {
+                        // Buscar el parámetro PO-CARS en el proyecto
+                        var parameterId = GetParameterIdByName(doc, "PO-CARS");
+                        if (parameterId != null)
+                        {
+                            var newField = def.AddField(ScheduleFieldType.Instance, parameterId);
+                            poFieldId = newField.FieldId;
+                            tienePoCars = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log del error si no se puede agregar el campo
+                        System.Diagnostics.Debug.WriteLine($"Error al agregar campo PO-CARS: {ex.Message}");
+                        continue;
+                    }
+                }
+
+                // Remover campos antiguos después de agregar PO-CARS
+                if (tienePoCars && indicesARemover.Count > 0)
+                {
+                    // Remover en orden inverso para no afectar los índices
+                    for (int i = indicesARemover.Count - 1; i >= 0; i--)
+                    {
+                        try
+                        {
+                            def.RemoveField(indicesARemover[i]);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error al remover campo antiguo: {ex.Message}");
+                        }
+                    }
+                }
+
+                // Actualizar o crear filtros para PO-CARS
+                if (tienePoCars && poFieldId != null)
+                {
+                    bool filtroActualizado = false;
+
+                    // Buscar y actualizar filtros existentes
+                    for (int i = 0; i < def.GetFilterCount(); i++)
+                    {
+                        var filtro = def.GetFilter(i);
+                        var field = def.GetField(filtro.FieldId);
+                        string fieldName = field?.GetName();
+
+                        if (fieldName == "PO-CARS" || fieldName == "PO-SEMANAL" || fieldName == "PO-SEMANA PROYECTO")
+                        {
+                            var nuevoFiltro = new ScheduleFilter(poFieldId, filtro.FilterType, valorPoCars);
+                            def.SetFilter(i, nuevoFiltro);
+                            filtroActualizado = true;
+                        }
+                    }
+
+                    // Si no se encontró ningún filtro existente, crear uno nuevo
+                    if (!filtroActualizado)
+                    {
+                        try
+                        {
+                            var nuevoFiltro = new ScheduleFilter(poFieldId, ScheduleFilterType.Equal, valorPoCars);
+                            def.AddFilter(nuevoFiltro);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error al agregar filtro: {ex.Message}");
+                        }
                     }
                 }
             }
         }
+
+        // Método auxiliar para obtener el ID del parámetro por nombre
+        private ElementId GetParameterIdByName(Document doc, string parameterName)
+        {
+            // Buscar en parámetros del proyecto
+            var projectParams = new FilteredElementCollector(doc)
+                .OfClass(typeof(ParameterElement))
+                .Cast<ParameterElement>();
+
+            foreach (var param in projectParams)
+            {
+                if (param.Name == parameterName)
+                {
+                    return param.Id;
+                }
+            }
+
+            // Si no se encuentra como parámetro del proyecto, buscar en parámetros compartidos
+            var sharedParams = new FilteredElementCollector(doc)
+                .OfClass(typeof(SharedParameterElement))
+                .Cast<SharedParameterElement>();
+
+            foreach (var param in sharedParams)
+            {
+                if (param.Name == parameterName)
+                {
+                    return param.Id;
+                }
+            }
+
+            return null;
+        }
+
 
         private void ActualizarFiltrosVisuales(Document doc, string semana)
         {
