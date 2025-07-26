@@ -12,6 +12,7 @@ namespace BimManagement.Commands.ModelAudit
         public string ParameterType { get; set; }
         public string Group { get; set; }
         public string Scope { get; set; }
+        public bool Required { get; set; } = false;
     }
 
     public class SpecialtyParameters

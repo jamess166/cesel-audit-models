@@ -9,238 +9,328 @@
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "CODIGO",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "ETAPA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "ESCALA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "JEFE DE PROYECTO CONSULTOR",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "PROFESION Y CAP (JEFE DE PROYECTO)",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "ESPECIALISTA(CONSULTOR)",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "PROFESION Y CAP (ESPECIALISTA)",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "JEFE DE PROYECTO SUPERVISOR",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "PROFESION Y CAP (JEFE DE PROYECTO SUP)",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "ESPECIALISTA(SUPERVISOR)",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "PROFESION Y CAP (ESPECIALISTA SUP)",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "VERSION",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "PLANO-NOTA-1",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "NOMENCLATURA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "TITULO DE PLANO 01",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "TITULO DE PLANO 02",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "GRUPO DE VISTAS 01",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "GRUPO DE VISTAS 02",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "ORG- TABLAS 1",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "ORG- TABLAS 2",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "TEXT",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "ORG- TABLAS 3",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "TEXT",
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "DOC-NOM-PARTIDA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "TIPO"
+          "scope": "TIPO",
+          "required": false
+        },
+        {
+          "name": "DOC-NOM-PARTIDA 2",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "TIPO",
+          "required": false
         },
         {
           "name": "DOC-N°-PARTIDA 1",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "TIPO"
+          "scope": "TIPO",
+          "required": false
         },
         {
           "name": "DOC-N°-PARTIDA 2",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "TIPO"
+          "scope": "TIPO",
+          "required": false
+        },
+        {
+          "name": "DOC-N°-PARTIDA 3",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "TIPO",
+          "required": false
+        },
+        {
+          "name": "DOC-N°-PARTIDA 4",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "TIPO",
+          "required": false
         },
         {
           "name": "DOC-NOM-PARTIDA-EJ",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "DOC-NOM-PARTIDA 2-EJ",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "DOC-N°-PARTIDA 1-EJ",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "DOC-N°-PARTIDA 2-EJ",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "DOC-N°-PARTIDA 3-EJ",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "DOC-N°-PARTIDA 4-EJ",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "CODIGO AMBIENTE",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "BLOQUE",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": true
         },
         {
           "name": "SECTOR",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": true
         },
         {
           "name": "NIVEL",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": true
         },
         {
           "name": "ID",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": true
         },
         {
           "name": "EJES",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "AMBIENTE",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         }
       ]
     },
@@ -253,35 +343,40 @@
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": true
         },
         {
           "name": "MATERIAL",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": true
         },
         {
           "name": "SISTEMA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": true
         },
         {
           "name": "POTENCIA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "CAUDAL",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         }
       ]
     },
@@ -294,56 +389,56 @@
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
-        },
-        {
-          "name": "CAR-TIPO ACCESORIO",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "CAR-TIPO CARPINTERIA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "CAR-TIPO CERRADURA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "CAR-TIPO BISAGRA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "CAR-TIPO PLATINA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "CAR-NUMERO HOJA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "CODIGO DE ACABADO",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         }
       ]
     },
@@ -356,49 +451,56 @@
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": true
         },
         {
           "name": "ESTRUCTURA TIPO",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": true
         },
         {
           "name": "PR ALTURA",
           "discipline": "COMUN",
           "parameterType": "LENGTH",
           "group": "DATA",
-          "scope": "TIPO"
+          "scope": "TIPO",
+          "required": false
         },
         {
           "name": "PR ANCHO",
           "discipline": "COMUN",
           "parameterType": "LENGTH",
           "group": "DATA",
-          "scope": "TIPO"
+          "scope": "TIPO",
+          "required": false
         },
         {
           "name": "PR LARGO",
           "discipline": "COMUN",
           "parameterType": "LENGTH",
           "group": "DATA",
-          "scope": "TIPO"
+          "scope": "TIPO",
+          "required": false
         },
         {
           "name": "PR PERIMETRO",
           "discipline": "COMUN",
           "parameterType": "LENGTH",
           "group": "DATA",
-          "scope": "TIPO"
+          "scope": "TIPO",
+          "required": false
         },
         {
           "name": "PR-AREA DE ENCOFRADO",
           "discipline": "COMUN",
           "parameterType": "AREA",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         }
       ]
     },
@@ -411,22 +513,25 @@
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR CISTERNA",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "ANGULO",
           "discipline": "COMUN",
           "parameterType": "ANGLE",
           "group": "DATA",
-          "scope": "EJEMPLAR"
-        }      
+          "scope": "EJEMPLAR",
+          "required": false
+        }
       ]
     },
     {
@@ -438,42 +543,48 @@
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-VENTILACION MECANICA",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-DIESEL",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-GLP",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-GAS NATURAL",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "MONTANTE",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         }
       ]
     },
@@ -486,49 +597,56 @@
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-ALUMBRADO",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-ALUMBRADO EXT",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-TOMACORRIENTES",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-FUERZA",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-SPAT",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "MONTANTE",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         }
       ]
     },
@@ -541,63 +659,72 @@
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-BMS",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-CCTV",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-DAI",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-SCA",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-SCD",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-SCE",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "INCLUIR-SPAT",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "MONTANTE",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         }
       ]
     },
@@ -610,147 +737,128 @@
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
-          "name": "ESTADO CONSTRUCCIÓN",
+          "name": "ESTADO CONSTRUCCION",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "FECHA CONSTRUIDA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "FECHA FIN",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "FECHA INICIO",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "SECTOR",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "NRO SEMANA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "SEMANA PROYECTO",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "NRO REVISION",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "PLANO EN REVISION",
           "discipline": "COMUN",
           "parameterType": "YES/NO",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "PLANO REPLANTEO",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "FECHA PROGRAMADA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
-        },
-        {
-          "name": "FECHA REPROGRAMADA",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "GENERAL",
-          "scope": "EJEMPLAR"
-        },
-        {
-          "name": "ESTATUS RESTRICCION",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "GENERAL",
-          "scope": "EJEMPLAR"
-        },
-        {
-          "name": "RESTRICCIONES",
-          "discipline": "COMUN",
-          "parameterType": "YES/NO",
-          "group": "GENERAL",
-          "scope": "EJEMPLAR"
-        },
-        {
-          "name": "SECTOR LIBERADO",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "GENERAL",
-          "scope": "EJEMPLAR"
-        },
-        {
-          "name": "TIPO LOSA",
-          "discipline": "COMUN",
-          "parameterType": "NUMERO",
-          "group": "GENERAL",
-          "scope": "EJEMPLAR"
-        },
-        {
-          "name": "VACIADO (V/H)",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "VALORIZADO",
           "discipline": "COMUN",
-          "parameterType": "YES/NO",
+          "parameterType": "SI/NO",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "NRO VALORIZACION",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
         },
         {
           "name": "WBS",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "GENERAL",
-          "scope": "EJEMPLAR"
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "MODIFICADO",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "GENERAL",
+          "scope": "EJEMPLAR",
+          "required": false
         }
       ]
     }

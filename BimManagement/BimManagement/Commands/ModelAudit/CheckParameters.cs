@@ -15,31 +15,58 @@ namespace BimManagement.Commands.ModelAudit
 {
     public class CheckParameters
     {
-        private readonly List<SpecialtyParameters> _config;
+        private static List<SpecialtyParameters> _config;
+
+        public static List<SpecialtyParameters> GetParametersConfig()
+        {
+            // Obtener la ruta del DLL
+            string dllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string dllDirectory = Path.GetDirectoryName(dllPath);
+
+            // Construir la ruta del archivo de configuración
+            string configPath = Path.Combine(dllDirectory, "Resources", "parameters-config.json");
+
+            if (!File.Exists(configPath))
+            {
+                throw new FileNotFoundException($"Archivo de configuración no encontrado en: {configPath}");
+            }
+
+            string configJson = File.ReadAllText(configPath);
+
+            // Cargar el JSON como un JObject
+            var jsonObject = JObject.Parse(configJson);
+
+            // Extraer la lista de parámetros de la clave "parameters"
+            _config = jsonObject["parameters"]?.ToObject<List<SpecialtyParameters>>()
+                       ?? throw new JsonException("Error al deserializar la lista de parámetros");
+
+            return _config;
+        }
 
         public CheckParameters()
         {
             try
             {
-                // Obtener la ruta del DLL
-                string dllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                string dllDirectory = Path.GetDirectoryName(dllPath);
-                // Construir la ruta del archivo de configuración
-                string configPath = Path.Combine(dllDirectory, "Resources", "parameters-config.json");
+                //// Obtener la ruta del DLL
+                //string dllPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                //string dllDirectory = Path.GetDirectoryName(dllPath);
+                //// Construir la ruta del archivo de configuración
+                //string configPath = Path.Combine(dllDirectory, "Resources", "parameters-config.json");
 
-                if (!File.Exists(configPath))
-                {
-                    throw new FileNotFoundException($"Archivo de configuración no encontrado en: {configPath}");
-                }
+                //if (!File.Exists(configPath))
+                //{
+                //    throw new FileNotFoundException($"Archivo de configuración no encontrado en: {configPath}");
+                //}
 
-                string configJson = File.ReadAllText(configPath);
+                //string configJson = File.ReadAllText(configPath);
 
-                // Cargar el JSON como un JObject
-                var jsonObject = JObject.Parse(configJson);
+                //// Cargar el JSON como un JObject
+                //var jsonObject = JObject.Parse(configJson);
 
-                // Extraer la lista de parámetros de la clave "parameters"
-                _config = jsonObject["parameters"]?.ToObject<List<SpecialtyParameters>>()
-                          ?? throw new JsonException("Error al deserializar la lista de parámetros");
+                //// Extraer la lista de parámetros de la clave "parameters"
+                //_config = jsonObject["parameters"]?.ToObject<List<SpecialtyParameters>>()
+                //          ?? throw new JsonException("Error al deserializar la lista de parámetros");
+                GetParametersConfig();
 
             }
             catch (Exception ex)
@@ -48,12 +75,8 @@ namespace BimManagement.Commands.ModelAudit
             }
         }
 
-        private string GetParameterType(Parameter parameter)
+        private string GetParameterType(ForgeTypeId dataType)
         {
-            if (parameter == null) return "DESCONOCIDO";
-
-            ForgeTypeId dataType = parameter.Definition.GetDataType();
-
             if (dataType == SpecTypeId.Boolean.YesNo)
                 return "SI/NO";
             if (dataType == SpecTypeId.String.Text)
@@ -69,7 +92,7 @@ namespace BimManagement.Commands.ModelAudit
             if (dataType == SpecTypeId.Int.Integer)
                 return "ENTERO";
             if (dataType == SpecTypeId.Angle)
-                return "ÁNGLE";
+                return "ÁNGULO";
 
             return dataType.ToString();
         }
@@ -90,9 +113,7 @@ namespace BimManagement.Commands.ModelAudit
 
         public List<ParameterDefinition> GetParameters()
         {
-            //HashSet<ParameterDefinition> uniqueParameters = new HashSet<ParameterDefinition>();
             HashSet<ParameterDefinition> uniqueParameters = new HashSet<ParameterDefinition>(new ParameterDefinitionComparer());
-
 
             // Obtener el BindingMap del documento
             BindingMap bindings = RevitTools.doc.ParameterBindings;
@@ -100,7 +121,7 @@ namespace BimManagement.Commands.ModelAudit
             // Crear un diccionario para almacenar el tipo de binding de cada parámetro
             Dictionary<string, string> parameterBindingTypes = new Dictionary<string, string>();
 
-            // Primero, recopilar todos los bindings
+            // Recopilar todos los bindings
             DefinitionBindingMapIterator it = bindings.ForwardIterator();
             while (it.MoveNext())
             {
@@ -110,43 +131,21 @@ namespace BimManagement.Commands.ModelAudit
                 if (d != null)
                 {
                     parameterBindingTypes[d.Name] = (b is InstanceBinding) ? "EJEMPLAR" : "TIPO";
-                }
-            }
 
-            FilteredElementCollector collector = new FilteredElementCollector(RevitTools.doc)
-                .WhereElementIsNotElementType() // Obtiene instancias
-                .UnionWith(new FilteredElementCollector(RevitTools.doc).WhereElementIsElementType());
-
-            foreach (Element element in collector)
-            {
-                ICollection<Parameter> parameters = element.GetOrderedParameters();
-                foreach (Parameter param in parameters)
-                {
-                    if (!param.IsShared) continue;                   
-
-                    if (param != null && param.Definition != null)
+                    var tempParamDef = new ParameterDefinition
                     {
-                        string scope = "TIPO"; // valor por defecto
-                        if (parameterBindingTypes.ContainsKey(param.Definition.Name))
-                        {
-                            scope = parameterBindingTypes[param.Definition.Name];
-                        }
+                        Name = d.Name,
+                        //ParameterType = d.GetDataType() != null ? GetParameterType(new ParameterProxy(d)) : "DESCONOCIDO",
+                        ParameterType = GetParameterType(d.GetDataType()),
+                        Group = GetParameterGroup(d.GetGroupTypeId()),
+                        Scope = parameterBindingTypes[d.Name]
+                    };
 
-                        var paramDefinition = new ParameterDefinition
-                        {
-                            Name = param.Definition.Name,
-                            ParameterType = GetParameterType(param),                            
-                            Group = GetParameterGroup(param.Definition.GetGroupTypeId()),
-                            Scope = scope
-                        };
-                        uniqueParameters.Add(paramDefinition);
-                    }
+                    uniqueParameters.Add(tempParamDef);
                 }
             }
-
             return uniqueParameters.ToList();
         }
-
 
         public ValidationResult ValidateParameters(Speciality specialty, bool isProyect = true)
         {
@@ -160,16 +159,7 @@ namespace BimManagement.Commands.ModelAudit
                 };
             }
 
-            List<ParameterDefinition> actualParameters = GetParameters();
-
-            //// Obtener los parámetros esperados (según especialidad + "TODOS")
-            //var matchingSpecialties = _config.Where(s =>
-            //    s.Specialty.Equals(specialty.ToString(), StringComparison.OrdinalIgnoreCase) ||
-            //    s.Specialty.Equals("TODOS", StringComparison.OrdinalIgnoreCase)).ToList();
-            // Obtener los parámetros esperados (según especialidad + "TODOS"), aplicando el prefijo en la comparación
-
-            // Obtener los parámetros esperados(según especialidad + "TODOS") y agregando el prefijo al nombre
-
+            List<ParameterDefinition> actualParameters = GetParameters();                        
             List<SpecialtyParameters> matchingSpecialties;
 
             if (isProyect)
@@ -210,9 +200,7 @@ namespace BimManagement.Commands.ModelAudit
                         Scope = p.Scope
                     }).ToList()
                 }).ToList();
-            }
-            
-
+            }           
 
             if (matchingSpecialties == null | !matchingSpecialties.Any())
             {
