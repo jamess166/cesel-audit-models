@@ -110,6 +110,7 @@
     <Compile Include="Commands\ModelAudit\CheckLevelNames.cs" />
     <Compile Include="Commands\ModelAudit\CheckModelNames.cs" />
     <Compile Include="Commands\ModelAudit\CheckParameters.cs" />
+    <Compile Include="Commands\ModelAudit\CheckParametersExtension.cs" />
     <Compile Include="Commands\ModelAudit\CheckSharedCoordinates.cs" />
     <Compile Include="Commands\ModelAudit\CheckVoidTitleBlocks.cs" />
     <Compile Include="Commands\ModelAudit\CheckWarnings.cs" />
@@ -208,6 +209,16 @@
 copy "$(TargetDir)BimManagement.dll" "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\BimManagement.dll"
 
 IF NOT EXIST "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\BimManagement.addin" (
-    copy "$(ProjectDir)BimManagement.addin" "$(ProgramData)\Autodesk\Revit\Addins\2024\")</PostBuildEvent>
+    copy "$(ProjectDir)BimManagement.addin" "$(ProgramData)\Autodesk\Revit\Addins\2024\"
+)
+
+REM Crear la carpeta Resources si no existe
+IF NOT EXIST "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources" (
+    mkdir "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources"
+)
+
+REM Copiar todos los archivos desde Commands\ModelAudit\Config al destino
+xcopy /Y /S /I /E /Q "$(ProjectDir)Commands\ModelAudit\Config\*" "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources\"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

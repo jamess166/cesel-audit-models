@@ -2,6 +2,7 @@
 using Autodesk.Revit.UI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -17,25 +18,35 @@ namespace BimManagement.Commands.ModelAudit
         {
             try
             {
-                // Crear y configurar el diálogo de selección de archivo
-                OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    Filter = "Archivos de Revit (*.rvt)|*.rvt",
-                    Title = "Seleccionar modelo de Arquitectura"
-                };
 
-                if (openFileDialog.ShowDialog() != DialogResult.OK)
+                // Obtener la ruta del modelo actual
+                string currentPath = RevitTools.doc.PathName;
+                string currentDirectory = Path.GetDirectoryName(currentPath);
+                string currentFileName = Path.GetFileNameWithoutExtension(currentPath);
+
+                string filePath = BuscarModeloArquitectura(currentPath);
+                
+                if (filePath == null)
                 {
-                    return new ValidationResult
+                    OpenFileDialog openFileDialog = new OpenFileDialog
                     {
-                        IsValid = false,
-                        IsRelevant = false,
-                        Message = "Operación cancelada por el usuario."
+                        Filter = "Archivos de Revit (*.rvt)|*.rvt",
+                        Title = "Seleccionar modelo de Arquitectura"
                     };
+
+                    if (openFileDialog.ShowDialog() != DialogResult.OK)
+                    {
+                        return new ValidationResult
+                        {
+                            IsValid = false,
+                            IsRelevant = false,
+                            Message = "Operación cancelada por el usuario."
+                        };
+                    }
+
+                    filePath = openFileDialog.FileName;
                 }
 
-                // Abrir el documento de arquitectura
-                string filePath = openFileDialog.FileName;
                 ModelPath modelPath = ModelPathUtils.ConvertUserVisiblePathToModelPath(filePath);
                 OpenOptions openOpt = new OpenOptions
                 {
@@ -61,27 +72,27 @@ namespace BimManagement.Commands.ModelAudit
                     var missingInArchModel = new List<string>();
 
                     // Comparar ejes del modelo actual con arquitectura
-                    foreach (var currentGrid in currentGrids)
-                    {
-                        var matchingGrid = archGrids.FirstOrDefault(g => g.Name == currentGrid.Name);
+                    //foreach (var currentGrid in currentGrids)
+                    //{
+                    //    var matchingGrid = archGrids.FirstOrDefault(g => g.Name == currentGrid.Name);
 
-                        if (matchingGrid == null)
-                        {
-                            missingInArchModel.Add(currentGrid.Name);
-                            continue;
-                        }
+                    //    if (matchingGrid == null)
+                    //    {
+                    //        missingInArchModel.Add(currentGrid.Name);
+                    //        continue;
+                    //    }
 
-                        Line currentLine = currentGrid.Curve as Line;
-                        Line archLine = matchingGrid.Curve as Line;
+                    //    Line currentLine = currentGrid.Curve as Line;
+                    //    Line archLine = matchingGrid.Curve as Line;
 
-                        if (currentLine == null || archLine == null)
-                            continue;
+                    //    if (currentLine == null || archLine == null)
+                    //        continue;
 
-                        if (!CompareGridLines(currentLine, archLine))
-                        {
-                            misalignedGrids.Add(currentGrid.Name);
-                        }
-                    }
+                    //    if (!CompareGridLines(currentLine, archLine))
+                    //    {
+                    //        misalignedGrids.Add(currentGrid.Name);
+                    //    }
+                    //}
 
                     // Verificar ejes que existen en arquitectura pero no en el modelo actual
                     foreach (var archGrid in archGrids)
@@ -105,10 +116,10 @@ namespace BimManagement.Commands.ModelAudit
 
                     var message = new System.Text.StringBuilder();
 
-                    if (misalignedGrids.Any())
-                    {
-                        message.AppendLine($"Ejes no alineados: {string.Join(", ", misalignedGrids)}");
-                    }
+                    //if (misalignedGrids.Any())
+                    //{
+                    //    message.AppendLine($"Ejes no alineados: {string.Join(", ", misalignedGrids)}");
+                    //}
 
                     if (missingInCurrentModel.Any())
                     {
@@ -138,6 +149,42 @@ namespace BimManagement.Commands.ModelAudit
                 };
             }
         }
+
+        private static string BuscarModeloArquitectura(string currentPath)
+        {
+            string currentDirectory = Path.GetDirectoryName(currentPath);
+            string currentFileName = Path.GetFileNameWithoutExtension(currentPath);
+
+            string[] parts = currentFileName.Split('-');
+            if (parts.Length < 8)
+                return null;
+
+            parts[6] = "ARQ"; // Reemplazar especialidad por ARQ
+            string targetFileName = string.Join("-", parts) + ".rvt";
+
+            // 1. Buscar en la misma carpeta
+            string directPath = Path.Combine(currentDirectory, targetFileName);
+            if (File.Exists(directPath))
+                return directPath;
+
+            // 2. Subir un nivel
+            string parentDir = Directory.GetParent(currentDirectory)?.FullName;
+            if (parentDir == null)
+                return null;
+
+            // 3. Buscar UNA carpeta con "ARQUITECTURA" en el nombre
+            string arquitecturaDir = Directory.GetDirectories(parentDir)
+                .FirstOrDefault(d =>
+                    Path.GetFileName(d).IndexOf("ARQUITECTURA", StringComparison.OrdinalIgnoreCase) >= 0);
+
+            if (arquitecturaDir == null)
+                return null;
+
+            // 4. Buscar el archivo en esa única carpeta
+            string possiblePath = Path.Combine(arquitecturaDir, targetFileName);
+            return File.Exists(possiblePath) ? possiblePath : null;
+        }
+
 
         private static bool CompareGridLines(Line line1, Line line2)
         {

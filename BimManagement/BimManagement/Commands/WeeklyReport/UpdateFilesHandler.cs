@@ -48,7 +48,7 @@ namespace BimManagement
                 current++;
                 UpdateProgress(current, total);
             }
-            
+
             Log($"✔ Se ha terminado la actualización");
         }
 
@@ -113,7 +113,7 @@ namespace BimManagement
         //        }
         //    }
         //}
-        
+
 
         private void ActualizarFiltrosTablas(Document doc, string valorPoCars)
         {
@@ -265,43 +265,151 @@ namespace BimManagement
         }
 
 
-        private void ActualizarFiltrosVisuales(Document doc, string semana)
-        {
-            var paramId = GetParamId(doc, "PO-SEMANAL");
-            if (paramId == ElementId.InvalidElementId) return;
+        //private void ActualizarFiltrosVisuales(Document doc, string semana)
+        //{
+        //    var paramId = GetParamId(doc, "PO-SEMANAL");
+        //    if (paramId == ElementId.InvalidElementId) return;
 
+        //    var filtersToUpdate = new List<(string FilterName, FilterRule rule)>
+        //    {
+        //        ("PO-EJECUTADO ACTUAL", ParameterFilterRuleFactory.CreateGreaterOrEqualRule(paramId, semana, true)),
+        //        ("PO-EJECUTADO ACUMULADO PREVIO", ParameterFilterRuleFactory.CreateLessRule(paramId, semana, true))
+        //    };
+
+        //    foreach (var (filterName, rule) in filtersToUpdate)
+        //    {
+        //        var filter = new FilteredElementCollector(doc)
+        //            .OfClass(typeof(ParameterFilterElement))
+        //            .Cast<ParameterFilterElement>()
+        //            .FirstOrDefault(f => f.Name == filterName);
+
+        //        if (filter != null)
+        //            filter.SetElementFilter(new ElementParameterFilter(rule));
+        //    }
+        //}
+        private void ActualizarFiltrosVisuales(Document doc, string valorPoCars)
+        {
+            // Primero intentar obtener el parámetro PO-CARS
+            var poCardsId = GetParamId(doc, "PO-CARS");
+            if (poCardsId == ElementId.InvalidElementId)
+            {
+                System.Diagnostics.Debug.WriteLine("No se encontró el parámetro PO-CARS");
+                return;
+            }
+
+            // Lista de filtros que necesitan ser actualizados
             var filtersToUpdate = new List<(string FilterName, FilterRule rule)>
             {
-                ("PO-EJECUTADO ACTUAL", ParameterFilterRuleFactory.CreateGreaterOrEqualRule(paramId, semana, true)),
-                ("PO-EJECUTADO ACUMULADO PREVIO", ParameterFilterRuleFactory.CreateLessRule(paramId, semana, true))
+                ("PO-EJECUTADO ACTUAL", ParameterFilterRuleFactory.CreateGreaterOrEqualRule(poCardsId, valorPoCars, true)),
+                ("PO-EJECUTADO ACUMULADO PREVIO", ParameterFilterRuleFactory.CreateLessRule(poCardsId, valorPoCars, true))
             };
 
-            foreach (var (filterName, rule) in filtersToUpdate)
-            {
-                var filter = new FilteredElementCollector(doc)
-                    .OfClass(typeof(ParameterFilterElement))
-                    .Cast<ParameterFilterElement>()
-                    .FirstOrDefault(f => f.Name == filterName);
+            // Obtener todos los filtros de parámetros
+            var allFilters = new FilteredElementCollector(doc)
+                .OfClass(typeof(ParameterFilterElement))
+                .Cast<ParameterFilterElement>()
+                .ToList();
 
+            foreach (var (filterName, newRule) in filtersToUpdate)
+            {
+                var filter = allFilters.FirstOrDefault(f => f.Name == filterName);
                 if (filter != null)
-                    filter.SetElementFilter(new ElementParameterFilter(rule));
+                {
+                    // Verificar si el filtro actual usa PO-SEMANAL o PO-SEMANA PROYECTO
+                    var currentFilter = filter.GetElementFilter();
+                    bool needsUpdate = false;
+
+                    // Verificar si es un ElementParameterFilter
+                    if (currentFilter is ElementParameterFilter epf)
+                    {
+                        // Obtener las reglas del filtro actual
+                        var rules = epf.GetRules();
+                        foreach (var rule in rules)
+                        {
+                            if (rule is FilterRule fr)
+                            {
+                                // Verificar si la regla usa uno de los parámetros antiguos
+                                var oldPoSemanalId = GetParamId(doc, "PO-SEMANAL");
+                                var oldPoSemanaProyectoId = GetParamId(doc, "PO-SEMANA PROYECTO");
+
+                                if (fr.GetRuleParameter() == oldPoSemanalId ||
+                                    fr.GetRuleParameter() == oldPoSemanaProyectoId)
+                                {
+                                    needsUpdate = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    // Si el filtro usa parámetros antiguos o si queremos forzar la actualización
+                    if (needsUpdate || currentFilter == null)
+                    {
+                        try
+                        {
+                            filter.SetElementFilter(new ElementParameterFilter(newRule));
+                            System.Diagnostics.Debug.WriteLine($"Filtro '{filterName}' actualizado a usar PO-CARS");
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error al actualizar filtro '{filterName}': {ex.Message}");
+                        }
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"No se encontró el filtro: {filterName}");
+                }
             }
         }
 
+
+        // Método auxiliar para obtener el ID del parámetro
         private ElementId GetParamId(Document doc, string paramName)
         {
-            var paramElements = new FilteredElementCollector(doc)
+            // Buscar en parámetros del proyecto
+            var projectParams = new FilteredElementCollector(doc)
                 .OfClass(typeof(ParameterElement))
                 .Cast<ParameterElement>();
 
-            foreach (var param in paramElements)
+            foreach (var param in projectParams)
             {
                 if (param.Name == paramName)
+                {
                     return param.Id;
+                }
+            }
+
+            // Si no se encuentra como parámetro del proyecto, buscar en parámetros compartidos
+            var sharedParams = new FilteredElementCollector(doc)
+                .OfClass(typeof(SharedParameterElement))
+                .Cast<SharedParameterElement>();
+
+            foreach (var param in sharedParams)
+            {
+                if (param.Name == paramName)
+                {
+                    return param.Id;
+                }
             }
 
             return ElementId.InvalidElementId;
         }
+
+        //private ElementId GetParamId(Document doc, string paramName)
+        //{
+        //    var paramElements = new FilteredElementCollector(doc)
+        //        .OfClass(typeof(ParameterElement))
+        //        .Cast<ParameterElement>();
+
+        //    foreach (var param in paramElements)
+        //    {
+        //        if (param.Name == paramName)
+        //            return param.Id;
+        //    }
+
+        //    return ElementId.InvalidElementId;
+        //}
 
         private void Log(string message)
         {

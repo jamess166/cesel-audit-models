@@ -1,170 +1,113 @@
 {
   "viewOrganization": {
     "ARQUITECTURA": {
-      "gruposVista01": [
-        {
-          "nombre": "I. DISEÑO",
-          "gruposVista02": [
-            "0. NIVELES",
-            "1. VISTAS P2D",
-            "2. VISTAS M3D"
-          ]
-        },
-        {
-          "nombre": "II. DOCUMENTACION",
-          "gruposVista02": [
-            "1. UBICACION",
-            "2. PLANTAS GENERALES",
-            "3. CORTES GENERALES",
-            "4. ELEVACIONES GENERALES",
-            "5. PLANTAS DISTRIBUCION",
-            "6. CORTES",
-            "7. ELEVACIONES",
-            "8. ACABADOS",
-            "9. FCR",
-            "10. BAÑOS",
-            "11. CARPINTERIA",
-            "12. ESCALERAS",
-            "13. PISOS",
-            "14. MOBILIARIO FIJO",
-            "15. DET. CONSTRUCTIVOS",
-            "16. SEC. CONSTRUCTIVAS",
-            "17. FACHADA",
-            "18. VARIOS",
-            "19. SEÑALETICA"
-          ]
-        }
+      "diseño": [
+        "0. NIVELES",
+        "1. VISTAS P2D",
+        "2. VISTAS M3D"
+      ],
+      "documentacion": [
+        "1. UBICACION",
+        "2. PLANTAS GENERALES",
+        "3. CORTES GENERALES",
+        "4. ELEVACIONES GENERALES",
+        "5. PLANTAS DISTRIBUCION",
+        "6. CORTES",
+        "7. ELEVACIONES",
+        "8. ACABADOS",
+        "9. FCR",
+        "10. BAÑOS",
+        "11. CARPINTERIA",
+        "12. ESCALERAS",
+        "13. PISOS",
+        "14. MOBILIARIO FIJO",
+        "15. DET. CONSTRUCTIVOS",
+        "16. SEC. CONSTRUCTIVAS",
+        "17. FACHADA",
+        "18. VARIOS",
+        "19. SEÑALETICA"
+      ]
+    },
+    "ESTRUCTURAS": {
+      "diseño": [
+        "0. NIVELES",
+        "1. VISTAS P2D",
+        "2. VISTAS M3D"
+      ],
+      "documentacion": [
+        "1. ETT",
+        "2. CIMENTACION",
+        "3. ENCOFRADO",
+        "4. DESARROLLO DE VIGAS",
+        "5. TABIQUERIA",
+        "6. ESCALERA",
+        "7. MUROS ANCLADOS",
+        "8. COBERTURA METALICA",
+        "9. PAVIMENTOS"
+      ]
+    },
+    "SEGURIDAD": {
+      "diseño": [
+        "0. NIVELES",
+        "1. VISTAS P2D",
+        "2. VISTAS M3D"
+      ],
+      "documentacion": [
+        "1. EVACUACION",
+        "2. SEÑALIZACION"
+      ]
+    },
+    "SANITARIAS": {
+      "diseño": [
+        "0. NIVELES",
+        "1. VISTAS P2D",
+        "2. VISTAS M3D"
+      ],
+      "documentacion": [
+        "1. VISTAS P2D",
+        "2. PLANOS CLAVE"
+      ]
+    },
+    "MECANICAS": {
+      "diseño": [
+        "0. NIVELES",
+        "1. VISTAS P2D",
+        "2. VISTAS M3D"
+      ],
+      "documentacion": [
+        "1. VISTAS P2D",
+        "2. PLANOS CLAVE"
+      ]
+    },
+    "ELECTRICAS": {
+      "diseño": [
+        "0. NIVELES",
+        "1. VISTAS P2D",
+        "2. VISTAS M3D"
+      ],
+      "documentacion": [
+        "1. ALIMENTADORES",
+        "2. TOMACORRIENTES",
+        "3. ALUMBRADO",
+        "4. FUERZA HVAC",
+        "5. PUESTA A TIERRA",
+        "6. ESQUEMAS"
+      ]
+    },
+    "COMUNICACIONES": {
+      "diseño": [
+        "0. NIVELES",
+        "1. VISTAS P2D",
+        "2. VISTAS M3D"
+      ],
+      "documentacion": [
+        "1. SCE",
+        "2. DAI",
+        "3. CTV",
+        "4. BMS",
+        "5. SCD",
+        "6. ICA"
       ]
     }
-  },
-  "ESTRUCTURAS": {
-    "gruposVista01": [
-      {
-        "nombre": "I. DISEÑO",
-        "gruposVista02": [
-          "0. NIVELES",
-          "1. VISTAS P2D",
-          "2. VISTAS M3D"
-        ]
-      },
-      {
-        "nombre": "II. DOCUMENTACION",
-        "gruposVista02": [
-          "1. ETT",
-          "2. CIMENTACION",
-          "3. ENCOFRADO",
-          "4. DESARROLLO DE VIGAS",
-          "5. TABIQUERIA",
-          "6. ESCALERA",
-          "7. MUROS ANCLADOS",
-          "8. COBERTURA METALICA",
-          "9. PAVIMENTOS"
-        ]
-      }
-    ]
-  },
-  "SEGURIDAD": {
-    "gruposVista01": [
-      {
-        "nombre": "I. DISEÑO",
-        "gruposVista02": [
-          "0. NIVELES",
-          "1. VISTAS P2D",
-          "2. VISTAS M3D"
-        ]
-      },
-      {
-        "nombre": "II. DOCUMENTACION",
-        "gruposVista02": [
-          "1. EVACUACION",
-          "2. SEÑALIZACION"
-        ]
-      }
-    ]
-  },
-  "SANITARIAS": {
-    "gruposVista01": [
-      {
-        "nombre": "I. DISEÑO",
-        "gruposVista02": [
-          "0. NIVELES",
-          "1. VISTAS P2D",
-          "2. VISTAS M3D"
-        ]
-      },
-      {
-        "nombre": "II. DOCUMENTACION",
-        "gruposVista02": [
-          "1. VISTAS P2D",
-          "2. PLANOS CLAVE"
-        ]
-      }
-    ]
-  },
-  "MECANICAS": {
-    "gruposVista01": [
-      {
-        "nombre": "I. DISEÑO",
-        "gruposVista02": [
-          "0. NIVELES",
-          "1. VISTAS P2D",
-          "2. VISTAS M3D"
-        ]
-      },
-      {
-        "nombre": "II. DOCUMENTACION",
-        "gruposVista02": [
-          "1. VISTAS P2D",
-          "2. PLANOS CLAVE"
-        ]
-      }
-    ]
-  },
-  "ELECTRICAS": {
-    "gruposVista01": [
-      {
-        "nombre": "I. DISEÑO",
-        "gruposVista02": [
-          "0. NIVELES",
-          "1. VISTAS P2D",
-          "2. VISTAS M3D"
-        ]
-      },
-      {
-        "nombre": "II. DOCUMENTACION",
-        "gruposVista02": [
-          "1. ALIMENTADORES",
-          "2. TOMACORRIENTES",
-          "3. ALUMBRADO",
-          "4. FUERZA HVAC",
-          "5. PUESTA A TIERRA",
-          "6. ESQUEMAS"
-        ]
-      }
-    ]
-  },
-  "COMUNICACIONES": {
-    "gruposVista01": [
-      {
-        "nombre": "I. DISEÑO",
-        "gruposVista02": [
-          "0. NIVELES",
-          "1. VISTAS P2D",
-          "2. VISTAS M3D"
-        ]
-      },
-      {
-        "nombre": "II. DOCUMENTACION",
-        "gruposVista02": [
-          "1. SCE",
-          "2. DAI",
-          "3. CTV",
-          "4. BMS",
-          "5. SCD",
-          "6. ICA"
-        ]
-      }
-    ]
   }
-
 }
