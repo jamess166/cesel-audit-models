@@ -143,11 +143,6 @@ namespace BimManagement.Commands.ModelAudit
             }
         }
 
-        internal ValidationResult ValidateRequiredParameters(Speciality specialty)
-        {
-            throw new NotImplementedException();
-        }
-
         private bool EsDWG(Document doc, ImportInstance instance)
         {
             try

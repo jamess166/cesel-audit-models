@@ -67,7 +67,7 @@ namespace BimManagement
                 Text = "Auditar\nModelo",
                 AssemblyName = Assembly.GetExecutingAssembly().Location,
                 ClassName = "BimManagement.ModelAuditCommand",
-                ShortDescription = "Realiza la auditoria del modelo",
+                ShortDescription = "Realiza la auditoria del modelo V1",
                 LongDescription = "Utilizando el formato de auditoria de Modelo, se valida o no el cumplimiento de los " +
                 "items a revisar segun el plan de ejecución BIM",
 

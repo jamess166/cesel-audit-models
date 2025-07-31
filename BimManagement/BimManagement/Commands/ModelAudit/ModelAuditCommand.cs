@@ -97,7 +97,7 @@ namespace BimManagement
             result_2b = validatorLevelName.ValidateLevelNaming();
 
             //Validación 2c ----------------------------------------------------------------------------------
-            if (specialty != Speciality.ARQUITECTURA)
+            if (specialty != Speciality.ARQUITECTURA && specialty != Speciality.EQUIPAMIENTO)
             {
                 result_2c = CheckGridsWidhArchitecture.CompareGridsLocation();
             }
@@ -131,7 +131,7 @@ namespace BimManagement
             result_5a = checkDWGInModel.ValidateNoLinkedDWGs(RevitTools.doc);
 
             //validacion 5b
-            var CheckParametersExtension = new CheckDWGInModelAndFamily();
+            var CheckParametersExtension = new CheckParametersExtension();
             result_5b = CheckParametersExtension.ValidateRequiredParameters(specialty);
 
             //validacion 6a
@@ -217,7 +217,7 @@ namespace BimManagement
                 excelResultHandler.SetResultInCell(result_5b, worksheet, "E29", "F29");
 
                 //Item 6a
-                excelResultHandler.SetResultInCell(result_6a, worksheet, "E31", "F31");
+                //excelResultHandler.SetResultInCell(result_6a, worksheet, "E31", "F31");
 
                 //Item 8a
                 excelResultHandler.SetResultInCell(result_8a, worksheet, "E36", "F36");
@@ -245,27 +245,43 @@ namespace BimManagement
             { "DRE", Speciality.SANITARIAS }, 
             { "IMM", Speciality.MECANICAS },
             { "COM", Speciality.COMUNICACIONES },
-            { "EQP", Speciality.ARQUITECTURA },
-            { "SSA", Speciality.ARQUITECTURA },
             { "EQP", Speciality.EQUIPAMIENTO },
+            { "SSA", Speciality.ARQUITECTURA },
         };
 
         public static Speciality DetectSpecialty(string fileName)
         {
-            // Convertir el nombre del archivo a mayúsculas para hacer la comparación insensible a mayúsculas/minúsculas
-            string upperFileName = fileName.ToUpper();
+            // Convertir a mayúsculas y separar por guiones
+            string[] segments = fileName.ToUpper().Split('-');
 
-            // Buscar si alguna de las palabras clave está presente en el nombre del archivo
-            foreach (var keyword in specialtyKeywords)
+            foreach (string segment in segments)
             {
-                if (upperFileName.Contains(keyword.Key))
+                if (specialtyKeywords.TryGetValue(segment, out Speciality detected))
                 {
-                    return keyword.Value;
+                    return detected;
                 }
             }
 
+            // Si no se encuentra, puedes retornar una especialidad por defecto
             return Speciality.ARQUITECTURA;
         }
+        
+        // public static Speciality DetectSpecialty(string fileName)
+        // {
+        //     // Convertir el nombre del archivo a mayúsculas para hacer la comparación insensible a mayúsculas/minúsculas
+        //     string upperFileName = fileName.ToUpper();
+        //
+        //     // Buscar si alguna de las palabras clave está presente en el nombre del archivo
+        //     foreach (var keyword in specialtyKeywords)
+        //     {
+        //         if (upperFileName.Contains(keyword.Key))
+        //         {
+        //             return keyword.Value;
+        //         }
+        //     }
+        //
+        //     return Speciality.ARQUITECTURA;
+        // }
           
         public void CopyTemplateXLS(string modelPath, string modelDirectory, string modelName, string destinationExcelPath)
         {
