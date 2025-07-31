@@ -108,6 +108,16 @@
         "5. SCD",
         "6. ICA"
       ]
+    },
+    "EQUIPAMIENTO": {
+      "diseño": [
+        "0. NIVELES",
+        "1. VISTAS P2D",
+        "2. VISTAS M3D"
+      ],
+      "documentacion": [
+        "1. PUBLICADOS"
+      ]
     }
   }
 }

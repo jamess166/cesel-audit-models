@@ -1,4 +1,5 @@
 ﻿using Autodesk.Revit.DB;
+using BimManagement.Commands.ModelAudit.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -140,6 +141,11 @@ namespace BimManagement.Commands.ModelAudit
                     Message = $"Error al analizar DWGs: {ex.Message}"
                 };
             }
+        }
+
+        internal ValidationResult ValidateRequiredParameters(Speciality specialty)
+        {
+            throw new NotImplementedException();
         }
 
         private bool EsDWG(Document doc, ImportInstance instance)

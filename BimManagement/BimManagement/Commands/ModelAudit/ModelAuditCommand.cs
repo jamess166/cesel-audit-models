@@ -75,82 +75,83 @@ namespace BimManagement
             CopyTemplateXLS(modelPath, modelDirectory, modelName, destinationExcelPath);
 
             //Data general
-            string deliverable = "Entregable 07";
+            string deliverable = "Entregable 13";
             DateTime dateAudit = DateTime.Now;
             //Speciality especialidad = Speciality.ARQUITECTURA;
             Speciality specialty = DetectSpecialty(modelName);
 
+
+            //Validación 1a ----------------------------------------------------------------------------------
+            var validatorModelName = new CheckModelNames();
+            result_1a = validatorModelName.ValidateModelName(modelName);
+
+            //Validación 1b ----------------------------------------------------------------------------------
+            result_1b = CkeckFileSize.ValidateFileSize(modelPath);
+
+            //Validación 1d
+            var checkIsInModelList = new CheckIsInModelList();
+            result_1d = checkIsInModelList.ValidateFileNameInExcel(modelName);
+
+            //Validación 2b ----------------------------------------------------------------------------------
+            var validatorLevelName = new CheckLevelNames();
+            result_2b = validatorLevelName.ValidateLevelNaming();
+
+            //Validación 2c ----------------------------------------------------------------------------------
+            if (specialty != Speciality.ARQUITECTURA)
+            {
+                result_2c = CheckGridsWidhArchitecture.CompareGridsLocation();
+            }
+
+            //Validación 2d ----------------------------------------------------------------------------------
+            var validatorCoordinates = new CheckSharedCoordinates();
+            result_2d = validatorCoordinates.ValidateCoordinates();
+
+            //Validacion 2e
+            var validatorViewOrganization = new CheckViewOrganization();
+            result_2e = validatorViewOrganization.ValidateViews(specialty);
+
+            //validacion 2g
+            var geometryValidator = new GeometryValidator();
+            result_2g = geometryValidator.ValidateGeometryDistance();
+
+            //validacion 3a
+            var familyNameValidator = new FamilyNameValidator();
+            result_3a = familyNameValidator.ValidateFamilies(RevitTools.doc);
+
+            //validacion 3c
+            var checkInPlaceFamily = new CheckInPlaceFamily();
+            result_3c = checkInPlaceFamily.ValidateModelInPlaceElements(RevitTools.doc);
+
+            //validacion 4a
+            var checkParameters = new CheckParameters();
+            result_4a = checkParameters.ValidateParameters(specialty);
+
+            //validacion 5a
+            var checkDWGInModel = new CheckDWGInModelAndFamily();
+            result_5a = checkDWGInModel.ValidateNoLinkedDWGs(RevitTools.doc);
+
             //validacion 5b
-            var checkDWGInModel = new CheckParametersExtension();
-            result_5b = checkDWGInModel.ValidateRequiredParameters(specialty);
+            var CheckParametersExtension = new CheckDWGInModelAndFamily();
+            result_5b = CheckParametersExtension.ValidateRequiredParameters(specialty);
 
-            ////Validación 1a ----------------------------------------------------------------------------------
-            //var validatorModelName = new CheckModelNames();
-            //result_1a = validatorModelName.ValidateModelName(modelName);
+            //validacion 6a
+            var checkWarnings = new CheckWarnings();
+            //result_6a = checkWarnings.ValidateWarnings(RevitTools.doc);
 
-            ////Validación 1b ----------------------------------------------------------------------------------
-            //result_1b = CkeckFileSize.ValidateFileSize(modelPath);
+            //validacion 8a
+            var checkActiveWorkset = new CheckActiveWorkset();
+            result_8a = checkActiveWorkset.ValidateActiveWorksets(RevitTools.doc);
 
-            ////Validación 1d
-            //var checkIsInModelList = new CheckIsInModelList();
-            //result_1d = checkIsInModelList.ValidateFileNameInExcel(modelName);
+            //validacion 8c
+            var checkVoidTitleBlocks = new CheckVoidTitleBlocks();
+            result_8c = checkVoidTitleBlocks.ValidateTitleBlocksContainViews(RevitTools.doc);
 
-            ////Validación 2b ----------------------------------------------------------------------------------
-            //var validatorLevelName = new CheckLevelNames();
-            //result_2b = validatorLevelName.ValidateLevelNaming();
+            //validacion 8d
+            var checkHaveValueGroupView = new CheckHaveValueGroupView();
+            result_8d = checkHaveValueGroupView.ValidateViewGroupParameters(RevitTools.doc);
 
-            ////Validación 2c ----------------------------------------------------------------------------------
-            //if (specialty != Speciality.ARQUITECTURA)
-            //{
-            //    result_2c = CheckGridsWidhArchitecture.CompareGridsLocation();
-            //}
-
-            ////Validación 2d ----------------------------------------------------------------------------------
-            //var validatorCoordinates = new CheckSharedCoordinates();
-            //result_2d = validatorCoordinates.ValidateCoordinates();
-
-            ////Validacion 2e
-            //var validatorViewOrganization = new CheckViewOrganization();
-            //result_2e = validatorViewOrganization.ValidateViews(specialty);
-
-            ////validacion 2g
-            //var geometryValidator = new GeometryValidator();
-            //result_2g = geometryValidator.ValidateGeometryDistance();
-
-            ////validacion 3a
-            //var familyNameValidator = new FamilyNameValidator();
-            //result_3a = familyNameValidator.ValidateFamilies(RevitTools.doc);
-
-            ////validacion 3c
-            //var checkInPlaceFamily = new CheckInPlaceFamily();
-            //result_3c = checkInPlaceFamily.ValidateModelInPlaceElements(RevitTools.doc);
-
-            ////validacion 4a
-            //var checkParameters = new CheckParameters();
-            //result_4a = checkParameters.ValidateParameters(specialty);
-
-            ////validacion 5a
-            //var checkDWGInModel = new CheckDWGInModelAndFamily();
-            //result_5a = checkDWGInModel.ValidateNoLinkedDWGs(RevitTools.doc);
-
-            ////validacion 6a
-            //var checkWarnings = new CheckWarnings();
-            ////result_6a = checkWarnings.ValidateWarnings(RevitTools.doc);
-
-            ////validacion 8a
-            //var checkActiveWorkset = new CheckActiveWorkset();
-            //result_8a = checkActiveWorkset.ValidateActiveWorksets(RevitTools.doc);
-
-            ////validacion 8c
-            //var checkVoidTitleBlocks = new CheckVoidTitleBlocks();
-            //result_8c = checkVoidTitleBlocks.ValidateTitleBlocksContainViews(RevitTools.doc);
-
-            ////validacion 8d
-            //var checkHaveValueGroupView = new CheckHaveValueGroupView();
-            //result_8d = checkHaveValueGroupView.ValidateViewGroupParameters(RevitTools.doc);
-
-            ////Set adata Excel
-            //SetDataExcel(destinationExcelPath, deliverable, dateAudit, modelName, specialty);
+            //Set adata Excel
+            SetDataExcel(destinationExcelPath, deliverable, dateAudit, modelName, specialty);
 
             TaskDialog.Show("CESEL", "Se ha terminado la revisión");
 
@@ -212,6 +213,9 @@ namespace BimManagement
                 //Item 5a
                 excelResultHandler.SetResultInCell(result_5a, worksheet, "E28", "F28");
 
+                //Item 5b
+                excelResultHandler.SetResultInCell(result_5b, worksheet, "E29", "F29");
+
                 //Item 6a
                 excelResultHandler.SetResultInCell(result_6a, worksheet, "E31", "F31");
 
@@ -243,6 +247,7 @@ namespace BimManagement
             { "COM", Speciality.COMUNICACIONES },
             { "EQP", Speciality.ARQUITECTURA },
             { "SSA", Speciality.ARQUITECTURA },
+            { "EQP", Speciality.EQUIPAMIENTO },
         };
 
         public static Speciality DetectSpecialty(string fileName)

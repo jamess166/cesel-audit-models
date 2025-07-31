@@ -861,6 +861,68 @@
           "required": false
         }
       ]
+    },
+    {
+      "specialty": "ARQUITECTURA",
+      "prefix": "AR-",
+      "parameters": [
+        {
+          "name": "TABIQUERIA TIPO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CAR-TIPO CARPINTERIA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CAR-TIPO CERRADURA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CAR-TIPO BISAGRA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CAR-TIPO PLATINA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CAR-NUMERO HOJA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CODIGO DE ACABADO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        }
+      ]
     }
   ]
 }

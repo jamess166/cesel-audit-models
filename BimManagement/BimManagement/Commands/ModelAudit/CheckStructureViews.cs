@@ -21,6 +21,7 @@ namespace BimManagement.Commands.ModelAudit.Config
         MECANICAS,
         ELECTRICAS,
         COMUNICACIONES,
+        EQUIPAMIENTO,
     }
 
     public class EspecialidadConfig
