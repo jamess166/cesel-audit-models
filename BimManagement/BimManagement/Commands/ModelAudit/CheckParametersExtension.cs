@@ -141,7 +141,7 @@ namespace BimManagement.Commands.ModelAudit
             }
             else
             {
-                messageBuilder.AppendLine("Todos los parámetros requeridos tienen valores asignados.");
+                //messageBuilder.AppendLine("Todos los parámetros requeridos tienen valores asignados.");
             }
 
             return new ValidationResult
@@ -258,7 +258,25 @@ namespace BimManagement.Commands.ModelAudit
                        
                     // Elementos genéricos MEP
                     new ElementCategoryFilter(BuiltInCategory.OST_GenericModel),
-                    new ElementCategoryFilter(BuiltInCategory.OST_SpecialityEquipment),            
+                    new ElementCategoryFilter(BuiltInCategory.OST_SpecialityEquipment),
+                }));
+
+                case Speciality.EQUIPAMIENTO:
+                    return collector.WherePasses(new LogicalOrFilter(new List<ElementFilter>
+            {
+                new ElementCategoryFilter(BuiltInCategory.OST_Walls),
+                new ElementCategoryFilter(BuiltInCategory.OST_Floors),
+                new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming),
+                new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns),
+                new ElementCategoryFilter(BuiltInCategory.OST_Doors),
+                new ElementCategoryFilter(BuiltInCategory.OST_Windows),
+                new ElementCategoryFilter(BuiltInCategory.OST_SpecialityEquipment),
+                new ElementCategoryFilter(BuiltInCategory.OST_Furniture),
+                new ElementCategoryFilter(BuiltInCategory.OST_MedicalEquipment),
+                new ElementCategoryFilter(BuiltInCategory.OST_FoodServiceEquipment),
+                new ElementCategoryFilter(BuiltInCategory.OST_ElectricalEquipment),
+                new ElementCategoryFilter(BuiltInCategory.OST_MechanicalEquipment),
+                new ElementCategoryFilter(BuiltInCategory.OST_ZoneEquipment),
             }));
 
                 default:
@@ -269,7 +287,7 @@ namespace BimManagement.Commands.ModelAudit
                 new ElementCategoryFilter(BuiltInCategory.OST_StructuralFraming),
                 new ElementCategoryFilter(BuiltInCategory.OST_StructuralColumns),
                 new ElementCategoryFilter(BuiltInCategory.OST_Doors),
-                new ElementCategoryFilter(BuiltInCategory.OST_Windows)
+                new ElementCategoryFilter(BuiltInCategory.OST_Windows),
             }));
             }
         }

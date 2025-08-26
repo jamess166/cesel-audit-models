@@ -50,6 +50,8 @@ namespace BimManagement
             }
 
             Log($"✔ Se ha terminado la actualización");
+
+            AmorParaSheyla.MostrarMensaje();
         }
 
         public string GetName() => "Actualizar archivos Revit";
@@ -90,30 +92,6 @@ namespace BimManagement
                 }
             }
         }
-
-        //private void ActualizarFiltrosTablas(Document doc, string semana)
-        //{
-        //    var schedules = new FilteredElementCollector(doc)
-        //        .OfClass(typeof(ViewSchedule))
-        //        .Cast<ViewSchedule>();
-
-        //    foreach (var sched in schedules)
-        //    {
-        //        var def = sched.Definition;
-        //        for (int i = 0; i < def.GetFilterCount(); i++)
-        //        {
-        //            var filtro = def.GetFilter(i);
-        //            var field = def.GetField(filtro.FieldId);
-
-        //            if (field?.GetName() == "PO-SEMANAL")
-        //            {
-        //                var nuevoFiltro = new ScheduleFilter(filtro.FieldId, filtro.FilterType, semana);
-        //                def.SetFilter(i, nuevoFiltro);
-        //            }
-        //        }
-        //    }
-        //}
-
 
         private void ActualizarFiltrosTablas(Document doc, string valorPoCars)
         {
@@ -264,29 +242,6 @@ namespace BimManagement
             return null;
         }
 
-
-        //private void ActualizarFiltrosVisuales(Document doc, string semana)
-        //{
-        //    var paramId = GetParamId(doc, "PO-SEMANAL");
-        //    if (paramId == ElementId.InvalidElementId) return;
-
-        //    var filtersToUpdate = new List<(string FilterName, FilterRule rule)>
-        //    {
-        //        ("PO-EJECUTADO ACTUAL", ParameterFilterRuleFactory.CreateGreaterOrEqualRule(paramId, semana, true)),
-        //        ("PO-EJECUTADO ACUMULADO PREVIO", ParameterFilterRuleFactory.CreateLessRule(paramId, semana, true))
-        //    };
-
-        //    foreach (var (filterName, rule) in filtersToUpdate)
-        //    {
-        //        var filter = new FilteredElementCollector(doc)
-        //            .OfClass(typeof(ParameterFilterElement))
-        //            .Cast<ParameterFilterElement>()
-        //            .FirstOrDefault(f => f.Name == filterName);
-
-        //        if (filter != null)
-        //            filter.SetElementFilter(new ElementParameterFilter(rule));
-        //    }
-        //}
         private void ActualizarFiltrosVisuales(Document doc, string valorPoCars)
         {
             // Primero intentar obtener el parámetro PO-CARS
@@ -313,56 +268,59 @@ namespace BimManagement
             foreach (var (filterName, newRule) in filtersToUpdate)
             {
                 var filter = allFilters.FirstOrDefault(f => f.Name == filterName);
-                if (filter != null)
+                if (filter == null)
                 {
-                    // Verificar si el filtro actual usa PO-SEMANAL o PO-SEMANA PROYECTO
-                    var currentFilter = filter.GetElementFilter();
-                    bool needsUpdate = false;
+                    System.Diagnostics.Debug.WriteLine($"No se encontró el filtro: {filterName}");
+                    continue;
+                }
 
-                    // Verificar si es un ElementParameterFilter
-                    if (currentFilter is ElementParameterFilter epf)
+                var currentFilter = filter.GetElementFilter();
+                bool needsUpdate = false;
+
+                if (currentFilter is ElementParameterFilter epf)
+                {
+                    var rules = epf.GetRules();
+                    foreach (var rule in rules)
                     {
-                        // Obtener las reglas del filtro actual
-                        var rules = epf.GetRules();
-                        foreach (var rule in rules)
-                        {
-                            if (rule is FilterRule fr)
-                            {
-                                // Verificar si la regla usa uno de los parámetros antiguos
-                                var oldPoSemanalId = GetParamId(doc, "PO-SEMANAL");
-                                var oldPoSemanaProyectoId = GetParamId(doc, "PO-SEMANA PROYECTO");
+                        var fr = rule as FilterRule;
+                        if (fr == null)
+                            continue;
 
-                                if (fr.GetRuleParameter() == oldPoSemanalId ||
-                                    fr.GetRuleParameter() == oldPoSemanaProyectoId)
-                                {
-                                    needsUpdate = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                        var paramId = fr.GetRuleParameter();
 
-                    // Si el filtro usa parámetros antiguos o si queremos forzar la actualización
-                    if (needsUpdate || currentFilter == null)
-                    {
-                        try
+                        var poCarsId = GetParamId(doc, "PO-CARS");
+                        var oldPoSemanalId = GetParamId(doc, "PO-SEMANAL");
+                        var oldPoSemanaProyectoId = GetParamId(doc, "PO-SEMANA PROYECTO");
+
+                        if (paramId == oldPoSemanalId || paramId == oldPoSemanaProyectoId)
                         {
-                            filter.SetElementFilter(new ElementParameterFilter(newRule));
-                            System.Diagnostics.Debug.WriteLine($"Filtro '{filterName}' actualizado a usar PO-CARS");
+                            needsUpdate = true;
+                            break;
                         }
-                        catch (Exception ex)
+
+                        // Solo si quieres forzar actualización si ya era PO-CARS y el valor cambió
+                        if (paramId == poCarsId /* && valor anterior != valorPoCars */)
                         {
-                            System.Diagnostics.Debug.WriteLine($"Error al actualizar filtro '{filterName}': {ex.Message}");
+                            needsUpdate = true;
+                            break;
                         }
                     }
                 }
-                else
+
+                if (needsUpdate)
                 {
-                    System.Diagnostics.Debug.WriteLine($"No se encontró el filtro: {filterName}");
+                    try
+                    {
+                        filter.SetElementFilter(new ElementParameterFilter(newRule));
+                        System.Diagnostics.Debug.WriteLine($"Filtro '{filterName}' actualizado con nuevo valor PO-CARS = {valorPoCars}");
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error al actualizar filtro '{filterName}': {ex.Message}");
+                    }
                 }
             }
         }
-
 
         // Método auxiliar para obtener el ID del parámetro
         private ElementId GetParamId(Document doc, string paramName)

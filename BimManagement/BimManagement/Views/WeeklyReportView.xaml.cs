@@ -81,6 +81,49 @@ namespace BimManagement
             }
         }
 
+        //private void IssueWeek_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    string input = IssueWeek.Text;
+
+        //    if (int.TryParse(input, out int weekNumber))
+        //    {
+        //        int subWeek = weekNumber - 27;
+        //        string basePath =
+        //            @"G:\{0}\Proyectos\BIM\2408-EOPNP_Chorrillos\OB\Informes Semanales\SEMANA {1} - {2} SUP\Modelos\Supervisión";
+
+        //        // Intenta con "Shared drives"
+        //        string path1 = string.Format(basePath, "Shared drives", weekNumber, subWeek);
+        //        // Intenta con "Unidades compartidas"
+        //        string path2 = string.Format(basePath, "Unidades compartidas", weekNumber, subWeek);
+
+        //        if (Directory.Exists(path1))
+        //        {
+        //            FolderPathBox.Text = path1;
+        //        }
+        //        else if (Directory.Exists(path2))
+        //        {
+        //            FolderPathBox.Text = path2;
+        //        }
+        //        else
+        //        {
+        //            FolderPathBox.Text = string.Empty;
+        //        }
+
+        //        // Semana 1 = Sábado 13/11/2023 al Viernes 19/11/2023
+        //        // =====================================
+        //        DateTime inicioSemana1 = new DateTime(2023, 11, 13);
+        //        DateTime inicioSemanaActual = inicioSemana1.AddDays((weekNumber - 1) * 7);
+        //        DateTime finSemanaActual = inicioSemanaActual.AddDays(6); // viernes
+
+        //        string periodoTexto = $"{inicioSemanaActual:dd/MM} - {finSemanaActual:dd/MM}";
+        //        PeriodoBox.Text = periodoTexto;
+        //    }
+        //    else
+        //    {
+        //        FolderPathBox.Text = string.Empty;
+        //    }
+        //}
+
         private void IssueWeek_TextChanged(object sender, TextChangedEventArgs e)
         {
             string input = IssueWeek.Text;
@@ -88,41 +131,34 @@ namespace BimManagement
             if (int.TryParse(input, out int weekNumber))
             {
                 int subWeek = weekNumber - 27;
-                string basePath =
-                    @"G:\{0}\Proyectos\BIM\2408-EOPNP_Chorrillos\OB\Informes Semanales\SEMANA {1} - {2} SUP\Modelos\Supervisión";
 
-                // Intenta con "Shared drives"
-                string path1 = string.Format(basePath, "Shared drives", weekNumber, subWeek);
-                // Intenta con "Unidades compartidas"
-                string path2 = string.Format(basePath, "Unidades compartidas", weekNumber, subWeek);
+                // Opciones de base: combina raíz de unidad con rutas relativas
+                var folderPaths = new[]
+                {
+                    $@"G:\Shared drives\Proyectos\BIM\2408-EOPNP_Chorrillos\OB\Informes Semanales\SEMANA {weekNumber} - {subWeek} SUP\Modelos\Supervisión",
+                    $@"G:\Unidades compartidas\Proyectos\BIM\2408-EOPNP_Chorrillos\OB\Informes Semanales\SEMANA {weekNumber} - {subWeek} SUP\Modelos\Supervisión",
+                    $@"G:\Shared drives\06-24201-CSL-Cesel\OB\Informes Semanales\SEMANA {weekNumber} - {subWeek} SUP\Modelos\Supervisión",
+                    $@"G:\Unidades compartidas\06-24201-CSL-Cesel\OB\Informes Semanales\SEMANA {weekNumber} - {subWeek} SUP\Modelos\Supervisión"
+                };
 
-                if (Directory.Exists(path1))
-                {
-                    FolderPathBox.Text = path1;
-                }
-                else if (Directory.Exists(path2))
-                {
-                    FolderPathBox.Text = path2;
-                }
-                else
-                {
-                    FolderPathBox.Text = string.Empty;
-                }
+                // Buscar el primer path que exista
+                string existingPath = folderPaths.FirstOrDefault(Directory.Exists);
+                FolderPathBox.Text = existingPath ?? string.Empty;
 
-                // Semana 1 = Sábado 13/11/2023 al Viernes 19/11/2023
-                // =====================================
+                // Semana 1 = Lunes 13/11/2023
                 DateTime inicioSemana1 = new DateTime(2023, 11, 13);
                 DateTime inicioSemanaActual = inicioSemana1.AddDays((weekNumber - 1) * 7);
-                DateTime finSemanaActual = inicioSemanaActual.AddDays(6); // viernes
+                DateTime finSemanaActual = inicioSemanaActual.AddDays(6);
 
-                string periodoTexto = $"{inicioSemanaActual:dd/MM} - {finSemanaActual:dd/MM}";
-                PeriodoBox.Text = periodoTexto;
+                PeriodoBox.Text = $"{inicioSemanaActual:dd/MM} - {finSemanaActual:dd/MM}";
             }
             else
             {
                 FolderPathBox.Text = string.Empty;
+                PeriodoBox.Text = string.Empty;
             }
         }
+
 
 
         private async void UpdateFiles_Click(object sender, RoutedEventArgs e)

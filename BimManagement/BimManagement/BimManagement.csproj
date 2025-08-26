@@ -127,6 +127,7 @@
     <Compile Include="Commands\MonthlyReport\MonthlyReportFilters.cs" />
     <Compile Include="Commands\MonthlyReport\MonthlyUpdateSheet.cs" />
     <Compile Include="Commands\UpdateConstructionData\UpdateConstructionDataCommand.cs" />
+    <Compile Include="Commands\WeeklyReport\AmorParaSheyla.cs" />
     <Compile Include="Commands\WeeklyReport\UpdateFilesHandler.cs" />
     <Compile Include="Commands\WeeklyReport\WeeklyReportTools.cs" />
     <Compile Include="Commands\WeeklyReport\WeeklyReportCommand.cs" />
