@@ -137,8 +137,8 @@ namespace BimManagement
                 {
                     $@"G:\Shared drives\Proyectos\BIM\2408-EOPNP_Chorrillos\OB\Informes Semanales\SEMANA {weekNumber} - {subWeek} SUP\Modelos\Supervisión",
                     $@"G:\Unidades compartidas\Proyectos\BIM\2408-EOPNP_Chorrillos\OB\Informes Semanales\SEMANA {weekNumber} - {subWeek} SUP\Modelos\Supervisión",
-                    $@"G:\Shared drives\06-24201-CSL-Cesel\OB\Informes Semanales\SEMANA {weekNumber} - {subWeek} SUP\Modelos\Supervisión",
-                    $@"G:\Unidades compartidas\06-24201-CSL-Cesel\OB\Informes Semanales\SEMANA {weekNumber} - {subWeek} SUP\Modelos\Supervisión"
+                    $@"G:\Shared drives\06-24300-CSL-Cesel\24303-CSL-EOPNP Chorrillos\OB\Informes Semanales\SEMANA {weekNumber} - {subWeek} SUP\Modelos\Supervisión",
+                    $@"G:\Unidades compartidas\06-24300-CSL-Cesel\24303-CSL-EOPNP Chorrillos\OB\Informes Semanales\SEMANA {weekNumber} - {subWeek} SUP\Modelos\Supervisión"
                 };
 
                 // Buscar el primer path que exista
