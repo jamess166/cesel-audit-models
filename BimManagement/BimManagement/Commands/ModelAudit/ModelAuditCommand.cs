@@ -18,6 +18,13 @@ using Application = Autodesk.Revit.ApplicationServices.Application;
 
 namespace BimManagement
 {
+    public class DeliverableData
+    {
+        public string Entregable { get; set; }
+        public DateTime Fecha { get; set; }
+    }
+
+
     public class ValidationResult
     {
         public bool IsValid { get; set; }
@@ -75,8 +82,12 @@ namespace BimManagement
             CopyTemplateXLS(modelPath, modelDirectory, modelName, destinationExcelPath);
 
             //Data general
-            string deliverable = "Entregable 13";
-            DateTime dateAudit = DateTime.Now;
+            // Leer datos del JSON
+            var loadedData = JsonHelper.LoadDeliverable(modelDirectory);
+
+            //string deliverable = "Entregable 10";
+            string deliverable = loadedData.Entregable;
+            DateTime dateAudit = loadedData.Fecha;
             //Speciality especialidad = Speciality.ARQUITECTURA;
             Speciality specialty = DetectSpecialty(modelName);
 

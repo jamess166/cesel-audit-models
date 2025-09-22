@@ -121,6 +121,7 @@
     <Compile Include="Commands\ModelAudit\ExcelResultHandler.cs" />
     <Compile Include="Commands\ModelAudit\FamilyNameValidator.cs" />
     <Compile Include="Commands\ModelAudit\GeometryValidator.cs" />
+    <Compile Include="Commands\ModelAudit\JsonHelper.cs" />
     <Compile Include="Commands\ModelAudit\ModelAuditCommand.cs" />
     <Compile Include="Commands\ModelAudit\ParameterEntities.cs" />
     <Compile Include="Commands\MonthlyReport\MonthlyReport.cs" />
