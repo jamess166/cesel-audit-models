@@ -73,18 +73,26 @@ namespace BimManagement
                 {
                     var nameParam = titleBlock.LookupParameter("Sheet Name");
 
-                    if (nameParam != null && nameParam.HasValue)
+                    if (WeeklyReportTools.IssueMonth == string.Empty)
                     {
-                        string currentName = nameParam.AsString() ?? "";
 
-                        if (currentName.ToUpper().Contains("SEMANA"))
+                        if (nameParam != null && nameParam.HasValue)
                         {
-                            nameParam.Set("SEMANA Nº " + nombreHoja);
+                            string currentName = nameParam.AsString() ?? "";
+
+                            if (currentName.ToUpper().Contains("SEMANA"))
+                            {
+                                nameParam.Set("SEMANA Nº " + nombreHoja);
+                            }
+                            else
+                            {
+                                nameParam.Set(currentName + " - SEMANA Nº " + nombreHoja);
+                            }
                         }
-                        else
-                        {
-                            nameParam.Set(currentName + " - SEMANA Nº " + nombreHoja);
-                        }
+                    }
+                    else
+                    {
+                        nameParam.Set(WeeklyReportTools.IssueMonth);
                     }
 
                     var dateParam = titleBlock.get_Parameter(BuiltInParameter.SHEET_ISSUE_DATE);
@@ -98,6 +106,9 @@ namespace BimManagement
             var schedules = new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSchedule))
                 .Cast<ViewSchedule>();
+
+            // Determinar si es semanal o mensual
+            bool esSemanal = string.IsNullOrEmpty(WeeklyReportTools.IssueMonth);
 
             foreach (var sched in schedules)
             {
@@ -207,6 +218,79 @@ namespace BimManagement
                         }
                     }
                 }
+
+                // ACTUALIZAR TEMPLATE SEGÚN SEMANAL O MENSUAL
+                ActualizarTemplateTabla(doc, sched, esSemanal);
+            }
+        }
+
+        private void ActualizarTemplateTabla(Document doc, ViewSchedule schedule, bool esSemanal)
+        {
+            try
+            {
+                // Verificar si la tabla tiene un template asignado
+                ElementId templateId = schedule.ViewTemplateId;
+
+                if (templateId == null || templateId == ElementId.InvalidElementId)
+                {
+                    System.Diagnostics.Debug.WriteLine($"La tabla '{schedule.Name}' no tiene template asignado");
+                    return;
+                }
+
+                // Obtener el template actual
+                ViewSchedule templateActual = doc.GetElement(templateId) as ViewSchedule;
+
+                if (templateActual == null)
+                {
+                    System.Diagnostics.Debug.WriteLine($"No se pudo obtener el template para '{schedule.Name}'");
+                    return;
+                }
+
+                string nombreTemplateActual = templateActual.Name;
+                string nombreNuevoTemplate;
+
+                // Reemplazar MENSUAL por SEMANAL o viceversa
+                if (esSemanal)
+                {
+                    // Si es semanal, reemplazar MENSUAL por SEMANAL
+                    nombreNuevoTemplate = nombreTemplateActual.Replace("MENSUAL", "SEMANAL");
+                }
+                else
+                {
+                    // Si es mensual, reemplazar SEMANAL por MENSUAL
+                    nombreNuevoTemplate = nombreTemplateActual.Replace("SEMANAL", "MENSUAL");
+                }
+
+                // Si el nombre no cambió, significa que ya tiene el template correcto
+                if (nombreNuevoTemplate == nombreTemplateActual)
+                {
+                    System.Diagnostics.Debug.WriteLine($"El template '{nombreTemplateActual}' ya es del tipo correcto");
+                    return;
+                }
+
+                // Buscar el nuevo template en el documento
+                var templates = new FilteredElementCollector(doc)
+                    .OfClass(typeof(ViewSchedule))
+                    .Cast<ViewSchedule>()
+                    .Where(v => v.IsTemplate);
+
+                var nuevoTemplate = templates.FirstOrDefault(t =>
+                    t.Name.Equals(nombreNuevoTemplate, StringComparison.OrdinalIgnoreCase));
+
+                if (nuevoTemplate != null)
+                {
+                    // Aplicar el nuevo template
+                    schedule.ViewTemplateId = nuevoTemplate.Id;
+                    System.Diagnostics.Debug.WriteLine($"Template actualizado de '{nombreTemplateActual}' a '{nombreNuevoTemplate}' para la tabla '{schedule.Name}'");
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"Template no encontrado: '{nombreNuevoTemplate}'");
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error al actualizar template de '{schedule.Name}': {ex.Message}");
             }
         }
 

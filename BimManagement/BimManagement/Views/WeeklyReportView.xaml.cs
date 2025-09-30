@@ -164,6 +164,7 @@ namespace BimManagement
         private async void UpdateFiles_Click(object sender, RoutedEventArgs e)
         {
             string issueName = IssueWeek.Text.Trim();
+            string issueMonth = TitleBlockBox.Text.Trim();
             string issueDate = PeriodoBox.Text.Trim();
 
             if (string.IsNullOrWhiteSpace(issueName) || string.IsNullOrWhiteSpace(issueDate))
@@ -182,7 +183,16 @@ namespace BimManagement
             Log("Iniciando Actualización de Planos");
 
             WeeklyReportTools.IssueName = issueName;
-            WeeklyReportTools.IssueDate = issueDate;
+            if ((bool)MonthCheck.IsChecked)
+            {
+                WeeklyReportTools.IssueDate = issueDate;
+            }
+            else
+            {
+                WeeklyReportTools.IssueDate = string.Empty;
+            }
+
+            WeeklyReportTools.IssueMonth = issueMonth;
             WeeklyReportTools.Files = archivos;
 
             ProgressBar.Value = 0;
@@ -195,6 +205,20 @@ namespace BimManagement
         {
             LogTextBox.AppendText($"[{DateTime.Now:HH:mm:ss}] {message}{Environment.NewLine}");
             LogTextBox.ScrollToEnd();
+        }
+
+        private void MonthCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            if (MonthCheck.IsChecked == true)
+            {
+                TitleBlockBox.Visibility = System.Windows.Visibility.Visible;
+                TitleBlockLabel.Visibility = System.Windows.Visibility.Visible;
+            }
+            else
+            {
+                TitleBlockBox.Visibility = System.Windows.Visibility.Collapsed;
+                TitleBlockLabel.Visibility = System.Windows.Visibility.Collapsed;
+            }
         }
     }
 }

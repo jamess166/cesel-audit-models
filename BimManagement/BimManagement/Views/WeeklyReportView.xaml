@@ -61,7 +61,12 @@
         <Label Content="Opciones:" Grid.Row="2" Grid.Column="0"/>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
             <CheckBox Name="IncludeSubfoldersCheck" Content="Incluir subcarpetas" Margin="5" VerticalAlignment="Center" IsChecked="True"/>
-            <!--<CheckBox Name="SkipOpenFilesCheck" Content="Omitir archivos abiertos" Margin="5" VerticalAlignment="Center" IsChecked="True"/>-->
+            <CheckBox Name="MonthCheck" Checked="MonthCheck_Checked" Content="Reporte Mensual" Margin="5" VerticalAlignment="Center" IsChecked="False"/>
+             <!--<CheckBox Name="SkipOpenFilesCheck" Content="Omitir archivos abiertos" Margin="5" VerticalAlignment="Center" IsChecked="True"/>-->
+        </StackPanel>
+        <StackPanel Name="MonthPanel" Orientation="Horizontal" Grid.Row="2" Grid.Column="4" >
+            <Label Name="TitleBlockLabel" Content="Mes:" Grid.Row="1" Grid.Column="0" Visibility="Hidden"/>
+            <TextBox Name="TitleBlockBox" Width="150" Visibility="Hidden" HorizontalAlignment="Left" Margin="5"/>
         </StackPanel>
 
         <!-- Label lista de archivos -->
