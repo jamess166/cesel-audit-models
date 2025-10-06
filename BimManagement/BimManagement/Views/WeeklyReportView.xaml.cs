@@ -213,6 +213,15 @@ namespace BimManagement
             {
                 PeriodoMonth.Visibility = System.Windows.Visibility.Visible;
                 TitleBlockLabel.Visibility = System.Windows.Visibility.Visible;
+
+                DateTime now = DateTime.Now;
+
+                // Calcula el primer y último día del mes anterior
+                DateTime firstDayOfPreviousMonth = new DateTime(now.Year, now.Month, 1).AddMonths(-1);
+                DateTime lastDayOfPreviousMonth = new DateTime(now.Year, now.Month, 1).AddDays(-1);
+
+                // Formatea el texto en el formato deseado: dd/MM - dd/MM
+                PeriodoWeeklyBox.Text = $"{firstDayOfPreviousMonth:dd/MM} - {lastDayOfPreviousMonth:dd/MM}";
             }
             else
             {

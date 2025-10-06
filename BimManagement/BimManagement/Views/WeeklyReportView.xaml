@@ -65,7 +65,7 @@
              <!--<CheckBox Name="SkipOpenFilesCheck" Content="Omitir archivos abiertos" Margin="5" VerticalAlignment="Center" IsChecked="True"/>-->
         </StackPanel>
         <StackPanel Name="MonthPanel" Orientation="Horizontal" Grid.Row="2" Grid.Column="4" >
-            <Label Name="TitleBlockLabel" Content="Mes:" Grid.Row="1" Grid.Column="0" Visibility="Hidden"/>
+            <Label Name="TitleBlockLabel" Content="Mes (09/2025) :" Grid.Row="1" Grid.Column="0" Visibility="Hidden"/>
             <TextBox Name="PeriodoMonth" Width="150" Visibility="Hidden" HorizontalAlignment="Left" Margin="5"/>
         </StackPanel>
 
