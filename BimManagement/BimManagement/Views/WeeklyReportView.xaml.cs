@@ -150,12 +150,12 @@ namespace BimManagement
                 DateTime inicioSemanaActual = inicioSemana1.AddDays((weekNumber - 1) * 7);
                 DateTime finSemanaActual = inicioSemanaActual.AddDays(6);
 
-                PeriodoBox.Text = $"{inicioSemanaActual:dd/MM} - {finSemanaActual:dd/MM}";
+                PeriodoWeeklyBox.Text = $"{inicioSemanaActual:dd/MM} - {finSemanaActual:dd/MM}";
             }
             else
             {
                 FolderPathBox.Text = string.Empty;
-                PeriodoBox.Text = string.Empty;
+                PeriodoWeeklyBox.Text = string.Empty;
             }
         }
 
@@ -164,10 +164,10 @@ namespace BimManagement
         private async void UpdateFiles_Click(object sender, RoutedEventArgs e)
         {
             string issueName = IssueWeek.Text.Trim();
-            string issueMonth = TitleBlockBox.Text.Trim();
-            string issueDate = PeriodoBox.Text.Trim();
+            string issueMonth = PeriodoMonth.Text.Trim();
+            string issueWeekly = PeriodoWeeklyBox.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(issueName) || string.IsNullOrWhiteSpace(issueDate))
+            if (string.IsNullOrWhiteSpace(issueName) || string.IsNullOrWhiteSpace(issueWeekly))
             {
                 Log("Por favor completa ambos campos: Semana y Período.");
                 return;
@@ -185,11 +185,11 @@ namespace BimManagement
             WeeklyReportTools.IssueName = issueName;
             if ((bool)MonthCheck.IsChecked)
             {
-                WeeklyReportTools.IssueDate = issueDate;
+                WeeklyReportTools.IssueDate = issueMonth;
             }
             else
             {
-                WeeklyReportTools.IssueDate = string.Empty;
+                WeeklyReportTools.IssueDate = issueWeekly;
             }
 
             WeeklyReportTools.IssueMonth = issueMonth;
@@ -211,12 +211,12 @@ namespace BimManagement
         {
             if (MonthCheck.IsChecked == true)
             {
-                TitleBlockBox.Visibility = System.Windows.Visibility.Visible;
+                PeriodoMonth.Visibility = System.Windows.Visibility.Visible;
                 TitleBlockLabel.Visibility = System.Windows.Visibility.Visible;
             }
             else
             {
-                TitleBlockBox.Visibility = System.Windows.Visibility.Collapsed;
+                PeriodoMonth.Visibility = System.Windows.Visibility.Collapsed;
                 TitleBlockLabel.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
