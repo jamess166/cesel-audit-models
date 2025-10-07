@@ -8,7 +8,7 @@ namespace BimManagement
     {
         public static string IssueName { get; set; }
         public static string IssueMonth { get; set; }
-        public static string IssueDate { get; set; }
+        public static string IssuePeriod { get; set; }
         public static List<FileInfo> Files { get; set; }
     }
 }

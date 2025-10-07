@@ -165,9 +165,9 @@ namespace BimManagement
         {
             string issueName = IssueWeek.Text.Trim();
             string issueMonth = PeriodoMonth.Text.Trim();
-            string issueWeekly = PeriodoWeeklyBox.Text.Trim();
+            string issuePeriod = PeriodoWeeklyBox.Text.Trim();
 
-            if (string.IsNullOrWhiteSpace(issueName) || string.IsNullOrWhiteSpace(issueWeekly))
+            if (string.IsNullOrWhiteSpace(issueName) || string.IsNullOrWhiteSpace(issuePeriod))
             {
                 Log("Por favor completa ambos campos: Semana y Período.");
                 return;
@@ -182,16 +182,17 @@ namespace BimManagement
 
             Log("Iniciando Actualización de Planos");
 
-            WeeklyReportTools.IssueName = issueName;
-            if ((bool)MonthCheck.IsChecked)
-            {
-                WeeklyReportTools.IssueDate = issueMonth;
-            }
-            else
-            {
-                WeeklyReportTools.IssueDate = issueWeekly;
-            }
+            //if ((bool)MonthCheck.IsChecked)
+            //{
+            //    WeeklyReportTools.IssueDate = issueMonth;
+            //}
+            //else
+            //{
+            //    WeeklyReportTools.IssueDate = issuePeriod;
+            //}
 
+            WeeklyReportTools.IssueName = issueName;
+            WeeklyReportTools.IssuePeriod = issuePeriod;
             WeeklyReportTools.IssueMonth = issueMonth;
             WeeklyReportTools.Files = archivos;
 
@@ -222,6 +223,7 @@ namespace BimManagement
 
                 // Formatea el texto en el formato deseado: dd/MM - dd/MM
                 PeriodoWeeklyBox.Text = $"{firstDayOfPreviousMonth:dd/MM} - {lastDayOfPreviousMonth:dd/MM}";
+                PeriodoMonth.Text = DateTime.Now.AddMonths(-1).ToString("MM/yyyy");
             }
             else
             {

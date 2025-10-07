@@ -31,9 +31,9 @@ namespace BimManagement
                     using (Transaction trans = new Transaction(doc, "Actualizar membrete y filtros"))
                     {
                         trans.Start();
-                        ActualizarMembretes(doc, WeeklyReportTools.IssueName, WeeklyReportTools.IssueDate);
-                        ActualizarFiltrosTablas(doc, WeeklyReportTools.IssueName);
-                        ActualizarFiltrosVisuales(doc, WeeklyReportTools.IssueName, WeeklyReportTools.IssueDate);
+                        ActualizarMembretes(doc, WeeklyReportTools.IssueName, WeeklyReportTools.IssuePeriod);
+                        ActualizarFiltrosTablas(doc, WeeklyReportTools.IssueName, WeeklyReportTools.IssueMonth);
+                        ActualizarFiltrosVisuales(doc, WeeklyReportTools.IssueName, WeeklyReportTools.IssueMonth);
                         trans.Commit();
                     }
 
@@ -56,7 +56,7 @@ namespace BimManagement
 
         public string GetName() => "Actualizar archivos Revit";
 
-        private void ActualizarMembretes(Document doc, string nombreHoja, string fecha)
+        private void ActualizarMembretes(Document doc, string nombreHoja, string period)
         {
             var viewSheets = new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSheet))
@@ -96,12 +96,12 @@ namespace BimManagement
                     }
 
                     var dateParam = titleBlock.get_Parameter(BuiltInParameter.SHEET_ISSUE_DATE);
-                    dateParam?.Set(fecha);
+                    dateParam?.Set(period);
                 }
             }
         }
 
-        private void ActualizarFiltrosTablas(Document doc, string valorPoCars, string valorFechConstruida)
+        private void ActualizarFiltrosTablas(Document doc, string valorPoCars, string valorFechaConstruida)
         {
             var schedules = new FilteredElementCollector(doc)
                 .OfClass(typeof(ViewSchedule))
@@ -110,65 +110,70 @@ namespace BimManagement
             // Determinar si es semanal o mensual
             bool esSemanal = string.IsNullOrEmpty(WeeklyReportTools.IssueMonth);
 
+            // Definir parámetro y valor según el tipo
+            string parametroActual = esSemanal ? "PO-CARS" : "PO-FECHA CONSTRUIDA";
+            string valorActual = esSemanal ? valorPoCars : valorFechaConstruida;
+
+            // Parámetros que se deben buscar/reemplazar
+            string parametroAlterno = esSemanal ? "PO-FECHA CONSTRUIDA" : "PO-CARS";
+
             foreach (var sched in schedules)
             {
                 var def = sched.Definition;
-                bool tienePoCars = false;
-                ScheduleFieldId poFieldId = null;
+                bool tieneParametroActual = false;
+                ScheduleFieldId fieldIdActual = null;
 
-                // Verificar si ya existe PO-CARS en la tabla
+                // Verificar si ya existe el parámetro actual en la tabla
                 for (int j = 0; j < def.GetFieldCount(); j++)
                 {
                     var field = def.GetField(j);
-                    if (field?.GetName() == "PO-CARS")
+                    if (field?.GetName() == parametroActual)
                     {
-                        tienePoCars = true;
-                        poFieldId = field.FieldId;
+                        tieneParametroActual = true;
+                        fieldIdActual = field.FieldId;
                         break;
                     }
                 }
 
-                // Si no existe PO-CARS, verificar si hay campos antiguos para remover
+                // Si no existe el parámetro actual, buscar campos a remover
                 List<int> indicesARemover = new List<int>();
-                if (!tienePoCars)
+                if (!tieneParametroActual)
                 {
                     for (int j = 0; j < def.GetFieldCount(); j++)
                     {
                         var field = def.GetField(j);
                         string fieldName = field?.GetName();
 
-                        if (fieldName == "PO-SEMANAL" || fieldName == "PO-SEMANA PROYECTO")
+                        // Remover el parámetro alterno si existe
+                        if (fieldName == parametroAlterno)
                         {
-                            // Marcar este campo para remover después
                             indicesARemover.Add(j);
                         }
                     }
                 }
 
-                // Si no encontramos PO-CARS, agregar el campo PO-CARS
-                if (!tienePoCars)
+                // Si no encontramos el parámetro actual, agregarlo
+                if (!tieneParametroActual)
                 {
                     try
                     {
-                        // Buscar el parámetro PO-CARS en el proyecto
-                        var parameterId = GetParameterIdByName(doc, "PO-CARS");
+                        var parameterId = GetParameterIdByName(doc, parametroActual);
                         if (parameterId != null)
                         {
                             var newField = def.AddField(ScheduleFieldType.Instance, parameterId);
-                            poFieldId = newField.FieldId;
-                            tienePoCars = true;
+                            fieldIdActual = newField.FieldId;
+                            tieneParametroActual = true;
                         }
                     }
                     catch (Exception ex)
                     {
-                        // Log del error si no se puede agregar el campo
-                        System.Diagnostics.Debug.WriteLine($"Error al agregar campo PO-CARS: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"Error al agregar campo {parametroActual}: {ex.Message}");
                         continue;
                     }
                 }
 
-                // Remover campos antiguos después de agregar PO-CARS
-                if (tienePoCars && indicesARemover.Count > 0)
+                // Remover campos antiguos después de agregar el parámetro actual
+                if (tieneParametroActual && indicesARemover.Count > 0)
                 {
                     // Remover en orden inverso para no afectar los índices
                     for (int i = indicesARemover.Count - 1; i >= 0; i--)
@@ -184,33 +189,71 @@ namespace BimManagement
                     }
                 }
 
-                // Actualizar o crear filtros para PO-CARS
-                if (tienePoCars && poFieldId != null)
+                // Actualizar o crear filtros para el parámetro actual
+                if (tieneParametroActual && fieldIdActual != null)
                 {
                     bool filtroActualizado = false;
+                    List<int> indicesFiltrosARemover = new List<int>();
 
-                    // Buscar y actualizar filtros existentes
+                    // Buscar filtros relacionados con parámetros de control
                     for (int i = 0; i < def.GetFilterCount(); i++)
                     {
                         var filtro = def.GetFilter(i);
                         var field = def.GetField(filtro.FieldId);
                         string fieldName = field?.GetName();
 
-                        if (fieldName == "PO-CARS" || fieldName == "PO-SEMANAL" || fieldName == "PO-SEMANA PROYECTO")
+                        // Solo procesar filtros de parámetros de control
+                        if (fieldName == parametroActual ||
+                            fieldName == parametroAlterno ||
+                            fieldName == "PO-SEMANAL" ||
+                            fieldName == "PO-SEMANA PROYECTO")
                         {
-                            var nuevoFiltro = new ScheduleFilter(poFieldId, filtro.FilterType, valorPoCars);
-                            def.SetFilter(i, nuevoFiltro);
-                            filtroActualizado = true;
+                            if (fieldName == parametroActual)
+                            {
+                                // Actualizar el filtro del parámetro actual
+                                ScheduleFilterType tipoFiltro = esSemanal
+                                    ? filtro.FilterType  // Mantener el tipo existente para semanal
+                                    : ScheduleFilterType.Contains;  // Usar Contains para mensual
+
+                                var nuevoFiltro = new ScheduleFilter(fieldIdActual, tipoFiltro, valorActual);
+                                def.SetFilter(i, nuevoFiltro);
+                                filtroActualizado = true;
+                            }
+                            else
+                            {
+                                // Marcar para remover filtros de parámetros antiguos o alternos
+                                indicesFiltrosARemover.Add(i);
+                            }
                         }
                     }
 
-                    // Si no se encontró ningún filtro existente, crear uno nuevo
+                    // Remover filtros obsoletos (en orden inverso)
+                    for (int i = indicesFiltrosARemover.Count - 1; i >= 0; i--)
+                    {
+                        try
+                        {
+                            def.RemoveFilter(indicesFiltrosARemover[i]);
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Error al remover filtro obsoleto: {ex.Message}");
+                        }
+                    }
+
+                    // Si no se encontró ningún filtro del parámetro actual, crear uno nuevo
                     if (!filtroActualizado)
                     {
                         try
                         {
-                            var nuevoFiltro = new ScheduleFilter(poFieldId, ScheduleFilterType.Equal, valorPoCars);
+                            // Tipo de filtro por defecto según semanal/mensual
+                            ScheduleFilterType tipoFiltro = esSemanal
+                                ? ScheduleFilterType.Equal
+                                : ScheduleFilterType.Contains;
+
+                            var nuevoFiltro = new ScheduleFilter(fieldIdActual, tipoFiltro, valorActual);
                             def.AddFilter(nuevoFiltro);
+
+                            System.Diagnostics.Debug.WriteLine($"Filtro agregado: {parametroActual} {tipoFiltro} {valorActual}");
                         }
                         catch (Exception ex)
                         {
@@ -223,6 +266,129 @@ namespace BimManagement
                 ActualizarTemplateTabla(doc, sched, esSemanal);
             }
         }
+
+        //private void ActualizarFiltrosTablas(Document doc, string valorPoCars, string valorFechConstruida)
+        //{
+        //    var schedules = new FilteredElementCollector(doc)
+        //        .OfClass(typeof(ViewSchedule))
+        //        .Cast<ViewSchedule>();
+
+        //    // Determinar si es semanal o mensual
+        //    bool esSemanal = string.IsNullOrEmpty(WeeklyReportTools.IssueMonth);
+
+        //    foreach (var sched in schedules)
+        //    {
+        //        var def = sched.Definition;
+        //        bool tienePoCars = false;
+        //        ScheduleFieldId poFieldId = null;
+
+        //        // Verificar si ya existe PO-CARS en la tabla
+        //        for (int j = 0; j < def.GetFieldCount(); j++)
+        //        {
+        //            var field = def.GetField(j);
+        //            if (field?.GetName() == "PO-CARS")
+        //            {
+        //                tienePoCars = true;
+        //                poFieldId = field.FieldId;
+        //                break;
+        //            }
+        //        }
+
+        //        // Si no existe PO-CARS, verificar si hay campos antiguos para remover
+        //        List<int> indicesARemover = new List<int>();
+        //        if (!tienePoCars)
+        //        {
+        //            for (int j = 0; j < def.GetFieldCount(); j++)
+        //            {
+        //                var field = def.GetField(j);
+        //                string fieldName = field?.GetName();
+
+        //                if (fieldName == "PO-SEMANAL" || fieldName == "PO-SEMANA PROYECTO")
+        //                {
+        //                    // Marcar este campo para remover después
+        //                    indicesARemover.Add(j);
+        //                }
+        //            }
+        //        }
+
+        //        // Si no encontramos PO-CARS, agregar el campo PO-CARS
+        //        if (!tienePoCars)
+        //        {
+        //            try
+        //            {
+        //                // Buscar el parámetro PO-CARS en el proyecto
+        //                var parameterId = GetParameterIdByName(doc, "PO-CARS");
+        //                if (parameterId != null)
+        //                {
+        //                    var newField = def.AddField(ScheduleFieldType.Instance, parameterId);
+        //                    poFieldId = newField.FieldId;
+        //                    tienePoCars = true;
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                // Log del error si no se puede agregar el campo
+        //                System.Diagnostics.Debug.WriteLine($"Error al agregar campo PO-CARS: {ex.Message}");
+        //                continue;
+        //            }
+        //        }
+
+        //        // Remover campos antiguos después de agregar PO-CARS
+        //        if (tienePoCars && indicesARemover.Count > 0)
+        //        {
+        //            // Remover en orden inverso para no afectar los índices
+        //            for (int i = indicesARemover.Count - 1; i >= 0; i--)
+        //            {
+        //                try
+        //                {
+        //                    def.RemoveField(indicesARemover[i]);
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    System.Diagnostics.Debug.WriteLine($"Error al remover campo antiguo: {ex.Message}");
+        //                }
+        //            }
+        //        }
+
+        //        // Actualizar o crear filtros para PO-CARS
+        //        if (tienePoCars && poFieldId != null)
+        //        {
+        //            bool filtroActualizado = false;
+
+        //            // Buscar y actualizar filtros existentes
+        //            for (int i = 0; i < def.GetFilterCount(); i++)
+        //            {
+        //                var filtro = def.GetFilter(i);
+        //                var field = def.GetField(filtro.FieldId);
+        //                string fieldName = field?.GetName();
+
+        //                if (fieldName == "PO-CARS" || fieldName == "PO-SEMANAL" || fieldName == "PO-SEMANA PROYECTO")
+        //                {
+        //                    var nuevoFiltro = new ScheduleFilter(poFieldId, filtro.FilterType, valorPoCars);
+        //                    def.SetFilter(i, nuevoFiltro);
+        //                    filtroActualizado = true;
+        //                }
+        //            }
+
+        //            // Si no se encontró ningún filtro existente, crear uno nuevo
+        //            if (!filtroActualizado)
+        //            {
+        //                try
+        //                {
+        //                    var nuevoFiltro = new ScheduleFilter(poFieldId, ScheduleFilterType.Equal, valorPoCars);
+        //                    def.AddFilter(nuevoFiltro);
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    System.Diagnostics.Debug.WriteLine($"Error al agregar filtro: {ex.Message}");
+        //                }
+        //            }
+        //        }
+
+        //        // ACTUALIZAR TEMPLATE SEGÚN SEMANAL O MENSUAL
+        //        ActualizarTemplateTabla(doc, sched, esSemanal);
+        //    }
+        //}
 
         private void ActualizarTemplateTabla(Document doc, ViewSchedule schedule, bool esSemanal)
         {
@@ -326,100 +492,26 @@ namespace BimManagement
             return null;
         }
 
-        //private void ActualizarFiltrosVisuales(Document doc, string valorPoCars)
-        //{
-        //    // Primero intentar obtener el parámetro PO-CARS
-        //    var poCardsId = GetParamId(doc, "PO-CARS");
-        //    if (poCardsId == ElementId.InvalidElementId)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine("No se encontró el parámetro PO-CARS");
-        //        return;
-        //    }
-
-        //    // Lista de filtros que necesitan ser actualizados
-        //    var filtersToUpdate = new List<(string FilterName, FilterRule rule)>
-        //    {
-        //        ("PO-EJECUTADO ACTUAL", ParameterFilterRuleFactory.CreateGreaterOrEqualRule(poCardsId, valorPoCars, true)),
-        //        ("PO-EJECUTADO ACUMULADO PREVIO", ParameterFilterRuleFactory.CreateLessRule(poCardsId, valorPoCars, true))
-        //    };
-
-        //    // Obtener todos los filtros de parámetros
-        //    var allFilters = new FilteredElementCollector(doc)
-        //        .OfClass(typeof(ParameterFilterElement))
-        //        .Cast<ParameterFilterElement>()
-        //        .ToList();
-
-        //    foreach (var (filterName, newRule) in filtersToUpdate)
-        //    {
-        //        var filter = allFilters.FirstOrDefault(f => f.Name == filterName);
-        //        if (filter == null)
-        //        {
-        //            System.Diagnostics.Debug.WriteLine($"No se encontró el filtro: {filterName}");
-        //            continue;
-        //        }
-
-        //        var currentFilter = filter.GetElementFilter();
-        //        bool needsUpdate = false;
-
-        //        if (currentFilter is ElementParameterFilter epf)
-        //        {
-        //            var rules = epf.GetRules();
-        //            foreach (var rule in rules)
-        //            {
-        //                var fr = rule as FilterRule;
-        //                if (fr == null)
-        //                    continue;
-
-        //                var paramId = fr.GetRuleParameter();
-
-        //                var poCarsId = GetParamId(doc, "PO-CARS");
-        //                var oldPoSemanalId = GetParamId(doc, "PO-SEMANAL");
-        //                var oldPoSemanaProyectoId = GetParamId(doc, "PO-SEMANA PROYECTO");
-
-        //                if (paramId == oldPoSemanalId || paramId == oldPoSemanaProyectoId)
-        //                {
-        //                    needsUpdate = true;
-        //                    break;
-        //                }
-
-        //                // Solo si quieres forzar actualización si ya era PO-CARS y el valor cambió
-        //                if (paramId == poCarsId /* && valor anterior != valorPoCars */)
-        //                {
-        //                    needsUpdate = true;
-        //                    break;
-        //                }
-        //            }
-        //        }
-
-        //        if (needsUpdate)
-        //        {
-        //            try
-        //            {
-        //                filter.SetElementFilter(new ElementParameterFilter(newRule));
-        //                System.Diagnostics.Debug.WriteLine($"Filtro '{filterName}' actualizado con nuevo valor PO-CARS = {valorPoCars}");
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                System.Diagnostics.Debug.WriteLine($"Error al actualizar filtro '{filterName}': {ex.Message}");
-        //            }
-        //        }
-        //    }
-        //}
-
-        private void ActualizarFiltrosVisuales(Document doc, string valorPoCars, string valorFechConstruida)
+        private void ActualizarFiltrosVisuales(Document doc, string valorPoCars, string valorFechaConstruida)
         {
             // Determinar si es semanal o mensual
             bool esSemanal = string.IsNullOrEmpty(WeeklyReportTools.IssueMonth);
 
-            // Obtener el parámetro correspondiente según el tipo
-            string nombreParametro = esSemanal ? "PO-CARS" : "PO-FECHA CONSTRUIDA";
-            var parametroId = GetParamId(doc, nombreParametro);
+            // Obtener AMBOS parámetros
+            var parametroSemanal = GetParamId(doc, "PO-CARS");
+            var parametroMensual = GetParamId(doc, "PO-FECHA CONSTRUIDA");
 
-            if (parametroId == ElementId.InvalidElementId)
+            if (parametroSemanal == ElementId.InvalidElementId || parametroMensual == ElementId.InvalidElementId)
             {
-                System.Diagnostics.Debug.WriteLine($"No se encontró el parámetro {nombreParametro}");
+                System.Diagnostics.Debug.WriteLine("No se encontró uno de los parámetros necesarios");
                 return;
             }
+
+            // Determinar cuál parámetro usar y cuál eliminar
+            var parametroActivo = esSemanal ? parametroSemanal : parametroMensual;
+            var parametroEliminar = esSemanal ? parametroMensual : parametroSemanal;
+            string nombreParametroActivo = esSemanal ? "PO-CARS" : "PO-FECHA CONSTRUIDA";
+            string valorActivo = esSemanal ? valorPoCars : valorFechaConstruida;
 
             // Obtener todos los filtros de parámetros
             var allFilters = new FilteredElementCollector(doc)
@@ -437,44 +529,97 @@ namespace BimManagement
                 {
                     if (esSemanal)
                     {
-                        // Semanal: >= valorPoCars
-                        newRule = ParameterFilterRuleFactory.CreateGreaterOrEqualRule(parametroId, valorPoCars, true);
+                        newRule = ParameterFilterRuleFactory.CreateGreaterOrEqualRule(parametroActivo, valorActivo, true);
                     }
                     else
                     {
-                        // Mensual: contiene valorFechConstruida
-                        newRule = ParameterFilterRuleFactory.CreateContainsRule(parametroId, valorFechConstruida, true);
+                        newRule = ParameterFilterRuleFactory.CreateContainsRule(parametroActivo, valorActivo, true);
                     }
                 }
                 else if (filterName.Contains("PO-EJECUTADO ACUMULADO PREVIO"))
                 {
                     if (esSemanal)
                     {
-                        // Semanal: < valorPoCars
-                        newRule = ParameterFilterRuleFactory.CreateLessRule(parametroId, valorPoCars, true);
+                        newRule = ParameterFilterRuleFactory.CreateLessRule(parametroActivo, valorActivo, true);
                     }
                     else
                     {
-                        // Mensual: NO contiene valorFechConstruida
-                        newRule = ParameterFilterRuleFactory.CreateNotContainsRule(parametroId, valorFechConstruida, true);
+                        newRule = ParameterFilterRuleFactory.CreateNotContainsRule(parametroActivo, valorActivo, true);
                     }
                 }
                 else
                 {
-                    // Este filtro no es de los que nos interesan
                     continue;
                 }
 
                 // Actualizar el filtro
                 try
                 {
-                    filter.SetElementFilter(new ElementParameterFilter(newRule));
+                    // Obtener el filtro actual
+                    ElementFilter filtroActual = filter.GetElementFilter();
+
+                    // Lista para almacenar TODAS las reglas
+                    List<FilterRule> todasLasReglas = new List<FilterRule>();
+
+                    // Extraer TODAS las reglas del filtro actual
+                    ExtractAllRules(filtroActual, todasLasReglas);
+
+                    // DEBUG: Ver qué reglas tenemos antes de eliminar
+                    System.Diagnostics.Debug.WriteLine($"\n=== Filtro: {filterName} ===");
+                    foreach (var r in todasLasReglas)
+                    {
+                        ElementId paramId = ObtenerParametroDeRegla(r);
+                        string paramName = paramId != ElementId.InvalidElementId ? doc.GetElement(paramId)?.Name ?? "Unknown" : "Invalid";
+                        System.Diagnostics.Debug.WriteLine($"  Regla tipo: {r.GetType().Name}, Parámetro: {paramName} (ID: {paramId})");
+                    }
+
+                    // Eliminar las reglas de AMBOS parámetros (PO-CARS y PO-FECHA CONSTRUIDA)
+                    todasLasReglas.RemoveAll(r =>
+                    {
+                        ElementId paramId = ObtenerParametroDeRegla(r);
+                        bool debeEliminar = paramId == parametroActivo || paramId == parametroEliminar;
+
+                        if (debeEliminar)
+                        {
+                            string paramName = doc.GetElement(paramId)?.Name ?? "Unknown";
+                            System.Diagnostics.Debug.WriteLine($"  >> Eliminando regla del parámetro: {paramName}");
+                        }
+
+                        return debeEliminar;
+                    });
+
+                    // DEBUG: Ver qué reglas quedaron
+                    System.Diagnostics.Debug.WriteLine($"Reglas restantes: {todasLasReglas.Count}");
+
+                    // Agregar la nueva regla
+                    todasLasReglas.Add(newRule);
+
+                    // RECONSTRUIR el filtro: crear un ElementParameterFilter por cada regla individual
+                    List<ElementFilter> filtrosIndividuales = new List<ElementFilter>();
+
+                    foreach (var regla in todasLasReglas)
+                    {
+                        filtrosIndividuales.Add(new ElementParameterFilter(regla));
+                    }
+
+                    // Crear el filtro final
+                    ElementFilter nuevoFiltroFinal;
+                    if (filtrosIndividuales.Count == 1)
+                    {
+                        nuevoFiltroFinal = filtrosIndividuales[0];
+                    }
+                    else
+                    {
+                        nuevoFiltroFinal = new LogicalAndFilter(filtrosIndividuales);
+                    }
+
+                    filter.SetElementFilter(nuevoFiltroFinal);
 
                     string operador = esSemanal
                         ? (filterName.Contains("ACTUAL") ? ">=" : "<")
                         : (filterName.Contains("ACTUAL") ? "contiene" : "no contiene");
 
-                    System.Diagnostics.Debug.WriteLine($"Filtro '{filterName}' actualizado con {nombreParametro} {operador} {valorPoCars}");
+                    System.Diagnostics.Debug.WriteLine($"Filtro '{filterName}' reconstruido: {nombreParametroActivo} {operador} {valorActivo} (Total reglas: {todasLasReglas.Count})");
                 }
                 catch (Exception ex)
                 {
@@ -483,58 +628,51 @@ namespace BimManagement
             }
         }
 
-        //private void ActualizarFiltrosVisuales(Document doc, string valorPoCars)
-        //{
-        //    // Obtener el parámetro PO-CARS
-        //    var poCardsId = GetParamId(doc, "PO-CARS");
-        //    if (poCardsId == ElementId.InvalidElementId)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine("No se encontró el parámetro PO-CARS");
-        //        return;
-        //    }
+        // Método auxiliar para extraer TODAS las reglas recursivamente
+        private void ExtractAllRules(ElementFilter filter, List<FilterRule> reglas)
+        {
+            if (filter is ElementParameterFilter epf)
+            {
+                reglas.AddRange(epf.GetRules());
+            }
+            else if (filter is LogicalAndFilter laf)
+            {
+                foreach (var subFilter in laf.GetFilters())
+                {
+                    ExtractAllRules(subFilter, reglas);
+                }
+            }
+            else if (filter is LogicalOrFilter lof)
+            {
+                foreach (var subFilter in lof.GetFilters())
+                {
+                    ExtractAllRules(subFilter, reglas);
+                }
+            }
+        }
 
-        //    // Obtener todos los filtros de parámetros
-        //    var allFilters = new FilteredElementCollector(doc)
-        //        .OfClass(typeof(ParameterFilterElement))
-        //        .Cast<ParameterFilterElement>()
-        //        .ToList();
+        // Método auxiliar mejorado para extraer el parámetro de una regla (incluyendo FilterInverseRule)
+        private ElementId ObtenerParametroDeRegla(FilterRule regla)
+        {
+            // Manejar FilterInverseRule
+            if (regla is FilterInverseRule fir)
+            {
+                // Obtener la regla interna
+                var innerRule = fir.GetInnerRule();
+                return ObtenerParametroDeRegla(innerRule); // Llamada recursiva
+            }
 
-        //    foreach (var filter in allFilters)
-        //    {
-        //        string filterName = filter.Name;
-        //        FilterRule newRule = null;
+            // Reglas normales
+            if (regla is FilterStringRule fsr)
+                return fsr.GetRuleParameter();
+            if (regla is FilterDoubleRule fdr)
+                return fdr.GetRuleParameter();
+            if (regla is FilterIntegerRule intRule)
+                return intRule.GetRuleParameter();
 
-        //        // Detectar el tipo de filtro basado en el nombre
-        //        if (filterName.Contains("PO-EJECUTADO ACTUAL"))
-        //        {
-        //            // Para filtros ACTUAL: >= valorPoCars
-        //            newRule = ParameterFilterRuleFactory.CreateGreaterOrEqualRule(poCardsId, valorPoCars, true);
-        //        }
-        //        else if (filterName.Contains("PO-EJECUTADO ACUMULADO PREVIO"))
-        //        {
-        //            // Para filtros ACUMULADO PREVIO: < valorPoCars
-        //            newRule = ParameterFilterRuleFactory.CreateLessRule(poCardsId, valorPoCars, true);
-        //        }
-        //        else
-        //        {
-        //            // Este filtro no es de los que nos interesan
-        //            continue;
-        //        }
-
-        //        // Actualizar el filtro directamente
-
-        //        try
-        //        {
-        //            filter.SetElementFilter(new ElementParameterFilter(newRule));
-        //            System.Diagnostics.Debug.WriteLine($"Filtro '{filterName}' actualizado con PO-CARS {(filterName.Contains("ACTUAL") ? ">=" : "<")} {valorPoCars}");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            System.Diagnostics.Debug.WriteLine($"Error al actualizar filtro '{filterName}': {ex.Message}");
-        //        }
-        //    }
-        //}
-
+            return ElementId.InvalidElementId;
+        }
+                
         // Método auxiliar para obtener el ID del parámetro
         private ElementId GetParamId(Document doc, string paramName)
         {
@@ -566,21 +704,6 @@ namespace BimManagement
 
             return ElementId.InvalidElementId;
         }
-
-        //private ElementId GetParamId(Document doc, string paramName)
-        //{
-        //    var paramElements = new FilteredElementCollector(doc)
-        //        .OfClass(typeof(ParameterElement))
-        //        .Cast<ParameterElement>();
-
-        //    foreach (var param in paramElements)
-        //    {
-        //        if (param.Name == paramName)
-        //            return param.Id;
-        //    }
-
-        //    return ElementId.InvalidElementId;
-        //}
 
         private void Log(string message)
         {
