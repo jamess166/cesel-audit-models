@@ -14,13 +14,13 @@ namespace BimManagement.Commands.ModelAudit
 {
     public class CheckGridsWidhArchitecture
     {
-        public static ValidationResult CompareGridsLocation()
+        public static ValidationResult CompareGridsLocation(string currentPath)
         {
             try
             {
 
                 // Obtener la ruta del modelo actual
-                string currentPath = RevitTools.doc.PathName;
+                //string currentPath = RevitTools.doc.PathName;
                 string currentDirectory = Path.GetDirectoryName(currentPath);
                 string currentFileName = Path.GetFileNameWithoutExtension(currentPath);
 
@@ -69,30 +69,7 @@ namespace BimManagement.Commands.ModelAudit
                     // Listas para almacenar resultados
                     var misalignedGrids = new List<string>();
                     var missingInCurrentModel = new List<string>();
-                    var missingInArchModel = new List<string>();
-
-                    // Comparar ejes del modelo actual con arquitectura
-                    //foreach (var currentGrid in currentGrids)
-                    //{
-                    //    var matchingGrid = archGrids.FirstOrDefault(g => g.Name == currentGrid.Name);
-
-                    //    if (matchingGrid == null)
-                    //    {
-                    //        missingInArchModel.Add(currentGrid.Name);
-                    //        continue;
-                    //    }
-
-                    //    Line currentLine = currentGrid.Curve as Line;
-                    //    Line archLine = matchingGrid.Curve as Line;
-
-                    //    if (currentLine == null || archLine == null)
-                    //        continue;
-
-                    //    if (!CompareGridLines(currentLine, archLine))
-                    //    {
-                    //        misalignedGrids.Add(currentGrid.Name);
-                    //    }
-                    //}
+                    var missingInArchModel = new List<string>();                    
 
                     // Verificar ejes que existen en arquitectura pero no en el modelo actual
                     foreach (var archGrid in archGrids)
@@ -150,12 +127,47 @@ namespace BimManagement.Commands.ModelAudit
             }
         }
 
-        private static string BuscarModeloArquitectura(string currentPath)
+        //private static string BuscarModeloArquitectura(string currentPath)
+        //{
+        //    string currentDirectory = Path.GetDirectoryName(currentPath);
+        //    string currentFileName = Path.GetFileNameWithoutExtension(currentPath);
+
+        //    string[] parts = currentFileName.Split('-');
+        //    if (parts.Length < 8)
+        //        return null;
+
+        //    parts[6] = "ARQ"; // Reemplazar especialidad por ARQ
+        //    string targetFileName = string.Join("-", parts) + ".rvt";
+
+        //    // 1. Buscar en la misma carpeta
+        //    string directPath = Path.Combine(currentDirectory, targetFileName);
+        //    if (File.Exists(directPath))
+        //        return directPath;
+
+        //    // 2. Subir un nivel
+        //    string parentDir = Directory.GetParent(currentDirectory)?.FullName;
+        //    if (parentDir == null)
+        //        return null;
+
+        //    // 3. Buscar UNA carpeta con "ARQUITECTURA" en el nombre
+        //    string arquitecturaDir = Directory.GetDirectories(parentDir)
+        //        .FirstOrDefault(d =>
+        //            Path.GetFileName(d).IndexOf("ARQ", StringComparison.OrdinalIgnoreCase) >= 0);
+
+        //    if (arquitecturaDir == null)
+        //        return null;
+
+        //    // 4. Buscar el archivo en esa única carpeta
+        //    string possiblePath = Path.Combine(arquitecturaDir, targetFileName);
+        //    return File.Exists(possiblePath) ? possiblePath : null;
+        //}
+
+        private static string BuscarModeloArquitectura(string currentPath, int maxLevelsUp = 3)
         {
             string currentDirectory = Path.GetDirectoryName(currentPath);
             string currentFileName = Path.GetFileNameWithoutExtension(currentPath);
-
             string[] parts = currentFileName.Split('-');
+
             if (parts.Length < 8)
                 return null;
 
@@ -167,22 +179,49 @@ namespace BimManagement.Commands.ModelAudit
             if (File.Exists(directPath))
                 return directPath;
 
-            // 2. Subir un nivel
-            string parentDir = Directory.GetParent(currentDirectory)?.FullName;
-            if (parentDir == null)
-                return null;
+            // 2. Buscar subiendo niveles (carpetas padre)
+            string searchDirectory = currentDirectory;
 
-            // 3. Buscar UNA carpeta con "ARQUITECTURA" en el nombre
-            string arquitecturaDir = Directory.GetDirectories(parentDir)
-                .FirstOrDefault(d =>
-                    Path.GetFileName(d).IndexOf("ARQUITECTURA", StringComparison.OrdinalIgnoreCase) >= 0);
+            for (int level = 1; level <= maxLevelsUp; level++)
+            {
+                // Subir un nivel
+                DirectoryInfo parentInfo = Directory.GetParent(searchDirectory);
+                if (parentInfo == null)
+                    break; // Ya no hay más carpetas padre
 
-            if (arquitecturaDir == null)
-                return null;
+                string parentDir = parentInfo.FullName;
 
-            // 4. Buscar el archivo en esa única carpeta
-            string possiblePath = Path.Combine(arquitecturaDir, targetFileName);
-            return File.Exists(possiblePath) ? possiblePath : null;
+                // Buscar carpeta con "ARQ" o "ARQUITECTURA" en el nombre
+                string arquitecturaDir = Directory.GetDirectories(parentDir)
+                    .FirstOrDefault(d =>
+                    {
+                        string folderName = Path.GetFileName(d);
+                        return folderName.IndexOf("ARQ", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                               folderName.IndexOf("ARQUITECTURA", StringComparison.OrdinalIgnoreCase) >= 0;
+                    });
+
+                if (arquitecturaDir != null)
+                {
+                    // Buscar el archivo en esa carpeta
+                    string possiblePath = Path.Combine(arquitecturaDir, targetFileName);
+                    if (File.Exists(possiblePath))
+                        return possiblePath;
+
+                    // También buscar en subcarpetas de la carpeta de arquitectura (un nivel)
+                    var subdirs = Directory.GetDirectories(arquitecturaDir);
+                    foreach (var subdir in subdirs)
+                    {
+                        string subdirPath = Path.Combine(subdir, targetFileName);
+                        if (File.Exists(subdirPath))
+                            return subdirPath;
+                    }
+                }
+
+                // Preparar para el siguiente nivel
+                searchDirectory = parentDir;
+            }
+
+            return null;
         }
 
 
