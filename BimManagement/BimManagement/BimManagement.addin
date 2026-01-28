@@ -35,5 +35,17 @@
 		<VendorId>CESEL</VendorId>
 		<VendorDescription>CESEL</VendorDescription>
 	</AddIn>
+
+	<AddIn Type="Command">
+		<Name>AsBuilt</Name>
+		<FullClassName>BimManagement.RepairLinksCommand</FullClassName>
+		<Text>Reparar Links</Text>
+		<Description>Reparar Links Command</Description>
+		<VisibilityMode>AlwaysVisible</VisibilityMode>
+		<Assembly>CESEL\BimManagement.dll</Assembly>
+		<AddInId>828faafa-f5b0-41c5-959a-ccfc7ff30578</AddInId>
+		<VendorId>CESEL</VendorId>
+		<VendorDescription>CESEL</VendorDescription>
+	</AddIn>
 	
 </RevitAddIns>
