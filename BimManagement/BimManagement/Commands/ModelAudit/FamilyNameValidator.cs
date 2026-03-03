@@ -12,7 +12,8 @@ namespace BimManagement.Commands.ModelAudit
     public class FamilyNameValidator
     {
         private const int MaxNameLength = 60;
-        private const string UpperCamelCasePattern = @"^[A-Z][a-zA-Z0-9\-._]*$";
+        //private const string UpperCamelCasePattern = @"^[A-Z][a-zA-Z0-9\-._]*$";
+        private const string UpperCamelCasePattern = @"^[A-Za-z][a-zA-Z0-9\-._]*$";
 
         //private const string UpperCamelCasePattern = @"^[A-Z][a-zA-Z0-9-]*$";
 
