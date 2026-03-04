@@ -97,6 +97,8 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Apps\ShareSheetsApp.cs" />
+    <Compile Include="Commands\CreateReportSheet\CreateReportSheetCommand.cs" />
+    <Compile Include="Commands\CreateReportSheet\CreateReportSheetTools.cs" />
     <Compile Include="Commands\ExportSheets\PrintPDF.cs" />
     <Compile Include="Commands\AsBuilt\ConvertAsBuiltCommand.cs" />
     <Compile Include="Commands\AsBuilt\SetDatesCommand.cs" />

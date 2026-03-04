@@ -150,38 +150,38 @@ namespace BimManagement.Commands.ModelAudit.Config
 
             //var numerosGrupoVista02 = new List<int>();
 
-            foreach (var view in revitViews)
-            {
-                var (grupo01, grupo02) = GetViewGroups(view);
+            //foreach (var view in revitViews)
+            //{
+            //    var (grupo01, grupo02) = GetViewGroups(view);
 
-                if (string.IsNullOrWhiteSpace(grupo01) || string.IsNullOrWhiteSpace(grupo02))
-                {
-                    errorsGrupoVista01.Add(view.Name);
-                    continue;
-                }
+            //    if (string.IsNullOrWhiteSpace(grupo01) || string.IsNullOrWhiteSpace(grupo02))
+            //    {
+            //        errorsGrupoVista01.Add(view.Name);
+            //        continue;
+            //    }
 
-                // Validar Grupo 01
-                if (!IsValidGrupo01(grupo01))
-                {
-                    errorsGrupoVista01.Add($"{view.Name} - '{grupo01}' debe ser 'I. DISEÑO' o 'II. DOCUMENTACION'");
-                    continue;
-                }
+            //    // Validar Grupo 01
+            //    if (!IsValidGrupo01(grupo01))
+            //    {
+            //        errorsGrupoVista01.Add($"{view.Name} - '{grupo01}' debe ser 'I. DISEÑO' o 'II. DOCUMENTACION'");
+            //        continue;
+            //    }
 
-                // Validar Grupo 02
-                if (!IsValidGrupo02(grupo02, grupo01, especialidadConfig))
-                {
-                    errorsGrupoVista02.Add($"{view.Name} - '{grupo02}' no es válido para {grupo01}");
-                }
+            //    // Validar Grupo 02
+            //    if (!IsValidGrupo02(grupo02, grupo01, especialidadConfig))
+            //    {
+            //        errorsGrupoVista02.Add($"{view.Name} - '{grupo02}' no es válido para {grupo01}");
+            //    }
 
-                // Extraer número para validación de secuencia
-                if (TryExtractNumber(grupo02, out int numero))
-                {
-                    if (!numerosPorGrupo01.ContainsKey(grupo01))
-                        numerosPorGrupo01[grupo01] = new List<int>();
+            //    // Extraer número para validación de secuencia
+            //    if (TryExtractNumber(grupo02, out int numero))
+            //    {
+            //        if (!numerosPorGrupo01.ContainsKey(grupo01))
+            //            numerosPorGrupo01[grupo01] = new List<int>();
 
-                    numerosPorGrupo01[grupo01].Add(numero);
-                }
-            }
+            //        numerosPorGrupo01[grupo01].Add(numero);
+            //    }
+            //}
 
             // Validar secuencia de números
             foreach (var kvp in numerosPorGrupo01)

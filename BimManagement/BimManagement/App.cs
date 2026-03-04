@@ -45,6 +45,8 @@ namespace BimManagement
             panel.AddItem(CreatePushButtons.ButtonModelAudit());
             panel.AddItem(CreatePushButtons.ButtonModelAuditBuilding());
             panel.AddItem(CreatePushButtons.ButtonWeeklyReport());
+            panel.AddItem(CreatePushButtons.ButtonReportSheet());
+
 
             m_MyFormSheetView = null;   // no dialog needed yet; the command will bring it
             m_WeeklyReportView = null;

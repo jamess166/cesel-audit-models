@@ -128,7 +128,7 @@
           "name": "TITULO DE PLANO 01",
           "discipline": "COMUN",
           "parameterType": "TEXT",
-          "group": "TEXT",
+          "group": "GENERAL",
           "scope": "EJEMPLAR",
           "required": false
         },
@@ -136,7 +136,7 @@
           "name": "TITULO DE PLANO 02",
           "discipline": "COMUN",
           "parameterType": "TEXT",
-          "group": "TEXT",
+          "group": "GENERAL",
           "scope": "EJEMPLAR",
           "required": false
         },
@@ -144,7 +144,7 @@
           "name": "GRUPO DE VISTAS 01",
           "discipline": "COMUN",
           "parameterType": "TEXT",
-          "group": "TEXT",
+          "group": "GENERAL",
           "scope": "EJEMPLAR",
           "required": false
         },
@@ -152,7 +152,7 @@
           "name": "GRUPO DE VISTAS 02",
           "discipline": "COMUN",
           "parameterType": "TEXT",
-          "group": "TEXT",
+          "group": "GENERAL",
           "scope": "EJEMPLAR",
           "required": false
         },
@@ -160,7 +160,7 @@
           "name": "ORG- TABLAS 1",
           "discipline": "COMUN",
           "parameterType": "TEXT",
-          "group": "TEXT",
+          "group": "GENERAL",
           "scope": "EJEMPLAR",
           "required": false
         },
@@ -168,7 +168,7 @@
           "name": "ORG- TABLAS 2",
           "discipline": "COMUN",
           "parameterType": "TEXT",
-          "group": "TEXT",
+          "group": "GENERAL",
           "scope": "EJEMPLAR",
           "required": false
         },
@@ -176,7 +176,7 @@
           "name": "ORG- TABLAS 3",
           "discipline": "COMUN",
           "parameterType": "TEXT",
-          "group": "TEXT",
+          "group": "DATA",
           "scope": "EJEMPLAR",
           "required": false
         },
@@ -331,6 +331,38 @@
           "group": "DATA",
           "scope": "EJEMPLAR",
           "required": false
+        },
+        {
+          "name": "TIPO DE ESCALERA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "TIPO DE RAMPA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "DOC-UNIDAD 1",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "TIPO",
+          "required": false
+        },
+        {
+          "name": "DOC-UNIDAD 2",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "TIPO",
+          "required": false
         }
       ]
     },
@@ -385,7 +417,63 @@
       "prefix": "AR-",
       "parameters": [
         {
+          "name": "ALFEIZER REAL",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
           "name": "TABIQUERIA TIPO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CAR-TIPO CARPINTERIA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CAR-TIPO CERRADURA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CAR-TIPO BISAGRA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CAR-NUMERO HOJA",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "CODIGO DE ACABADO",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "TIPO TABIQUERIA",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
@@ -426,14 +514,6 @@
         },
         {
           "name": "CAR-NUMERO HOJA",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "DATA",
-          "scope": "EJEMPLAR",
-          "required": false
-        },
-        {
-          "name": "CODIGO DE ACABADO",
           "discipline": "COMUN",
           "parameterType": "TEXT",
           "group": "DATA",
@@ -531,6 +611,30 @@
           "group": "DATA",
           "scope": "EJEMPLAR",
           "required": false
+        },
+        {
+          "name": "IBT_DESI3",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "IS_Item",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "OTRA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "ME_descripcion 1",
+          "discipline": "COMUN",
+          "parameterType": "TEXT",
+          "group": "OTRA",
+          "scope": "EJEMPLAR",
+          "required": false
         }
       ]
     },
@@ -585,6 +689,14 @@
           "group": "DATA",
           "scope": "EJEMPLAR",
           "required": false
+        },
+        {
+          "name": "PESO",
+          "discipline": "COMUN",
+          "parameterType": "NUMBER",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
         }
       ]
     },
@@ -626,6 +738,14 @@
         },
         {
           "name": "INCLUIR-FUERZA",
+          "discipline": "COMUN",
+          "parameterType": "SI/NO",
+          "group": "DATA",
+          "scope": "EJEMPLAR",
+          "required": false
+        },
+        {
+          "name": "INCLUIR-HVAC",
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "DATA",
@@ -857,68 +977,6 @@
           "discipline": "COMUN",
           "parameterType": "SI/NO",
           "group": "GENERAL",
-          "scope": "EJEMPLAR",
-          "required": false
-        }
-      ]
-    },
-    {
-      "specialty": "ARQUITECTURA",
-      "prefix": "AR-",
-      "parameters": [
-        {
-          "name": "TABIQUERIA TIPO",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "DATA",
-          "scope": "EJEMPLAR",
-          "required": false
-        },
-        {
-          "name": "CAR-TIPO CARPINTERIA",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "DATA",
-          "scope": "EJEMPLAR",
-          "required": false
-        },
-        {
-          "name": "CAR-TIPO CERRADURA",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "DATA",
-          "scope": "EJEMPLAR",
-          "required": false
-        },
-        {
-          "name": "CAR-TIPO BISAGRA",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "DATA",
-          "scope": "EJEMPLAR",
-          "required": false
-        },
-        {
-          "name": "CAR-TIPO PLATINA",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "DATA",
-          "scope": "EJEMPLAR",
-          "required": false
-        },
-        {
-          "name": "CAR-NUMERO HOJA",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "DATA",
-          "scope": "EJEMPLAR",
-          "required": false
-        },
-        {
-          "name": "CODIGO DE ACABADO",
-          "discipline": "COMUN",
-          "parameterType": "TEXT",
-          "group": "DATA",
           "scope": "EJEMPLAR",
           "required": false
         }

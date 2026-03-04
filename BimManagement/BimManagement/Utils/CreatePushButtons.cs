@@ -125,5 +125,29 @@ namespace BimManagement
 
             return btnData;
         }
+
+        public static PushButtonData ButtonReportSheet()
+        {
+            RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
+            {
+                AvailabilityClassName = string.Empty,
+                Icon = Properties.Resources.audit,
+                Name = "Plano\nReporte",
+                Text = "Plano\nReporte",
+                AssemblyName = Assembly.GetExecutingAssembly().Location,
+                ClassName = "BimManagement.CreateReportSheetCommand",
+                ShortDescription = "Crea un plano de reporte semanal/mensual",
+                LongDescription = "Crea un plano de reporte de acuerdo a la opcion elegida, que pude ser semanal o mensual, " +
+                "además inserta el parámetro de unidad y el parámetro de cantidad, para usarse en el metrado de acuerdo a su tipo de medición, " +
+                "inserta la tabla en el nuevo plano creado",
+
+                Contextual = "https://www.cesel.com.pe/"
+            };
+
+            PushButtonData btnData = RevitLibrary.CreatePushButtons.PushButton(buttonData,
+                Properties.Resources.ToolTip);
+
+            return btnData;
+        }
     }
 }
