@@ -47,12 +47,11 @@ namespace BimManagement
             RevitTools.uidoc = uidoc;
             RevitTools.sel = sel;
 
-            //Open Window
+            // Redirige al nuevo comando de exportación PDF
             try
             {
-                App.thisApp.ShowFormSheetsView();
-                //ShareSheetsView shareSheetsView = new ShareSheetsView();
-                //shareSheetsView.Show();                
+                var cmd = new ShareSheetsCommand();
+                return cmd.Execute(commandData, ref message, elements);
             }
             catch (Exception ex)
             {

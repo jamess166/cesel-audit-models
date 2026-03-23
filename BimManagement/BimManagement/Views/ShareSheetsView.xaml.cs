@@ -1,140 +1,208 @@
-﻿using Autodesk.Revit.UI;
-using Autodesk.Revit.UI.Events;
+using Autodesk.Revit.DB;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace BimManagement
 {
     /// <summary>
-    /// Lógica de interacción para ShareSheetsView.xaml
+    /// Ítem de plano para la lista de exportación (modelo actual).
     /// </summary>
+    public class SheetItem
+    {
+        public bool      IsSelected { get; set; } = true;
+        public string    Number     { get; }
+        public string    Name       { get; }
+        public ElementId Id         { get; }
+        public string    Display    => $"{Number}  –  {Name}";
+
+        public SheetItem(ViewSheet sheet)
+        {
+            Number = sheet.SheetNumber;
+            Name   = sheet.Name;
+            Id     = sheet.Id;
+        }
+    }
+
     public partial class ShareSheetsView : Window
     {
-        private ExternalEvent m_ExEvent;
+        private readonly List<SheetItem> _items;
 
-        public ShareSheetsView(ExternalEvent exEvent)
+        // ── Resultados ────────────────────────────────────────────────────────
+        public string           OutputPath      { get; private set; }
+        public bool             UseCurrentModel => CurrentModelRadio.IsChecked == true;
+        public List<SheetItem>  SelectedSheets  => _items.Where(i => i.IsSelected).ToList();
+        public List<FileInfo>   SelectedFiles   => RvtFilesList.Items.OfType<FileInfo>().ToList();
+
+        public ShareSheetsView(string suggestedOutputPath, List<SheetItem> sheets)
         {
             InitializeComponent();
-            m_ExEvent = exEvent;
 
-            //txtFilePath.Text = string.Empty;
-            txtFilePath.Text = !string.IsNullOrEmpty(WeeklyReportTools.DirectoryPath) ? WeeklyReportTools.DirectoryPath : string.Empty;
-            chkCopyShared.IsChecked = WeeklyReportTools.CopyShared;
-            chkDivideFiles.IsChecked = WeeklyReportTools.DivideNativePDF;
-            chkPDF.IsChecked = WeeklyReportTools.CreatePDFToo;
+            _items = sheets ?? new List<SheetItem>();
 
+            OutputPath         = suggestedOutputPath;
+            OutputPathBox.Text = suggestedOutputPath;
 
-            //ViewTools.DirectoryPath = txtFilePath.Text;
+            SheetsList.ItemsSource = _items;
+            UpdateCount();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        // ── Cambio de alcance ─────────────────────────────────────────────────
+        private void Scope_Changed(object sender, RoutedEventArgs e)
         {
-            WeeklyReportTools.Revision = txtRevision.Text.ToString();
-            //ViewTools.RevisionCBS = txtRevisionCBS.Text.ToString();
-            //ViewTools.SendDate = dtDateSend.SelectedDate;
-            //ViewTools.IsSameDate = chkIsSameDate.IsChecked;
-            //ViewTools.Description = txtDescription.Text.ToString();
+            if (FolderPanel == null) return;
 
-            WeeklyReportTools.DivideNativePDF = (bool)chkDivideFiles.IsChecked;
-            WeeklyReportTools.CopyShared = (bool)chkCopyShared.IsChecked;
-            WeeklyReportTools.CreatePDFToo= (bool)chkPDF.IsChecked;
-
-
-            if (Tools.ExistPath(txtFilePath.Text))
-            {
-                WeeklyReportTools.DirectoryPath = txtFilePath.Text;
-            }
-
-            //List<SheetDetail> sheets = new List<SheetDetail>();
-
-            //foreach(SheetDetail sheetDetail in treeSheets.Items)
-            //{
-            //    if (!sheetDetail.IsSelected) continue;
-            //    sheets.Add(sheetDetail);
-            //}
-
-            List<SheetDetail> sheets = treeSheets.Items
-                                        .OfType<SheetDetail>()
-                                        .Where(sheetDetail => sheetDetail.IsSelected)
-                                        .ToList();
-
-            btnOpenRevision.IsEnabled = true;
-            btnOpenShare.IsEnabled = true;
-
-            WeeklyReportTools.SelectedSheets = sheets;
-
-            m_ExEvent.Raise();
-            //ShareSheetsTools.Execute();
+            bool carpeta = FolderRadio.IsChecked == true;
+            FolderPanel.Visibility    = carpeta ? System.Windows.Visibility.Visible   : System.Windows.Visibility.Collapsed;
+            SheetListPanel.Visibility = carpeta ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        // ── Carpeta de modelos ────────────────────────────────────────────────
+        private void SelectFolder_Click(object sender, RoutedEventArgs e)
         {
-            txtRevision.Text = 0.ToString();
-            //dtDateSend.SelectedDate = DateTime.Now;
-        }
-
-        private void btnOpenRevision_Click(object sender, RoutedEventArgs e)
-        {
-            try
+            using (var dlg = new OpenFileDialog())
             {
-                Process.Start(ShareSheetsTools.revisionPath);
-            }
-            catch (Exception ex)
-            {
-                TaskDialog.Show("CASA", ex.Message);
-            }            
-        }
+                dlg.ValidateNames   = false;
+                dlg.CheckFileExists = false;
+                dlg.CheckPathExists = true;
+                dlg.FileName        = "Seleccionar carpeta";
 
-        private void btnOpenShare_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                Process.Start(ShareSheetsTools.sharePath);
-            }
-            catch (Exception ex)
-            {
-                TaskDialog.Show("CASA", ex.Message);
-            }            
-        }
-
-        private void btn_Directory_Click(object sender, RoutedEventArgs e)
-        {
-            string folderPath = string.Empty;
-
-            using (OpenFileDialog openFile = new OpenFileDialog())
-            {
-                openFile.ValidateNames = false;
-                openFile.CheckFileExists = false;
-                openFile.CheckPathExists = true;
-
-                openFile.FileName = "Folder Selection";
-
-                if (openFile.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
-                    folderPath = System.IO.Path.GetDirectoryName(openFile.FileName);
+                    string folder      = Path.GetDirectoryName(dlg.FileName);
+                    FolderPathBox.Text = folder;
+
+                    // Auto-calcular carpeta destino: 3 niveles arriba + ANEXOS
+                    string computed    = ComputeOutputPath(folder);
+                    OutputPath         = computed;
+                    OutputPathBox.Text = computed;
+
+                    FindFiles_Click(null, null);
                 }
             }
+        }
 
-            if (folderPath == string.Empty) { return; }
+        /// <summary>
+        /// Sube <paramref name="levels"/> niveles desde <paramref name="folder"/>
+        /// y devuelve la ruta con la subcarpeta "ANEXOS".
+        /// </summary>
+        private static string ComputeOutputPath(string folder, int levels = 3)
+        {
+            string current = folder;
+            for (int i = 0; i < levels; i++)
+            {
+                string parent = Path.GetDirectoryName(current);
+                if (string.IsNullOrEmpty(parent)) break;
+                current = parent;
+            }
+            return Path.Combine(current, "ANEXOS");
+        }
 
-            txtFilePath.Text = folderPath;
+        private void FindFiles_Click(object sender, RoutedEventArgs e)
+        {
+            string path = FolderPathBox?.Text?.Trim();
+            if (!Directory.Exists(path))
+            {
+                StatusLabel.Text = "Ruta no válida.";
+                return;
+            }
 
-            //guardo el path
-            WeeklyReportTools.DirectoryPath = folderPath;   
+            var option      = IncludeSubfoldersCheck.IsChecked == true
+                              ? SearchOption.AllDirectories
+                              : SearchOption.TopDirectoryOnly;
+            var backupRegex = new Regex(@"\.\d{4}\.rvt$", RegexOptions.IgnoreCase);
+            var files       = Directory.GetFiles(path, "*.rvt", option)
+                                       .Where(f => !backupRegex.IsMatch(f))
+                                       .ToArray();
+
+            RvtFilesList.Items.Clear();
+            foreach (var f in files)
+                RvtFilesList.Items.Add(new FileInfo(f));
+
+            FilesCountLabel.Text = $"Archivos encontrados: {files.Length}";
+            StatusLabel.Text     = string.Empty;
+        }
+
+        // ── Carpeta destino ───────────────────────────────────────────────────
+        private void ChangeFolder_Click(object sender, RoutedEventArgs e)
+        {
+            using (var dlg = new OpenFileDialog())
+            {
+                dlg.ValidateNames   = false;
+                dlg.CheckFileExists = false;
+                dlg.CheckPathExists = true;
+                dlg.FileName        = "Seleccionar carpeta";
+
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    string p           = Path.GetDirectoryName(dlg.FileName);
+                    OutputPath         = p;
+                    OutputPathBox.Text = p;
+                }
+            }
+        }
+
+        // ── Selección masiva ──────────────────────────────────────────────────
+        private void SelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in _items) item.IsSelected = true;
+            RefreshList();
+        }
+
+        private void DeselectAll_Click(object sender, RoutedEventArgs e)
+        {
+            foreach (var item in _items) item.IsSelected = false;
+            RefreshList();
+        }
+
+        private void RefreshList()
+        {
+            SheetsList.ItemsSource = null;
+            SheetsList.ItemsSource = _items;
+            UpdateCount();
+        }
+
+        private void UpdateCount()
+        {
+            int total    = _items.Count;
+            int selected = _items.Count(i => i.IsSelected);
+            CountLabel.Text = $"{selected} de {total} planos";
+        }
+
+        // ── Exportar ──────────────────────────────────────────────────────────
+        private void Export_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(OutputPath))
+            {
+                StatusLabel.Text = "Debe indicar una carpeta destino.";
+                return;
+            }
+
+            if (UseCurrentModel && !SelectedSheets.Any())
+            {
+                StatusLabel.Text = "Seleccione al menos un plano.";
+                return;
+            }
+
+            if (!UseCurrentModel && RvtFilesList.Items.Count == 0)
+            {
+                StatusLabel.Text = "Busque archivos en la carpeta primero.";
+                return;
+            }
+
+            DialogResult = true;
+            Close();
+        }
+
+        // ── Cancelar ──────────────────────────────────────────────────────────
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
     }
 }

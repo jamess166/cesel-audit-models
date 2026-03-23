@@ -126,6 +126,29 @@ namespace BimManagement
             return btnData;
         }
 
+        public static PushButtonData ButtonExportPDF()
+        {
+            RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
+            {
+                AvailabilityClassName = string.Empty,
+                Icon                  = Properties.Resources.audit,
+                Name                  = "Exportar\nPDF",
+                Text                  = "Exportar\nPDF",
+                AssemblyName          = Assembly.GetExecutingAssembly().Location,
+                ClassName             = "BimManagement.ShareSheetsCommand",
+                ShortDescription      = "Exporta los planos CSL a PDF en la carpeta ANEXOS",
+                LongDescription       = "Filtra los planos cuyo número contiene '-CSL-', " +
+                                        "detecta automáticamente la carpeta ANEXOS (3 niveles " +
+                                        "arriba del modelo) y exporta los seleccionados como PDF.",
+                Contextual            = "https://www.cesel.com.pe/"
+            };
+
+            PushButtonData btnData = RevitLibrary.CreatePushButtons.PushButton(buttonData,
+                Properties.Resources.ToolTip);
+
+            return btnData;
+        }
+
         public static PushButtonData ButtonReportSheet()
         {
             RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()

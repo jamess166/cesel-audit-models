@@ -83,6 +83,7 @@
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
@@ -97,8 +98,16 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Apps\ShareSheetsApp.cs" />
+    <Compile Include="Commands\CreateReportSheet\Configmanager.cs" />
     <Compile Include="Commands\CreateReportSheet\CreateReportSheetCommand.cs" />
+    <Compile Include="Commands\CreateReportSheet\CreateReportSheetHandler.cs" />
     <Compile Include="Commands\CreateReportSheet\CreateReportSheetTools.cs" />
+    <Compile Include="Commands\CreateReportSheet\ReportElementFilter.cs" />
+    <Compile Include="Commands\CreateReportSheet\ReportScheduleCreator.cs" />
+    <Compile Include="Commands\CreateReportSheet\Report3DViewCreator.cs" />
+    <Compile Include="Commands\CreateReportSheet\ReportExcelReader.cs" />
+    <Compile Include="Commands\CreateReportSheet\ReportParameterFiller.cs" />
+    <Compile Include="Commands\CreateReportSheet\SharedParameterCreator.cs" />
     <Compile Include="Commands\ExportSheets\PrintPDF.cs" />
     <Compile Include="Commands\AsBuilt\ConvertAsBuiltCommand.cs" />
     <Compile Include="Commands\AsBuilt\SetDatesCommand.cs" />
@@ -160,6 +169,9 @@
     <Compile Include="Views\ShareSheetsView.xaml.cs">
       <DependentUpon>ShareSheetsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CreateReportSheetView.xaml.cs">
+      <DependentUpon>CreateReportSheetView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\WeeklyReportView.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -169,6 +181,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Commands\CreateReportSheet\Resources\config.json" />
     <None Include="Commands\ModelAudit\Config\filename-config.json" />
     <None Include="Commands\ModelAudit\Config\levelname-config.json" />
     <None Include="Commands\ModelAudit\Config\coordinates-config.json" />
@@ -191,6 +204,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\ShareSheetsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\CreateReportSheetView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -224,6 +241,14 @@ IF NOT EXIST "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources" (
 
 REM Copiar todos los archivos desde Commands\ModelAudit\Config al destino
 xcopy /Y /S /I /E /Q "$(ProjectDir)Commands\ModelAudit\Config\*" "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources\"
+
+REM Copiar config.json de CreateReportSheet a %APPDATA%\BimManagement\Resources\
+IF NOT EXIST "%APPDATA%\BimManagement\Resources\" (
+    mkdir "%APPDATA%\BimManagement\Resources\"
+)
+IF NOT EXIST "%APPDATA%\BimManagement\Resources\config.json" (
+    copy /Y "$(ProjectDir)Commands\CreateReportSheet\Resources\config.json" "%APPDATA%\BimManagement\Resources\config.json"
+)
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
