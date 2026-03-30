@@ -45,6 +45,7 @@ namespace BimManagement
             panel.AddItem(CreatePushButtons.ButtonModelAudit());
             panel.AddItem(CreatePushButtons.ButtonModelAuditBuilding());
             panel.AddItem(CreatePushButtons.ButtonWeeklyReport());
+            panel.AddSeparator();
             panel.AddItem(CreatePushButtons.ButtonReportSheet());
             panel.AddItem(CreatePushButtons.ButtonExportPDF());
 

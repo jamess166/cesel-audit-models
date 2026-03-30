@@ -71,6 +71,8 @@ namespace BimManagement
                 Log("✔ Proceso completado.");
                 UpdateProgress(0, 0);
             }
+
+            ShowLoveMessage();
         }
 
         public string GetName() => "Crear Planos de Reporte";
@@ -463,6 +465,13 @@ namespace BimManagement
             var view = App.m_CreateReportSheetView;
             if (view == null) return;
             view.Dispatcher.Invoke(() => view.SetProgress(current, total));
+        }
+
+        private static void ShowLoveMessage()
+        {
+            var view = App.m_CreateReportSheetView;
+            if (view == null) return;
+            view.Dispatcher.Invoke(() => AmorParaSheylaNew.MostrarMensaje());
         }
     }
 }

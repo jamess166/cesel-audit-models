@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="App.cs" />
     <Compile Include="Apps\ShareSheetsApp.cs" />
+    <Compile Include="Commands\CreateReportSheet\AmorParaSheylaNew.cs" />
     <Compile Include="Commands\CreateReportSheet\Configmanager.cs" />
     <Compile Include="Commands\CreateReportSheet\CreateReportSheetCommand.cs" />
     <Compile Include="Commands\CreateReportSheet\CreateReportSheetHandler.cs" />
@@ -169,6 +170,9 @@
     <Compile Include="Views\ShareSheetsView.xaml.cs">
       <DependentUpon>ShareSheetsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\AmorParaSheylaView.xaml.cs">
+      <DependentUpon>AmorParaSheylaView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\CreateReportSheetView.xaml.cs">
       <DependentUpon>CreateReportSheetView.xaml</DependentUpon>
     </Compile>
@@ -204,6 +208,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\ShareSheetsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AmorParaSheylaView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

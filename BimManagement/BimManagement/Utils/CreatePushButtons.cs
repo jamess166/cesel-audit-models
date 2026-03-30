@@ -109,8 +109,8 @@ namespace BimManagement
             {
                 AvailabilityClassName = string.Empty,
                 Icon = Properties.Resources.audit,
-                Name = "Reporte\nSemanal",
-                Text = "Reporte\nSemanal",
+                Name = "Reporte\nAntiguo",
+                Text = "Reporte\nAntiguo",
                 AssemblyName = Assembly.GetExecutingAssembly().Location,
                 ClassName = "BimManagement.WeeklyReportCommand",
                 ShortDescription = "Actualiza los modelos de Supervisión para el reporte semanal",
@@ -131,7 +131,7 @@ namespace BimManagement
             RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
             {
                 AvailabilityClassName = string.Empty,
-                Icon                  = Properties.Resources.audit,
+                Icon                  = Properties.Resources.pdf,
                 Name                  = "Exportar\nPDF",
                 Text                  = "Exportar\nPDF",
                 AssemblyName          = Assembly.GetExecutingAssembly().Location,
@@ -154,7 +154,7 @@ namespace BimManagement
             RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
             {
                 AvailabilityClassName = string.Empty,
-                Icon = Properties.Resources.audit,
+                Icon = Properties.Resources.sheetReport,
                 Name = "Plano\nReporte",
                 Text = "Plano\nReporte",
                 AssemblyName = Assembly.GetExecutingAssembly().Location,

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace BimManagement
 {
@@ -126,16 +127,40 @@ namespace BimManagement
         }
 
         /// <summary>
-        /// Sube 3 niveles desde el directorio del modelo y agrega "ANEXOS".
-        /// .../SEMANA 123/CP/MODELOS CP/UT7/model.rvt → .../SEMANA 123/ANEXOS
+        /// Sube desde el directorio del modelo buscando una carpeta con formato
+        /// "SEMANA NNN - NNN SUP" y agrega "ANEXOS".
+        /// Si no la encuentra, sube 5 niveles como fallback.
+        /// .../SEMANA 123 - 97 SUP/CP/MODELOS CP/UT7/model.rvt → .../SEMANA 123 - 97 SUP/ANEXOS
         /// </summary>
         private static string ResolveOutputPath(string modelPathName)
         {
             if (string.IsNullOrEmpty(modelPathName)) return string.Empty;
 
             string modelDir = Path.GetDirectoryName(modelPathName);
-            string root     = GetAncestor(modelDir, levels: 3);
+            var pattern = new Regex(@"^SEMANA\s+\d+\s*-\s*\d+\s+SUP$", RegexOptions.IgnoreCase);
+            string root  = FindAncestorByPattern(modelDir, pattern)
+                        ?? GetAncestor(modelDir, levels: 5);
             return Path.Combine(root, "ANEXOS");
+        }
+
+        /// <summary>
+        /// Sube por los directorios padre hasta encontrar uno cuyo nombre coincida
+        /// con <paramref name="pattern"/>. Devuelve null si llega a la raíz sin encontrarlo.
+        /// </summary>
+        private static string FindAncestorByPattern(string path, Regex pattern)
+        {
+            string current = path;
+            while (!string.IsNullOrEmpty(current))
+            {
+                string folderName = Path.GetFileName(current);
+                if (!string.IsNullOrEmpty(folderName) && pattern.IsMatch(folderName))
+                    return current;
+
+                string parent = Path.GetDirectoryName(current);
+                if (string.IsNullOrEmpty(parent) || parent == current) break; // raíz del disco
+                current = parent;
+            }
+            return null;
         }
 
         private static string GetAncestor(string path, int levels)

@@ -179,7 +179,49 @@ namespace BimManagement
             val = FindParamByNames(elem, "volume", "volumen", "vol", "solid volume");
             if (val.HasValue) return ToCubicMeters(val.Value);
 
+            // Fallback: calcular volumen sumando sólidos de la geometría
+            // Útil para escaleras y otros elementos sin parámetro de volumen
+            val = GetVolumeFromGeometry(elem);
+            if (val.HasValue) return val.Value;
+
             return null;
+        }
+
+        private double? GetVolumeFromGeometry(Element elem)
+        {
+            try
+            {
+                var options = new Options
+                {
+                    DetailLevel = ViewDetailLevel.Fine,
+                    IncludeNonVisibleObjects = false
+                };
+
+                GeometryElement geomElem = elem.get_Geometry(options);
+                if (geomElem == null) return null;
+
+                double totalVolumeCubicFt = SumSolidsVolume(geomElem);
+
+                return totalVolumeCubicFt > 0 ? ToCubicMeters(totalVolumeCubicFt) : (double?)null;
+            }
+            catch { return null; }
+        }
+
+        private static double SumSolidsVolume(GeometryElement geomElem)
+        {
+            double total = 0.0;
+            foreach (GeometryObject obj in geomElem)
+            {
+                if (obj is Solid solid && solid.Volume > 0)
+                {
+                    total += solid.Volume;
+                }
+                else if (obj is GeometryInstance instance)
+                {
+                    total += SumSolidsVolume(instance.GetInstanceGeometry());
+                }
+            }
+            return total;
         }
 
         // ── Obtención de longitud ─────────────────────────────────────────────

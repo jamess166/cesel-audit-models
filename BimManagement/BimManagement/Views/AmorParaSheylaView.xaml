@@ -1,0 +1,172 @@
+<Window x:Class="BimManagement.AmorParaSheylaView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Para Sheyla"
+        Width="420" Height="320"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent">
+
+    <Window.Resources>
+        <Style x:Key="CloseBtn" TargetType="Button">
+            <Setter Property="Background"        Value="#E91E8C"/>
+            <Setter Property="Foreground"        Value="White"/>
+            <Setter Property="FontSize"          Value="13"/>
+            <Setter Property="FontWeight"        Value="SemiBold"/>
+            <Setter Property="BorderThickness"   Value="0"/>
+            <Setter Property="Cursor"            Value="Hand"/>
+            <Setter Property="Padding"           Value="32,10"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="20"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#C2185B"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#AD1457"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- Sombra exterior -->
+    <Border Margin="12" CornerRadius="20">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="20" ShadowDepth="4"
+                              Color="#000000" Opacity="0.3"/>
+        </Border.Effect>
+
+        <Border CornerRadius="20" ClipToBounds="True">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#FCE4EC" Offset="0"/>
+                    <GradientStop Color="#F8BBD9" Offset="0.5"/>
+                    <GradientStop Color="#F48FB1" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid>
+                <!-- Círculo decorativo superior derecho -->
+                <Ellipse Width="180" Height="180"
+                         HorizontalAlignment="Right" VerticalAlignment="Top"
+                         Margin="0,-50,-50,0" Opacity="0.18">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#E91E8C" Offset="0"/>
+                            <GradientStop Color="Transparent" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+
+                <!-- Círculo decorativo inferior izquierdo -->
+                <Ellipse Width="130" Height="130"
+                         HorizontalAlignment="Left" VerticalAlignment="Bottom"
+                         Margin="-30,0,0,-30" Opacity="0.15">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#E91E8C" Offset="0"/>
+                            <GradientStop Color="Transparent" Offset="1"/>
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                </Ellipse>
+
+                    <!-- Botón X en esquina superior derecha -->
+                <Button Content="✕"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Top"
+                        Margin="0,10,14,0"
+                        Width="28" Height="28"
+                        FontSize="12"
+                        FontWeight="Bold"
+                        Foreground="#AD1457"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Cursor="Hand"
+                        Click="Cerrar_Click"
+                        Panel.ZIndex="10"/>
+
+                <!-- Contenido principal -->
+                <StackPanel VerticalAlignment="Center" Margin="36,24,36,24">
+
+                    <!-- Corazón con animación de pulso -->
+                    <TextBlock x:Name="HeartText"
+                               Text="💖"
+                               FontSize="52"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,10"
+                               RenderTransformOrigin="0.5,0.5">
+                        <TextBlock.RenderTransform>
+                            <ScaleTransform x:Name="HeartScale"/>
+                        </TextBlock.RenderTransform>
+                    </TextBlock>
+
+                    <!-- Subtítulo -->
+                    <TextBlock Text="Para mi Sheyla"
+                               FontSize="11"
+                               FontWeight="Medium"
+                               Foreground="#AD1457"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,12"/>
+
+                    <!-- Mensaje -->
+                    <TextBlock x:Name="MensajeText"
+                               FontSize="15"
+                               Foreground="#5D1049"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"
+                               LineHeight="22"
+                               Margin="0,0,0,24"/>
+
+                    <!-- Botón -->
+                    <Button Content="Con amor 💕"
+                            Style="{StaticResource CloseBtn}"
+                            HorizontalAlignment="Center"
+                            Click="Cerrar_Click"/>
+
+                    <!-- Cuenta regresiva -->
+                    <TextBlock x:Name="CountdownText"
+                               FontSize="10"
+                               Foreground="#AD1457"
+                               HorizontalAlignment="Center"
+                               Margin="0,8,0,0"
+                               Opacity="0.7"/>
+                </StackPanel>
+
+                <!-- Área de arrastre (encima de todo, transparente) -->
+                <Rectangle Fill="Transparent"
+                           MouseLeftButtonDown="Window_MouseLeftButtonDown"/>
+            </Grid>
+        </Border>
+    </Border>
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Window.Loaded">
+            <BeginStoryboard>
+                <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                    <DoubleAnimation Storyboard.TargetName="HeartScale"
+                                     Storyboard.TargetProperty="ScaleX"
+                                     From="1" To="1.18"
+                                     Duration="0:0:0.7"/>
+                    <DoubleAnimation Storyboard.TargetName="HeartScale"
+                                     Storyboard.TargetProperty="ScaleY"
+                                     From="1" To="1.18"
+                                     Duration="0:0:0.7"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+</Window>
