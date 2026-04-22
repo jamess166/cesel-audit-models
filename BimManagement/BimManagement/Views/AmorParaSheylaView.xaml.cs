@@ -8,7 +8,7 @@ namespace BimManagement
     public partial class AmorParaSheylaView : Window
     {
         private readonly DispatcherTimer _timer;
-        private int _secondsLeft = 10;
+        private int _secondsLeft = 200;
 
         public AmorParaSheylaView(string mensaje)
         {
