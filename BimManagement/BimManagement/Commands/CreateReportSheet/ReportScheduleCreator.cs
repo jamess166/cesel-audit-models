@@ -146,8 +146,9 @@ namespace BimManagement
                     ShowBlankLine = false,
                 });
 
-            // PR-NIVEL: header OFF, footer OFF
-            if (addedFields.TryGetValue("PR-NIVEL", out ScheduleField nivelGf))
+            // PR-NIVEL: agrupar solo en reporte semanal
+            if (!_isMonthly &&
+                addedFields.TryGetValue("PR-NIVEL", out ScheduleField nivelGf))
                 def.AddSortGroupField(new ScheduleSortGroupField(nivelGf.FieldId)
                 {
                     ShowHeader    = false,
