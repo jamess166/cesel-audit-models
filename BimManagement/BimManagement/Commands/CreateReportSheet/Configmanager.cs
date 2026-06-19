@@ -18,7 +18,7 @@ namespace BimManagement
 
         [DataMember(Name = "titleBlockFamilyPath")]
         public string TitleBlockFamilyPath { get; set; } =
-            @"C:\ProgramData\Autodesk\Revit\Addins\2024\CESEL\Resources\CPA-A3.rfa";
+            @"C:\ProgramData\Autodesk\Revit\Addins\2024\CESEL\Resources\CSL-A3.rfa";
 
         [DataMember(Name = "lastModified")]
         public string LastModified { get; set; } = DateTime.Now.ToString("o");

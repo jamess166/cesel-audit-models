@@ -317,6 +317,21 @@
                                          ToolTip="Fecha de presentación del reporte (dd/MM/yyyy)"/>
                             </StackPanel>
                         </Grid>
+
+                        <Border Name="DeleteExistingMonthlyPanel"
+                                Margin="0,12,0,0"
+                                Background="#FEFCE8"
+                                BorderBrush="#FDE68A"
+                                BorderThickness="1"
+                                CornerRadius="6"
+                                Padding="12,10"
+                                Visibility="Collapsed">
+                            <CheckBox Name="DeleteExistingSheetsCheck"
+                                      Content="Eliminar planos existentes con '-CSL-' antes de crear el reporte mensual"
+                                      IsChecked="True"
+                                      Foreground="#854D0E"
+                                      FontSize="13"/>
+                        </Border>
                     </StackPanel>
                 </Border>
 

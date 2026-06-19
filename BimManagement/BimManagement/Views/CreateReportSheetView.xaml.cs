@@ -20,6 +20,7 @@ namespace BimManagement
         public string Period            => PeriodoBox.Text.Trim();
         public string Month             => MonthBox.Text.Trim();
         public string FechaPresentacion => FechaPresentacionBox.Text.Trim();
+        public bool   DeleteExistingCslSheets => DeleteExistingSheetsCheck.IsChecked == true;
         public bool   UseCurrentModel   => CurrentModelRadio.IsChecked == true;
         public string FolderPath        => FolderPathBox?.Text?.Trim() ?? string.Empty;
         public bool   IncludeSubfolders => IncludeSubfoldersCheck.IsChecked == true;
@@ -46,6 +47,7 @@ namespace BimManagement
             {
                 WeekPanel.Visibility  = Visibility.Collapsed;
                 MonthPanel.Visibility = Visibility.Visible;
+                DeleteExistingMonthlyPanel.Visibility = Visibility.Visible;
 
                 DateTime now   = DateTime.Now;
                 DateTime first = new DateTime(now.Year, now.Month, 1).AddMonths(-1);
@@ -64,6 +66,7 @@ namespace BimManagement
             {
                 WeekPanel.Visibility  = Visibility.Visible;
                 MonthPanel.Visibility = Visibility.Collapsed;
+                DeleteExistingMonthlyPanel.Visibility = Visibility.Collapsed;
                 IssueWeek_TextChanged(null, null);
 
                 // Fecha de presentación: próximo lunes
@@ -185,6 +188,7 @@ namespace BimManagement
             CreateReportSheetTools.Month             = Month;
             CreateReportSheetTools.Period            = Period;
             CreateReportSheetTools.IsMonthly         = IsMonthly;
+            CreateReportSheetTools.DeleteExistingCslSheets = DeleteExistingCslSheets;
             CreateReportSheetTools.FechaPresentacion = FechaPresentacion;
             CreateReportSheetTools.UseCurrentModel   = UseCurrentModel;
             CreateReportSheetTools.Files             = SelectedFiles;

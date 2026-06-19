@@ -85,6 +85,7 @@ namespace BimManagement
             string period  = CreateReportSheetTools.Period;
             string month   = CreateReportSheetTools.Month;
             bool isMonthly = CreateReportSheetTools.IsMonthly;
+            bool deleteExistingCslSheets = CreateReportSheetTools.DeleteExistingCslSheets;
             string issueDate = CreateReportSheetTools.FechaPresentacion;
 
             // 1. Garantizar parámetros compartidos
@@ -132,6 +133,9 @@ namespace BimManagement
             using (Transaction tx = new Transaction(doc, "CSL - Crear Plano"))
             {
                 tx.Start();
+                if (isMonthly && deleteExistingCslSheets)
+                    DeleteExistingCslSheets(doc);
+
                 CreateSheet(doc, config.TitleBlockFamilyPath,
                     week, month, isMonthly, issueDate, reportSchedule);
                 tx.Commit();
@@ -213,8 +217,8 @@ namespace BimManagement
                 case "AGU":
                 case "DES":
                 case "DRE":
-                case "ACI":                      return "INSTALACIONES SANITARIAS";
-                case "IEE":                      return "INSTALACIONES ELECTRICAS";
+                case "ACI":                      return "INST SANITARIAS";
+                case "IEE":                      return "INST ELECTRICAS";
                 case "COM":                      return "COMUNICACIONES";
                 case "IMM":                      return "MECANICAS";
                 case "SSA":                      return "SEGURIDAD";
@@ -433,6 +437,23 @@ namespace BimManagement
             while (usedNumbers.Contains(candidate));
 
             return candidate;
+        }
+
+        private static void DeleteExistingCslSheets(Document doc)
+        {
+            List<ElementId> sheetIds = new FilteredElementCollector(doc)
+                .OfClass(typeof(ViewSheet))
+                .Cast<ViewSheet>()
+                .Where(s => !string.IsNullOrWhiteSpace(s.SheetNumber)
+                         && s.SheetNumber.IndexOf("-CSL-", StringComparison.OrdinalIgnoreCase) >= 0)
+                .Select(s => s.Id)
+                .ToList();
+
+            if (sheetIds.Count == 0)
+                return;
+
+            doc.Delete(sheetIds);
+            Log($"Se eliminaron {sheetIds.Count} planos existentes con '-CSL-'.");
         }
 
         private static void SetSheetParam(ViewSheet sheet, string paramName, string value)

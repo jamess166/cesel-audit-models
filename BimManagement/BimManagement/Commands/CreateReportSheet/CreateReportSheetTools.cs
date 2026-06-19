@@ -12,6 +12,7 @@ namespace BimManagement
         public static string          Month             { get; set; }
         public static string          Period            { get; set; }
         public static bool            IsMonthly         { get; set; }
+        public static bool            DeleteExistingCslSheets { get; set; }
         public static string          FechaPresentacion { get; set; }
         public static bool            UseCurrentModel   { get; set; }
         public static List<FileInfo>  Files             { get; set; }

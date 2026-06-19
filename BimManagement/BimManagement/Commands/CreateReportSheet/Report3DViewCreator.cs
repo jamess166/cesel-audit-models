@@ -249,9 +249,10 @@ namespace BimManagement
             view.PartsVisibility = PartsVisibility.ShowPartsOnly;
             view.DisplayStyle    = DisplayStyle.Shading; // Shaded sin bordes (Show Edges OFF)
 
-            // Ocultar anotaciones de grillas y niveles
+            // Ocultar categorías no deseadas en la vista 3D del reporte
             HideCategoryInView(view, BuiltInCategory.OST_Grids);
             HideCategoryInView(view, BuiltInCategory.OST_Levels);
+            HideCategoryInView(view, BuiltInCategory.OST_Lines);
 
             // Desactivar "Show imported categories" → ocultar todos los DWG importados
             HideImportedCategories(view);
