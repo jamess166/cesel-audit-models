@@ -158,6 +158,25 @@ namespace BimManagement.Commands.PerimeterFence
         }
 
         /// <summary>
+        /// Tries each solid in <paramref name="solids"/> and returns the highest surface Z found.
+        /// </summary>
+        public static bool TryGetElevationAtXY(
+            IList<Solid> solids, double x, double y, out double elevation)
+        {
+            elevation = 0.0;
+            bool found = false;
+            foreach (Solid solid in solids)
+            {
+                if (TryGetElevationAtXY(solid, x, y, out double z) && (!found || z > elevation))
+                {
+                    elevation = z;
+                    found = true;
+                }
+            }
+            return found;
+        }
+
+        /// <summary>
         /// Quantizes elevation in steps of <paramref name="stepHeight"/>.
         /// Ignores changes smaller than one full step; advances by complete steps otherwise.
         /// All values in Revit internal units.
