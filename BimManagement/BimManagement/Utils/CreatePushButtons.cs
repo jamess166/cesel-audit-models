@@ -149,6 +149,29 @@ namespace BimManagement
             return btnData;
         }
 
+        public static PushButtonData ButtonPerimeterFence()
+        {
+            RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
+            {
+                AvailabilityClassName = string.Empty,
+                Icon = Properties.Resources.audit,
+                Name = "Cerco\nPrefabricado",
+                Text = "Cerco\nPrefabricado",
+                AssemblyName = Assembly.GetExecutingAssembly().Location,
+                ClassName = "BimManagement.Commands.PerimeterFence.PerimeterFenceCommand",
+                ShortDescription = "Coloca columnas y paneles de cerco prefabricado",
+                LongDescription = "Seleccione el eje del cerco y los elementos de terreno. " +
+                                  "El comando coloca automáticamente las columnas de cimentación " +
+                                  "y los paneles (Tarjetas_Cerco) siguiendo el perfil del terreno.",
+                Contextual = "https://www.cesel.com.pe/"
+            };
+
+            PushButtonData btnData = RevitLibrary.CreatePushButtons.PushButton(buttonData,
+                Properties.Resources.ToolTip);
+
+            return btnData;
+        }
+
         public static PushButtonData ButtonReportSheet()
         {
             RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()

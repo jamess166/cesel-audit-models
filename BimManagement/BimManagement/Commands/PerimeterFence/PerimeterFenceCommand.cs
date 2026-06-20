@@ -89,14 +89,26 @@ namespace BimManagement.Commands.PerimeterFence
                 return Result.Failed;
             }
 
+            // --- Dirección de inicio ---
+            TaskDialog dirDialog = new TaskDialog("Dirección del cerco");
+            dirDialog.MainInstruction = "¿Desde qué extremo inicia la secuencia de columnas?";
+            dirDialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink1, "Derecha", "Inicia desde el extremo actual de la curva (comportamiento por defecto).");
+            dirDialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink2, "Izquierda", "Invierte el punto de inicio: la secuencia parte desde el extremo opuesto.");
+            TaskDialogResult dirResult = dirDialog.Show();
+            if (dirResult == TaskDialogResult.Close) return Result.Cancelled;
+            bool reversed = dirResult == TaskDialogResult.CommandLink2;
+
             // --- Constantes configurables ---
             double spacing    = UnitUtils.ConvertToInternalUnits(2.13, UnitTypeId.Meters);
             double stepHeight = UnitUtils.ConvertToInternalUnits(5,    UnitTypeId.Centimeters);
             double trimAmount = UnitUtils.ConvertToInternalUnits(10,   UnitTypeId.Centimeters);
 
             // --- Calcular puntos y elevaciones ---
+            // Reverse the curve itself so sampling starts from the opposite physical end;
+            // this moves the "remainder" short segment to that end as well.
+            Curve samplingCurve = reversed ? axisCurve.CreateReversed() : axisCurve;
             List<XYZ> curvePoints = PerimeterFenceTools.GetPointsAlongCurve(
-                axisCurve, spacing, trimAmount, trimAmount);
+                samplingCurve, spacing, trimAmount, trimAmount);
 
             // Elevation of the reference level in Revit internal units (feet)
             double levelElevation = referenceLevel.Elevation;
@@ -147,7 +159,7 @@ namespace BimManagement.Commands.PerimeterFence
 
             // Phase 3 — floor every constrained elevation to the nearest 5 cm step and
             // build the final placements list. Column height calculation runs after this.
-            var placements = new List<(XYZ xy, double offsetFromLevel)>();
+            var placements = new List<(XYZ xy, double offsetFromLevel, double tangentAngle)>();
 
             for (int i = 0; i < curvePoints.Count; i++)
             {
@@ -159,10 +171,17 @@ namespace BimManagement.Commands.PerimeterFence
                 double quantizedOffset = Math.Floor(rawOffset / stepHeight) * stepHeight;
 
                 XYZ pt = curvePoints[i];
+
+                // Tangent direction at this point — used to rotate the column so it
+                // aligns with the fence axis regardless of the line's orientation.
+                Transform deriv = samplingCurve.ComputeDerivatives(
+                    samplingCurve.Project(pt).Parameter, false);
+                double tangentAngle = Math.Atan2(deriv.BasisX.Y, deriv.BasisX.X);
+
                 // Revit interprets XYZ.Z as the offset FROM the reference level, not as an
                 // absolute coordinate. Passing quantizedOffset here positions the instance at
                 // level + quantizedOffset = terrain surface elevation.
-                placements.Add((new XYZ(pt.X, pt.Y, quantizedOffset), quantizedOffset));
+                placements.Add((new XYZ(pt.X, pt.Y, quantizedOffset), quantizedOffset, tangentAngle));
             }
 
             if (placements.Count == 0)
@@ -174,21 +193,23 @@ namespace BimManagement.Commands.PerimeterFence
             }
 
             // --- Calcular altura de cada columna ---
-            // Rule: the top of column i must clear 4 m above the higher of the two adjacent
-            // base elevations.  ColumnHeight(i) = 4 m + max(0, Offset(i+1) − Offset(i)).
-            // Last column: its top must clear 4 m above the highest base in the entire sequence.
+            // Rule: the top of column i must clear 4 m above the higher of its two adjacent
+            // panel elevations.  Panel between i and i+1 sits at max(offset[i], offset[i+1]),
+            // so column i needs: height[i] >= 4m + max(0, offset[i-1]-offset[i], offset[i+1]-offset[i]).
+            // This correctly handles both uphill and downhill slopes in either direction.
             double minClearance = UnitUtils.ConvertToInternalUnits(4.0, UnitTypeId.Meters);
 
-            double maxOffset = double.MinValue;
-            foreach (var (_, off) in placements)
-                if (off > maxOffset) maxOffset = off;
-
             var heights = new double[placements.Count];
-            for (int i = 0; i < placements.Count - 1; i++)
-                heights[i] = minClearance
-                    + Math.Max(0.0, placements[i + 1].offsetFromLevel - placements[i].offsetFromLevel);
-            heights[placements.Count - 1] =
-                maxOffset + minClearance - placements[placements.Count - 1].offsetFromLevel;
+            for (int i = 0; i < placements.Count; i++)
+            {
+                double myOffset = placements[i].offsetFromLevel;
+                double extra = 0.0;
+                if (i > 0)
+                    extra = Math.Max(extra, placements[i - 1].offsetFromLevel - myOffset);
+                if (i < placements.Count - 1)
+                    extra = Math.Max(extra, placements[i + 1].offsetFromLevel - myOffset);
+                heights[i] = minClearance + extra;
+            }
 
             // --- Insertar instancias en una única transacción ---
             using (Transaction tx = new Transaction(doc, "Colocar cerco prefabricado"))
@@ -203,7 +224,7 @@ namespace BimManagement.Commands.PerimeterFence
 
                 for (int i = 0; i < placements.Count; i++)
                 {
-                    var (xy, offsetFromLevel) = placements[i];
+                    var (xy, offsetFromLevel, tangentAngle) = placements[i];
 
                     // xy.Z encodes the offset from the reference level (confirmed behaviour:
                     // Revit does NOT treat it as an absolute Z). The instance is therefore
@@ -223,6 +244,17 @@ namespace BimManagement.Commands.PerimeterFence
                     Parameter heightParam = fi.LookupParameter("Altura Columna");
                     if (heightParam != null && !heightParam.IsReadOnly)
                         heightParam.Set(heights[i]);
+
+                    // Rotate the column around the Z-axis to align with the fence axis direction.
+                    // Families default to the +X orientation; tangentAngle rotates them to match
+                    // the curve tangent at this insertion point.
+                    if (Math.Abs(tangentAngle) > 1e-6)
+                    {
+                        Line rotAxis = Line.CreateBound(
+                            new XYZ(xy.X, xy.Y, 0),
+                            new XYZ(xy.X, xy.Y, 1));
+                        ElementTransformUtils.RotateElement(doc, fi.Id, rotAxis, tangentAngle);
+                    }
                 }
 
                 // --- Panels (Tarjetas_Cerco): one between each pair of adjacent columns ---
