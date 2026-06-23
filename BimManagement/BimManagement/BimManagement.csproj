@@ -139,6 +139,8 @@
     <Compile Include="Commands\MonthlyReport\MonthlyReport.cs" />
     <Compile Include="Commands\MonthlyReport\MonthlyReportFilters.cs" />
     <Compile Include="Commands\MonthlyReport\MonthlyUpdateSheet.cs" />
+    <Compile Include="Commands\PerimeterFence\PerimeterFenceDimensionElevationCommand.cs" />
+    <Compile Include="Commands\PerimeterFence\PerimeterFenceSpotElevationCommand.cs" />
     <Compile Include="Commands\RepairBreakLinks\RepairBrokenLinks.cs" />
     <Compile Include="Commands\UpdateConstructionData\UpdateConstructionDataCommand.cs" />
     <Compile Include="Commands\PerimeterFence\PerimeterFenceCommand.cs" />

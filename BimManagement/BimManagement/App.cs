@@ -50,6 +50,7 @@ namespace BimManagement
             panel.AddItem(CreatePushButtons.ButtonExportPDF());
             panel.AddSeparator();
             panel.AddItem(CreatePushButtons.ButtonPerimeterFence());
+            panel.AddItem(CreatePushButtons.ButtonPerimeterFenceSpotElevation());
 
 
             m_WeeklyReportView = null;

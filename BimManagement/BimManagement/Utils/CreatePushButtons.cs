@@ -172,6 +172,29 @@ namespace BimManagement
             return btnData;
         }
 
+        public static PushButtonData ButtonPerimeterFenceSpotElevation()
+        {
+            RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
+            {
+                AvailabilityClassName = string.Empty,
+                Icon = Properties.Resources.audit,
+                Name = "Nivel en\nPunto Cerco",
+                Text = "Nivel en\nPunto Cerco",
+                AssemblyName = Assembly.GetExecutingAssembly().Location,
+                ClassName = "BimManagement.Commands.PerimeterFence.PerimeterFenceSpotElevationCommand",
+                ShortDescription = "Coloca Niveles en Punto en los paneles Tarjetas_Cerco",
+                LongDescription = "Desde una vista de sección, coloca automáticamente una anotación " +
+                                  "de Nivel en Punto (tipo \"Plano (proyecto)\") en el extremo derecho " +
+                                  "de cada panel Tarjetas_Cerco visible, referenciando la cota superior del panel.",
+                Contextual = "https://www.cesel.com.pe/"
+            };
+
+            PushButtonData btnData = RevitLibrary.CreatePushButtons.PushButton(buttonData,
+                Properties.Resources.ToolTip);
+
+            return btnData;
+        }
+
         public static PushButtonData ButtonReportSheet()
         {
             RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
