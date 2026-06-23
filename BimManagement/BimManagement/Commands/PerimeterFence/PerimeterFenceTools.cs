@@ -196,6 +196,25 @@ namespace BimManagement.Commands.PerimeterFence
         }
 
         /// <summary>
+        /// Extracts the largest solid from an element inside a linked Revit file and transforms it
+        /// to host-document coordinates using the link instance's total transform.
+        /// </summary>
+        public static Solid GetSolidFromLinkedElement(RevitLinkInstance linkInstance, ElementId linkedElemId)
+        {
+            Document linkedDoc = linkInstance.GetLinkDocument();
+            if (linkedDoc == null) return null;
+
+            Element linkedElem = linkedDoc.GetElement(linkedElemId);
+            if (linkedElem == null) return null;
+
+            Solid localSolid = GetSolidFromElement(linkedElem);
+            if (localSolid == null) return null;
+
+            Transform linkTransform = linkInstance.GetTotalTransform();
+            return SolidUtils.CreateTransformed(localSolid, linkTransform);
+        }
+
+        /// <summary>
         /// Returns the first FamilySymbol whose Family.Name matches <paramref name="familyName"/>
         /// (case-insensitive). Returns null if not found.
         /// </summary>

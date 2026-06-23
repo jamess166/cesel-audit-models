@@ -23,6 +23,7 @@ namespace BimManagement.Commands.PerimeterFence
             // --- Selección ---
             Curve axisCurve;
             IList<Reference> terrainRefs;
+            bool terrainFromLink;
             try
             {
                 Reference curveRef = uidoc.Selection.PickObject(
@@ -38,9 +39,30 @@ namespace BimManagement.Commands.PerimeterFence
                 }
                 axisCurve = curveElem.GeometryCurve;
 
-                terrainRefs = uidoc.Selection.PickObjects(
-                    ObjectType.Element,
-                    "Seleccione los elementos de terreno (puede seleccionar varios)");
+                // --- Origen del terreno ---
+                TaskDialog srcDialog = new TaskDialog("Origen del terreno");
+                srcDialog.MainInstruction = "¿Dónde se encuentran los elementos de terreno?";
+                srcDialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink1,
+                    "Modelo actual", "Selecciona elementos del documento abierto.");
+                srcDialog.AddCommandLink(TaskDialogCommandLinkId.CommandLink2,
+                    "Archivo vinculado (Revit Link)", "Selecciona elementos dentro de un archivo .rvt vinculado.");
+                TaskDialogResult srcResult = srcDialog.Show();
+                if (srcResult == TaskDialogResult.Close) return Result.Cancelled;
+                terrainFromLink = srcResult == TaskDialogResult.CommandLink2;
+
+                if (terrainFromLink)
+                {
+                    terrainRefs = uidoc.Selection.PickObjects(
+                        ObjectType.LinkedElement,
+                        new LinkedElementFilter(),
+                        "Seleccione los elementos de terreno en el archivo vinculado (puede seleccionar varios)");
+                }
+                else
+                {
+                    terrainRefs = uidoc.Selection.PickObjects(
+                        ObjectType.Element,
+                        "Seleccione los elementos de terreno (puede seleccionar varios)");
+                }
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
@@ -79,7 +101,18 @@ namespace BimManagement.Commands.PerimeterFence
             var terrainSolids = new List<Solid>();
             foreach (Reference r in terrainRefs)
             {
-                Solid s = PerimeterFenceTools.GetSolidFromElement(doc.GetElement(r));
+                Solid s;
+                if (terrainFromLink)
+                {
+                    RevitLinkInstance linkInst = doc.GetElement(r.ElementId) as RevitLinkInstance;
+                    s = linkInst != null
+                        ? PerimeterFenceTools.GetSolidFromLinkedElement(linkInst, r.LinkedElementId)
+                        : null;
+                }
+                else
+                {
+                    s = PerimeterFenceTools.GetSolidFromElement(doc.GetElement(r));
+                }
                 if (s != null) terrainSolids.Add(s);
             }
             if (terrainSolids.Count == 0)
@@ -294,6 +327,14 @@ namespace BimManagement.Commands.PerimeterFence
         {
             public bool AllowElement(Element elem) => elem is CurveElement;
             public bool AllowReference(Reference reference, XYZ position) => false;
+        }
+
+        private class LinkedElementFilter : ISelectionFilter
+        {
+            // AllowElement gates which link instances appear in the pick list.
+            public bool AllowElement(Element elem) => elem is RevitLinkInstance;
+            // AllowReference gates which elements inside the link can be selected.
+            public bool AllowReference(Reference reference, XYZ position) => true;
         }
     }
 }

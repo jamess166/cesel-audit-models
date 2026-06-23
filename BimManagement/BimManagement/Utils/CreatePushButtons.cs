@@ -195,6 +195,52 @@ namespace BimManagement
             return btnData;
         }
 
+        public static PushButtonData ButtonPerimeterFenceDimensionElevation()
+        {
+            RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
+            {
+                AvailabilityClassName = string.Empty,
+                Icon = Properties.Resources.audit,
+                Name = "Cota\nElevación",
+                Text = "Cota\nElevación",
+                AssemblyName = Assembly.GetExecutingAssembly().Location,
+                ClassName = "BimManagement.Commands.PerimeterFence.PerimeterFenceDimensionElevationCommand",
+                ShortDescription = "Coloca cotas de elevación en columnas de cimentación prefabricada",
+                LongDescription = "Desde una vista de sección, seleccione las columnas Columna_Cimentacion_Prefabricada " +
+                                  "y el comando coloca automáticamente una cota encadenada con las cotas inferior, " +
+                                  "superior del bloque de cimentación y superior del fuste.",
+                Contextual = "https://www.cesel.com.pe/"
+            };
+
+            PushButtonData btnData = RevitLibrary.CreatePushButtons.PushButton(buttonData,
+                Properties.Resources.ToolTip);
+
+            return btnData;
+        }
+
+        public static PushButtonData ButtonPerimeterFenceDimensionPlant()
+        {
+            RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
+            {
+                AvailabilityClassName = string.Empty,
+                Icon = Properties.Resources.audit,
+                Name = "Cota\nen Planta",
+                Text = "Cota\nen Planta",
+                AssemblyName = Assembly.GetExecutingAssembly().Location,
+                ClassName = "BimManagement.Commands.PerimeterFence.PerimeterFenceDimensionPlantCommand",
+                ShortDescription = "Coloca cotas en planta entre columnas de cimentación prefabricada",
+                LongDescription = "Desde una vista en planta, seleccione mínimo 2 columnas Columna_Cimentacion_Prefabricada " +
+                                  "y el comando coloca automáticamente una cota encadenada midiendo la distancia " +
+                                  "entre columnas consecutivas.",
+                Contextual = "https://www.cesel.com.pe/"
+            };
+
+            PushButtonData btnData = RevitLibrary.CreatePushButtons.PushButton(buttonData,
+                Properties.Resources.ToolTip);
+
+            return btnData;
+        }
+
         public static PushButtonData ButtonReportSheet()
         {
             RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()

@@ -49,9 +49,12 @@ namespace BimManagement
             panel.AddItem(CreatePushButtons.ButtonReportSheet());
             panel.AddItem(CreatePushButtons.ButtonExportPDF());
             panel.AddSeparator();
-            panel.AddItem(CreatePushButtons.ButtonPerimeterFence());
-            panel.AddItem(CreatePushButtons.ButtonPerimeterFenceSpotElevation());
 
+            RibbonPanel hubPanel = InterfaceRibbon.CreateRibbonPanel(application, ribbonTab, "Hub Toyota");
+            hubPanel.AddItem(CreatePushButtons.ButtonPerimeterFence());
+            hubPanel.AddItem(CreatePushButtons.ButtonPerimeterFenceSpotElevation());
+            hubPanel.AddItem(CreatePushButtons.ButtonPerimeterFenceDimensionElevation());
+            hubPanel.AddItem(CreatePushButtons.ButtonPerimeterFenceDimensionPlant());
 
             m_WeeklyReportView = null;
             thisApp = this;  // static access to this application instance
