@@ -103,13 +103,13 @@ namespace BimManagement.Commands.PerimeterFence
             var refArray = new ReferenceArray();
             foreach (FamilyInstance fi in sorted)
             {
-                Reference faceRef = GetBestVerticalFaceRef(doc, fi, dir);
-                if (faceRef == null)
+                Reference centerRef = GetCenterRef(fi, dir);
+                if (centerRef == null)
                 {
-                    error = $"No se encontró referencia de cara para el elemento {fi.Id}.";
+                    error = $"No se encontró plano de referencia central para el elemento {fi.Id}.";
                     return false;
                 }
-                refArray.Append(faceRef);
+                refArray.Append(centerRef);
             }
 
             if (refArray.Size < 2) { error = "Menos de 2 referencias válidas."; return false; }
@@ -147,59 +147,33 @@ namespace BimManagement.Commands.PerimeterFence
             catch (Exception ex) { error = $"NewDimension: {ex.Message}"; return false; }
         }
 
-        // Returns the best vertical planar-face reference on fi whose horizontal
-        // normal is most aligned with dir (parallel reference plane to adjacent column).
-        // Same geometry strategy as PerimeterFenceDimensionElevationCommand:
-        // symbol geometry without opt.View gives stable document-level references.
-        private static Reference GetBestVerticalFaceRef(Document doc, FamilyInstance fi, XYZ dir)
+        // Returns the center reference plane of fi most aligned with dir.
+        // Uses FamilyInstance.GetReferences() which targets the family's own reference
+        // planes — the same planes Revit highlights when dimensioning manually.
+        private static Reference GetCenterRef(FamilyInstance fi, XYZ dir)
         {
-            Options opt = doc.Application.Create.NewGeometryOptions();
-            opt.ComputeReferences = true;
-            opt.DetailLevel       = ViewDetailLevel.Fine;
+            XYZ facing2d = new XYZ(fi.FacingOrientation.X, fi.FacingOrientation.Y, 0);
+            XYZ hand2d   = new XYZ(fi.HandOrientation.X,   fi.HandOrientation.Y,   0);
 
-            GeometryElement geoElem = fi.get_Geometry(opt);
-            if (geoElem == null) return null;
+            double lenF = facing2d.GetLength();
+            double lenH = hand2d.GetLength();
 
-            GeometryInstance outerGi = null;
-            foreach (GeometryObject obj in geoElem)
-                if (obj is GeometryInstance gi) { outerGi = gi; break; }
+            double dotF = lenF > 1e-6 ? Math.Abs(facing2d.Normalize().DotProduct(dir)) : 0;
+            double dotH = lenH > 1e-6 ? Math.Abs(hand2d.Normalize().DotProduct(dir))   : 0;
 
-            if (outerGi == null) return null;
+            // CenterFrontBack normal ≈ FacingOrientation; CenterLeftRight normal ≈ HandOrientation
+            FamilyInstanceReferenceType primary   = dotF >= dotH
+                ? FamilyInstanceReferenceType.CenterFrontBack
+                : FamilyInstanceReferenceType.CenterLeftRight;
+            FamilyInstanceReferenceType secondary = dotF >= dotH
+                ? FamilyInstanceReferenceType.CenterLeftRight
+                : FamilyInstanceReferenceType.CenterFrontBack;
 
-            var solids = new List<(Solid solid, Transform toWorld)>();
-            CollectSolids(outerGi.GetSymbolGeometry(), outerGi.Transform, solids);
+            IList<Reference> refs = fi.GetReferences(primary);
+            if (refs != null && refs.Count > 0) return refs[0];
 
-            Reference bestRef = null;
-            double    bestDot = -1.0;
-
-            foreach (var (solid, toWorld) in solids)
-            {
-                foreach (Face face in solid.Faces)
-                {
-                    if (!(face is PlanarFace pf)) continue;
-                    if (face.Reference == null)    continue;
-
-                    // Transform face normal to world space (linear part only)
-                    XYZ worldNormal = toWorld.OfVector(pf.FaceNormal);
-
-                    // Project to horizontal plane; skip faces that are nearly horizontal
-                    XYZ horizNormal = new XYZ(worldNormal.X, worldNormal.Y, 0);
-                    double horizLen = horizNormal.GetLength();
-                    if (horizLen < 0.1) continue;
-
-                    // Absolute alignment with dim direction: the face whose horizontal
-                    // normal is most parallel to dir is perpendicular to the dim line,
-                    // producing a reference parallel to the same face on adjacent columns.
-                    double dot = Math.Abs(horizNormal.Normalize().DotProduct(dir));
-                    if (dot > bestDot)
-                    {
-                        bestDot = dot;
-                        bestRef = face.Reference;
-                    }
-                }
-            }
-
-            return bestRef;
+            refs = fi.GetReferences(secondary);
+            return refs != null && refs.Count > 0 ? refs[0] : null;
         }
 
         // ─────────────────────────────────────────────────────────────────────────
@@ -219,20 +193,6 @@ namespace BimManagement.Commands.PerimeterFence
             BoundingBoxXYZ bb = fi.get_BoundingBox(null);
             return new XYZ((bb.Min.X + bb.Max.X) / 2, (bb.Min.Y + bb.Max.Y) / 2, 0);
         }
-
-        private static void CollectSolids(
-            GeometryElement geo, Transform toWorld, List<(Solid, Transform)> result)
-        {
-            foreach (GeometryObject obj in geo)
-            {
-                if (obj is Solid s && s.Volume > 1e-9)
-                    result.Add((s, toWorld));
-                else if (obj is GeometryInstance gi)
-                    CollectSolids(gi.GetSymbolGeometry(), toWorld.Multiply(gi.Transform), result);
-            }
-        }
-
-        // ─────────────────────────────────────────────────────────────────────────
 
         private class ColumnSelectionFilter : ISelectionFilter
         {
