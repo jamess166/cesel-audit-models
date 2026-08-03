@@ -1,5 +1,7 @@
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Events;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,67 +17,150 @@ namespace BimManagement
     {
         public void Execute(UIApplication uiApp)
         {
-            string configPath = GetConfigPath();
-            AppConfig config  = ConfigManager.Load(configPath);
+            // Suprime diálogos y advertencias mientras dura el procesamiento por lotes,
+            // para que el add-in no se detenga esperando una respuesta del usuario.
+            uiApp.DialogBoxShowing += OnDialogBoxShowing;
+            uiApp.Application.FailuresProcessing += OnFailuresProcessing;
 
-            if (CreateReportSheetTools.UseCurrentModel)
+            try
             {
-                // ── Modelo activo ─────────────────────────────────────────────
-                Document doc = uiApp.ActiveUIDocument.Document;
-                Log($"Procesando: {doc.Title}");
-                try
-                {
-                    ApplyToDocument(doc, config);
-                    Log("✔ Completado exitosamente.");
-                }
-                catch (Exception ex)
-                {
-                    Log($"✖ Error: {ex.Message}");
-                }
-            }
-            else
-            {
-                // ── Carpeta de archivos ───────────────────────────────────────
-                var files = CreateReportSheetTools.Files ?? new List<FileInfo>();
-                int total   = files.Count;
-                int current = 0;
+                string configPath = GetConfigPath();
+                AppConfig config  = ConfigManager.Load(configPath);
 
-                foreach (FileInfo fileInfo in files)
+                if (CreateReportSheetTools.UseCurrentModel)
                 {
-                    current++;
-                    UpdateProgress(current, total);
-                    Document fileDoc = null;
-
+                    // ── Modelo activo ─────────────────────────────────────────
+                    Document doc = uiApp.ActiveUIDocument.Document;
+                    Log($"Procesando: {doc.Title}");
                     try
                     {
-                        Log($"Procesando: {fileInfo.Name}");
-                        var modelPath = ModelPathUtils.ConvertUserVisiblePathToModelPath(
-                            fileInfo.FullName);
-                        fileDoc = uiApp.Application.OpenDocumentFile(
-                            modelPath, new OpenOptions { Audit = false });
-
-                        ApplyToDocument(fileDoc, config);
-
-                        fileDoc.Save();
-                        fileDoc.Close(false);
-                        Log($"✔ {fileInfo.Name}");
+                        ApplyToDocument(doc, config);
+                        Log("✔ Completado exitosamente.");
                     }
                     catch (Exception ex)
                     {
-                        if (fileDoc != null)
-                            try { fileDoc.Close(false); } catch { }
-                        Log($"✖ {fileInfo.Name}: {ex.Message}");
+                        Log($"✖ Error: {ex.Message}");
                     }
                 }
+                else
+                {
+                    // ── Carpeta de archivos ───────────────────────────────────
+                    var files = CreateReportSheetTools.Files ?? new List<FileInfo>();
+                    int total   = files.Count;
+                    int current = 0;
 
-                Log("✔ Proceso completado.");
-                UpdateProgress(0, 0);
+                    foreach (FileInfo fileInfo in files)
+                    {
+                        current++;
+                        UpdateProgress(current, total);
+                        Document fileDoc = null;
+
+                        try
+                        {
+                            Log($"Procesando: {fileInfo.Name}");
+                            var modelPath = ModelPathUtils.ConvertUserVisiblePathToModelPath(
+                                fileInfo.FullName);
+
+                            var openOptions = new OpenOptions { Audit = false };
+                            openOptions.SetOpenWorksetsConfiguration(
+                                new WorksetConfiguration(WorksetConfigurationOption.OpenAllWorksets));
+
+                            fileDoc = uiApp.Application.OpenDocumentFile(modelPath, openOptions);
+
+                            ApplyToDocument(fileDoc, config);
+
+                            fileDoc.Save();
+                            fileDoc.Close(false);
+                            Log($"✔ {fileInfo.Name}");
+                        }
+                        catch (Exception ex)
+                        {
+                            if (fileDoc != null)
+                                try { fileDoc.Close(false); } catch { }
+                            Log($"✖ {fileInfo.Name}: {ex.Message}");
+                        }
+                    }
+
+                    Log("✔ Proceso completado.");
+                    UpdateProgress(0, 0);
+                }
+
+                ShowLoveMessage();
             }
-
-            ShowLoveMessage();
+            finally
+            {
+                uiApp.DialogBoxShowing -= OnDialogBoxShowing;
+                uiApp.Application.FailuresProcessing -= OnFailuresProcessing;
+            }
         }
 
         public string GetName() => "Crear Planos de Reporte";
+
+        // ── Supresión de diálogos y advertencias ───────────────────────────────
+
+        /// <summary>
+        /// Cierra automáticamente cualquier diálogo modal que Revit intente mostrar
+        /// (enlaces faltantes, fuentes faltantes, avisos de actualización, etc.)
+        /// para que el procesamiento por lotes no quede bloqueado esperando un clic.
+        /// </summary>
+        private static void OnDialogBoxShowing(object sender, DialogBoxShowingEventArgs e)
+        {
+            if (e is TaskDialogShowingEventArgs taskDialogArgs)
+                e.OverrideResult((int)TaskDialogResult.Close);
+            else
+                e.OverrideResult(1); // Equivale a "Aceptar/Cerrar" en la mayoría de diálogos.
+        }
+
+        /// <summary>
+        /// Resuelve automáticamente las advertencias de transacciones (eliminándolas)
+        /// y revierte solo la transacción en curso si hay un error real, en lugar de
+        /// mostrar el diálogo de fallas y detener el lote.
+        /// </summary>
+        private static void OnFailuresProcessing(object sender, FailuresProcessingEventArgs e)
+        {
+            FailuresAccessor fa = e.GetFailuresAccessor();
+            IList<FailureMessageAccessor> failures = fa.GetFailureMessages();
+
+            if (failures.Count == 0)
+            {
+                e.SetProcessingResult(FailureProcessingResult.Continue);
+                return;
+            }
+
+            bool hasError = false;
+            foreach (FailureMessageAccessor failure in failures)
+            {
+                if (failure.GetSeverity() == FailureSeverity.Warning)
+                    fa.DeleteWarning(failure);
+                else
+                    hasError = true;
+            }
+
+            e.SetProcessingResult(hasError
+                ? FailureProcessingResult.ProceedWithRollBack
+                : FailureProcessingResult.Continue);
+        }
+
+        /// <summary>
+        /// Opciones de carga de familias que nunca preguntan si se debe sobrescribir
+        /// una familia/tipo existente: siempre sobrescribe en silencio.
+        /// </summary>
+        private class SilentFamilyLoadOptions : IFamilyLoadOptions
+        {
+            public bool OnFamilyFound(bool familyInUse, out bool overwriteParameterValues)
+            {
+                overwriteParameterValues = true;
+                return true;
+            }
+
+            public bool OnSharedFamilyFound(Family sharedFamily, bool familyInUse,
+                out FamilySource source, out bool overwriteParameterValues)
+            {
+                source = FamilySource.Family;
+                overwriteParameterValues = true;
+                return true;
+            }
+        }
 
         // ── Procesamiento de un documento ─────────────────────────────────────
 
@@ -241,7 +326,7 @@ namespace BimManagement
                 throw new FileNotFoundException(
                     $"No se encontró el archivo de titleblock:\n{path}");
 
-            if (!doc.LoadFamily(path, out Family loaded))
+            if (!doc.LoadFamily(path, new SilentFamilyLoadOptions(), out Family loaded))
                 throw new InvalidOperationException(
                     $"No se pudo cargar el titleblock:\n{path}");
 
@@ -261,7 +346,7 @@ namespace BimManagement
             if (labelFamily == null)
             {
                 if (!File.Exists(familyPath)) return;
-                if (!doc.LoadFamily(familyPath, out labelFamily)) return;
+                if (!doc.LoadFamily(familyPath, new SilentFamilyLoadOptions(), out labelFamily)) return;
             }
 
             ElementId symbolId = labelFamily.GetFamilySymbolIds().FirstOrDefault()

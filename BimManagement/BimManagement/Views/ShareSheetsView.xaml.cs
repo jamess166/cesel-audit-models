@@ -76,30 +76,14 @@ namespace BimManagement
                     string folder      = Path.GetDirectoryName(dlg.FileName);
                     FolderPathBox.Text = folder;
 
-                    // Auto-calcular carpeta destino: 3 niveles arriba + ANEXOS
-                    string computed    = ComputeOutputPath(folder);
+                    // Carpeta destino: ANEXOS dentro de la misma carpeta seleccionada
+                    string computed    = Path.Combine(folder, "ANEXOS");
                     OutputPath         = computed;
                     OutputPathBox.Text = computed;
 
                     FindFiles_Click(null, null);
                 }
             }
-        }
-
-        /// <summary>
-        /// Sube <paramref name="levels"/> niveles desde <paramref name="folder"/>
-        /// y devuelve la ruta con la subcarpeta "ANEXOS".
-        /// </summary>
-        private static string ComputeOutputPath(string folder, int levels = 3)
-        {
-            string current = folder;
-            for (int i = 0; i < levels; i++)
-            {
-                string parent = Path.GetDirectoryName(current);
-                if (string.IsNullOrEmpty(parent)) break;
-                current = parent;
-            }
-            return Path.Combine(current, "ANEXOS");
         }
 
         private void FindFiles_Click(object sender, RoutedEventArgs e)

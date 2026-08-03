@@ -1,6 +1,8 @@
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Events;
 using Autodesk.Revit.UI;
+using Autodesk.Revit.UI.Events;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,6 +23,11 @@ namespace BimManagement
         {
             UIApplication uiApp = commandData.Application;
             Document      doc   = uiApp.ActiveUIDocument.Document;
+
+            // Suprime diálogos y advertencias de Revit mientras dura la exportación,
+            // para que el proceso (individual o por lotes) no se detenga esperando un clic.
+            uiApp.DialogBoxShowing += OnDialogBoxShowing;
+            uiApp.Application.FailuresProcessing += OnFailuresProcessing;
 
             try
             {
@@ -65,8 +72,12 @@ namespace BimManagement
                         {
                             var modelPath = ModelPathUtils.ConvertUserVisiblePathToModelPath(
                                 fileInfo.FullName);
-                            fileDoc = uiApp.Application.OpenDocumentFile(
-                                modelPath, new OpenOptions { Audit = false });
+
+                            var openOptions = new OpenOptions { Audit = false };
+                            openOptions.SetOpenWorksetsConfiguration(
+                                new WorksetConfiguration(WorksetConfigurationOption.OpenAllWorksets));
+
+                            fileDoc = uiApp.Application.OpenDocumentFile(modelPath, openOptions);
 
                             var fileSheets = CollectSheets(fileDoc);
 
@@ -110,6 +121,56 @@ namespace BimManagement
                 TaskDialog.Show("CSL – Error", $"Error al exportar:\n\n{ex.Message}");
                 return Result.Failed;
             }
+            finally
+            {
+                uiApp.DialogBoxShowing -= OnDialogBoxShowing;
+                uiApp.Application.FailuresProcessing -= OnFailuresProcessing;
+            }
+        }
+
+        // ── Supresión de diálogos y advertencias ───────────────────────────────
+
+        /// <summary>
+        /// Cierra automáticamente cualquier diálogo modal que Revit intente mostrar
+        /// (enlaces faltantes, fuentes faltantes, avisos de actualización, etc.)
+        /// para que la exportación no quede bloqueada esperando un clic.
+        /// </summary>
+        private static void OnDialogBoxShowing(object sender, DialogBoxShowingEventArgs e)
+        {
+            if (e is TaskDialogShowingEventArgs)
+                e.OverrideResult((int)TaskDialogResult.Close);
+            else
+                e.OverrideResult(1); // Equivale a "Aceptar/Cerrar" en la mayoría de diálogos.
+        }
+
+        /// <summary>
+        /// Resuelve automáticamente las advertencias (eliminándolas) y revierte solo
+        /// la transacción en curso si hay un error real, en lugar de mostrar el
+        /// diálogo de fallas y detener la exportación.
+        /// </summary>
+        private static void OnFailuresProcessing(object sender, FailuresProcessingEventArgs e)
+        {
+            FailuresAccessor fa = e.GetFailuresAccessor();
+            IList<FailureMessageAccessor> failures = fa.GetFailureMessages();
+
+            if (failures.Count == 0)
+            {
+                e.SetProcessingResult(FailureProcessingResult.Continue);
+                return;
+            }
+
+            bool hasError = false;
+            foreach (FailureMessageAccessor failure in failures)
+            {
+                if (failure.GetSeverity() == FailureSeverity.Warning)
+                    fa.DeleteWarning(failure);
+                else
+                    hasError = true;
+            }
+
+            e.SetProcessingResult(hasError
+                ? FailureProcessingResult.ProceedWithRollBack
+                : FailureProcessingResult.Continue);
         }
 
         // ── Helpers ───────────────────────────────────────────────────────────

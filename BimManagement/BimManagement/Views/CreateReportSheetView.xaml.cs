@@ -31,10 +31,9 @@ namespace BimManagement
             _exEvent = exEvent;
             InitializeComponent();
 
-            // Fecha de presentación inicial: próximo lunes (modo semanal por defecto)
+            // Fecha de presentación inicial: lunes (hoy si hoy es lunes, si no el próximo)
             DateTime today       = DateTime.Today;
             int daysToMonday     = ((int)DayOfWeek.Monday - (int)today.DayOfWeek + 7) % 7;
-            if (daysToMonday == 0) daysToMonday = 7;
             FechaPresentacionBox.Text = today.AddDays(daysToMonday).ToString("dd/MM/yyyy");
         }
 
@@ -69,10 +68,9 @@ namespace BimManagement
                 DeleteExistingMonthlyPanel.Visibility = Visibility.Collapsed;
                 IssueWeek_TextChanged(null, null);
 
-                // Fecha de presentación: próximo lunes
+                // Fecha de presentación: lunes (hoy si hoy es lunes, si no el próximo)
                 DateTime today       = DateTime.Today;
                 int daysToMonday     = ((int)DayOfWeek.Monday - (int)today.DayOfWeek + 7) % 7;
-                if (daysToMonday == 0) daysToMonday = 7;
                 FechaPresentacionBox.Text = today.AddDays(daysToMonday).ToString("dd/MM/yyyy");
             }
         }

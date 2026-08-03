@@ -255,6 +255,13 @@ IF NOT EXIST "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources" (
 REM Copiar todos los archivos desde Commands\ModelAudit\Config al destino
 xcopy /Y /S /I /E /Q "$(ProjectDir)Commands\ModelAudit\Config\*" "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources\"
 
+REM Copiar titleblock y familia de vista de CreateReportSheet al destino
+copy /Y "$(ProjectDir)Commands\CreateReportSheet\Resources\CSL-A3.rfa" "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources\CSL-A3.rfa"
+copy /Y "$(ProjectDir)Commands\CreateReportSheet\Resources\CSL-Vista.rfa" "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources\CSL-Vista.rfa"
+
+REM Copiar archivos de Partidas de CreateReportSheet al destino
+xcopy /Y /S /I /E /Q "$(ProjectDir)Commands\CreateReportSheet\Resources\Partidas\*" "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources\Partidas\"
+
 REM Copiar config.json de CreateReportSheet a %APPDATA%\BimManagement\Resources\
 IF NOT EXIST "%APPDATA%\BimManagement\Resources\" (
     mkdir "%APPDATA%\BimManagement\Resources\"
