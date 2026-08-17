@@ -264,5 +264,24 @@ namespace BimManagement
 
             return btnData;
         }
+
+        public static PushButtonData ButtonExportDataCP()
+        {
+            RevitLibrary.ButtonData buttonData = new RevitLibrary.ButtonData()
+            {
+                AvailabilityClassName = string.Empty,
+                Icon = Properties.Resources.audit,
+                Name = "Exportar\nCP Excel",
+                Text = "Exportar\nCP Excel",
+                AssemblyName = Assembly.GetExecutingAssembly().Location,
+                ClassName = "BimManagement.ExportDataCPCommand",
+                ShortDescription = "Exporta datos CP a Excel",
+                LongDescription = "Exporta el modelo activo o todos los modelos Revit de una carpeta al template TemplateReport.xlsx. " +
+                                  "La columna N contiene el metrado calculado según la unidad.",
+                Contextual = "https://www.cesel.com.pe/"
+            };
+
+            return RevitLibrary.CreatePushButtons.PushButton(buttonData, Properties.Resources.ToolTip);
+        }
     }
 }

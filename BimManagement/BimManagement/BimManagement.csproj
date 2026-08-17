@@ -109,6 +109,7 @@
     <Compile Include="Commands\CreateReportSheet\ReportExcelReader.cs" />
     <Compile Include="Commands\CreateReportSheet\ReportParameterFiller.cs" />
     <Compile Include="Commands\CreateReportSheet\SharedParameterCreator.cs" />
+    <Compile Include="Commands\ExportDataCP\ExportDataCPCommand.cs" />
     <Compile Include="Commands\ExportSheets\PrintPDF.cs" />
     <Compile Include="Commands\AsBuilt\ConvertAsBuiltCommand.cs" />
     <Compile Include="Commands\AsBuilt\SetDatesCommand.cs" />
