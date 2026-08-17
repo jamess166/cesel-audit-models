@@ -85,7 +85,7 @@ namespace BimManagement
                     UpdateProgress(0, 0);
                 }
 
-                ShowLoveMessage();
+                //ShowLoveMessage();
             }
             finally
             {
