@@ -4,7 +4,6 @@ using Autodesk.Revit.UI;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -63,7 +62,8 @@ namespace BimManagement
                     Document doc = null;
                     try
                     {
-                        doc = uiApp.Application.OpenDocumentFile(path, new OpenOptions { Audit = false });
+                        ModelPath modelPath = ModelPathUtils.ConvertUserVisiblePathToModelPath(path);
+                        doc = uiApp.Application.OpenDocumentFile(modelPath, new OpenOptions { Audit = false });
                         ExportDocument(doc);
                         exported++;
                     }
@@ -178,21 +178,29 @@ namespace BimManagement
             if (unit == "m3")
             {
                 double? value = TryBuiltIn(e, BuiltInParameter.HOST_VOLUME_COMPUTED);
-                return value.HasValue ? UnitUtils.ConvertFromInternalUnits(value.Value, UnitTypeId.CubicMeters) : null;
+                if (!value.HasValue) return null;
+                return UnitUtils.ConvertFromInternalUnits(value.Value, UnitTypeId.CubicMeters);
             }
             if (unit == "m")
             {
                 LocationCurve curve = e.Location as LocationCurve;
-                return curve?.Curve == null ? null : UnitUtils.ConvertFromInternalUnits(curve.Curve.Length, UnitTypeId.Meters);
+                if (curve == null || curve.Curve == null) return null;
+                return UnitUtils.ConvertFromInternalUnits(curve.Curve.Length, UnitTypeId.Meters);
             }
             return null;
         }
 
-        private static double? ConvertArea(double? value) => value.HasValue ? UnitUtils.ConvertFromInternalUnits(value.Value, UnitTypeId.SquareMeters) : (double?)null;
+        private static double? ConvertArea(double? value)
+        {
+            if (!value.HasValue) return null;
+            return UnitUtils.ConvertFromInternalUnits(value.Value, UnitTypeId.SquareMeters);
+        }
+
         private static double? TryBuiltIn(Element e, BuiltInParameter id)
         {
             Parameter p = e.get_Parameter(id);
-            return p != null && p.HasValue && p.StorageType == StorageType.Double ? (double?)p.AsDouble() : null;
+            if (p == null || !p.HasValue || p.StorageType != StorageType.Double) return null;
+            return p.AsDouble();
         }
         private static bool GetValue(Element e, string name, out double value)
         {
