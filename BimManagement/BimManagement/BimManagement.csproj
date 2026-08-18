@@ -110,6 +110,8 @@
     <Compile Include="Commands\CreateReportSheet\ReportParameterFiller.cs" />
     <Compile Include="Commands\CreateReportSheet\SharedParameterCreator.cs" />
     <Compile Include="Commands\ExportDataCP\ExportDataCPCommand.cs" />
+    <Compile Include="Commands\ExportDataCP\ExportDataCPHandler.cs" />
+    <Compile Include="Commands\ExportDataCP\ExportDataCPTools.cs" />
     <Compile Include="Commands\ExportSheets\PrintPDF.cs" />
     <Compile Include="Commands\AsBuilt\ConvertAsBuiltCommand.cs" />
     <Compile Include="Commands\AsBuilt\SetDatesCommand.cs" />
@@ -182,6 +184,9 @@
     <Compile Include="Views\CreateReportSheetView.xaml.cs">
       <DependentUpon>CreateReportSheetView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ExportDataCPView.xaml.cs">
+      <DependentUpon>ExportDataCPView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\WeeklyReportView.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -192,6 +197,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Commands\CreateReportSheet\Resources\config.json" />
+    <None Include="Commands\ExportDataCP\Resources\TemplateReport.xlsx" />
     <None Include="Commands\ModelAudit\Config\filename-config.json" />
     <None Include="Commands\ModelAudit\Config\levelname-config.json" />
     <None Include="Commands\ModelAudit\Config\coordinates-config.json" />
@@ -225,6 +231,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\ExportDataCPView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\WeeklyReportView.xaml" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +244,7 @@
     <None Include="Resources\audit.png" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Commands\ExportDataCP\Resources\" />
     <Folder Include="Commands\ModelAuditBuilding\Resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -262,6 +273,9 @@ copy /Y "$(ProjectDir)Commands\CreateReportSheet\Resources\CSL-Vista.rfa" "$(Pro
 
 REM Copiar archivos de Partidas de CreateReportSheet al destino
 xcopy /Y /S /I /E /Q "$(ProjectDir)Commands\CreateReportSheet\Resources\Partidas\*" "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources\Partidas\"
+
+REM Copiar template de ExportDataCP al destino
+copy /Y "$(ProjectDir)Commands\ExportDataCP\Resources\TemplateReport.xlsx" "$(ProgramData)\Autodesk\Revit\Addins\2024\CESEL\Resources\TemplateReport.xlsx"
 
 REM Copiar config.json de CreateReportSheet a %APPDATA%\BimManagement\Resources\
 IF NOT EXIST "%APPDATA%\BimManagement\Resources\" (

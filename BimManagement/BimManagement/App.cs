@@ -68,6 +68,7 @@ namespace BimManagement
 
         public static WeeklyReportView       m_WeeklyReportView;
         public static CreateReportSheetView  m_CreateReportSheetView;
+        public static ExportDataCPView       m_ExportDataCPView;
 
         /// <summary>
         /// Este metodo implementa la aplicación que sera invocada cuando Revit este cerrandodse 
@@ -85,6 +86,11 @@ namespace BimManagement
             if (m_CreateReportSheetView != null && m_CreateReportSheetView.Visibility.Equals(Visibility.Visible))
             {
                 m_CreateReportSheetView.Close();
+            }
+
+            if (m_ExportDataCPView != null && m_ExportDataCPView.Visibility.Equals(Visibility.Visible))
+            {
+                m_ExportDataCPView.Close();
             }
 
             return Result.Succeeded;
@@ -122,6 +128,23 @@ namespace BimManagement
         private void CreateReportSheetViewClosed(object sender, EventArgs e)
         {
             m_CreateReportSheetView = null;
+        }
+
+        public void ShowWindowExportDataCP()
+        {
+            if (m_ExportDataCPView != null) { return; }
+
+            ExportDataCPHandler handler = new ExportDataCPHandler();
+            ExternalEvent exEvent = ExternalEvent.Create(handler);
+
+            m_ExportDataCPView = new ExportDataCPView(exEvent);
+            m_ExportDataCPView.Closed += ExportDataCPViewClosed;
+            m_ExportDataCPView.Show();
+        }
+
+        private void ExportDataCPViewClosed(object sender, EventArgs e)
+        {
+            m_ExportDataCPView = null;
         }
 
         /// <summary>
