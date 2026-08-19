@@ -84,7 +84,7 @@ namespace BimManagement
             try
             {
                 var backupRegex = new Regex(@"\.\d{4}\.rvt$", RegexOptions.IgnoreCase);
-                var files       = Directory.GetFiles(path, "*.rvt", SearchOption.TopDirectoryOnly)
+                var files       = Directory.GetFiles(path, "*.rvt", SearchOption.AllDirectories)
                                            .Where(f => !backupRegex.IsMatch(f))
                                            .ToArray();
 
