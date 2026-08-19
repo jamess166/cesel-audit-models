@@ -1,4 +1,5 @@
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Architecture;
 using Autodesk.Revit.UI;
 using OfficeOpenXml;
 using System;
@@ -171,6 +172,7 @@ namespace BimManagement
             foreach (Element element in collector)
             {
                 if (element is Part || element.Category == null || !HasControlData(element)) continue;
+                if (string.Equals(element.Category.Name, "Center Line", StringComparison.OrdinalIgnoreCase)) continue;
                 string wbs = GetValue(element, "PO-WBS");
                 partidas.TryGetValue(wbs, out ReportExcelReader.PartidaData partida);
                 string unit = GetValue(element, "CSL-Unidad");
@@ -214,19 +216,115 @@ namespace BimManagement
         {
             unit = (unit ?? "").Trim().ToLowerInvariant();
             if (unit == "und") return 1;
-            if (unit == "m2") return ConvertArea(TryBuiltIn(e, BuiltInParameter.HOST_AREA_COMPUTED));
-            if (unit == "m3")
+            if (unit == "m2") return GetAreaMeters(e);
+            if (unit == "m3") return GetVolumeMeters(e);
+            if (unit == "m") return GetLengthMeters(e);
+            return null;
+        }
+
+        // ── Área (m2): parámetros nativos, con respaldo por geometría (p.ej. Bordes de Losa) ──
+
+        private static double? GetAreaMeters(Element e)
+        {
+            double? value = TryBuiltIn(e, BuiltInParameter.HOST_AREA_COMPUTED)
+                          ?? TryBuiltIn(e, BuiltInParameter.STRUCTURAL_SECTION_AREA)
+                          ?? TryBuiltIn(e, BuiltInParameter.SURFACE_AREA)
+                          ?? TryBuiltIn(e, BuiltInParameter.ROOM_AREA);
+            if (value.HasValue) return ConvertArea(value);
+
+            return GetAreaFromGeometry(e);
+        }
+
+        private static double? GetAreaFromGeometry(Element e)
+        {
+            try
             {
-                double? value = TryBuiltIn(e, BuiltInParameter.HOST_VOLUME_COMPUTED);
-                if (!value.HasValue) return null;
-                return UnitUtils.ConvertFromInternalUnits(value.Value, UnitTypeId.CubicMeters);
+                var options = new Options { DetailLevel = ViewDetailLevel.Fine, IncludeNonVisibleObjects = false };
+                GeometryElement geomElem = e.get_Geometry(options);
+                if (geomElem == null) return null;
+
+                double totalAreaSqFt = SumSolidsArea(geomElem);
+                return totalAreaSqFt > 0 ? ConvertArea(totalAreaSqFt) : (double?)null;
             }
-            if (unit == "m")
+            catch { return null; }
+        }
+
+        private static double SumSolidsArea(GeometryElement geomElem)
+        {
+            double total = 0.0;
+            foreach (GeometryObject obj in geomElem)
             {
-                LocationCurve curve = e.Location as LocationCurve;
-                if (curve == null || curve.Curve == null) return null;
+                if (obj is Solid solid && solid.Volume > 0)
+                {
+                    foreach (Face face in solid.Faces) total += face.Area;
+                }
+                else if (obj is GeometryInstance instance)
+                {
+                    total += SumSolidsArea(instance.GetInstanceGeometry());
+                }
+            }
+            return total;
+        }
+
+        // ── Volumen (m3): parámetro nativo, con respaldo por geometría (p.ej. Escaleras) ──
+
+        private static double? GetVolumeMeters(Element e)
+        {
+            double? value = TryBuiltIn(e, BuiltInParameter.HOST_VOLUME_COMPUTED);
+            if (value.HasValue) return UnitUtils.ConvertFromInternalUnits(value.Value, UnitTypeId.CubicMeters);
+
+            return GetVolumeFromGeometry(e);
+        }
+
+        private static double? GetVolumeFromGeometry(Element e)
+        {
+            try
+            {
+                var options = new Options { DetailLevel = ViewDetailLevel.Fine, IncludeNonVisibleObjects = false };
+                GeometryElement geomElem = e.get_Geometry(options);
+                if (geomElem == null) return null;
+
+                double totalVolumeCubicFt = SumSolidsVolume(geomElem);
+                return totalVolumeCubicFt > 0 ? UnitUtils.ConvertFromInternalUnits(totalVolumeCubicFt, UnitTypeId.CubicMeters) : (double?)null;
+            }
+            catch { return null; }
+        }
+
+        private static double SumSolidsVolume(GeometryElement geomElem)
+        {
+            double total = 0.0;
+            foreach (GeometryObject obj in geomElem)
+            {
+                if (obj is Solid solid && solid.Volume > 0)
+                {
+                    total += solid.Volume;
+                }
+                else if (obj is GeometryInstance instance)
+                {
+                    total += SumSolidsVolume(instance.GetInstanceGeometry());
+                }
+            }
+            return total;
+        }
+
+        // ── Longitud (m): curva de ubicación, con respaldo de ruta para Barandas ──
+
+        private static double? GetLengthMeters(Element e)
+        {
+            IList<Curve> path = null;
+            if (e is Railing railing) path = railing.GetPath();
+            else if (e is ContinuousRail contRail) path = contRail.GetPath();
+
+            if (path != null && path.Count > 0)
+            {
+                double total = path.Sum(c => c.Length);
+                if (total > 0) return UnitUtils.ConvertFromInternalUnits(total, UnitTypeId.Meters);
+            }
+
+            LocationCurve curve = e.Location as LocationCurve;
+            if (curve != null && curve.Curve != null)
                 return UnitUtils.ConvertFromInternalUnits(curve.Curve.Length, UnitTypeId.Meters);
-            }
+
             return null;
         }
 
@@ -235,6 +333,9 @@ namespace BimManagement
             if (!value.HasValue) return null;
             return UnitUtils.ConvertFromInternalUnits(value.Value, UnitTypeId.SquareMeters);
         }
+
+        private static double ConvertArea(double value)
+            => UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.SquareMeters);
 
         private static double? TryBuiltIn(Element e, BuiltInParameter id)
         {
