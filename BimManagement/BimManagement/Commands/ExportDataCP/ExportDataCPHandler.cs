@@ -4,6 +4,7 @@ using Autodesk.Revit.UI;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,6 +20,16 @@ namespace BimManagement
     {
         private static string TemplatePath => Path.Combine(
             Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Resources", "TemplateReport.xlsx");
+
+        private static readonly DateTime AnchorSemanaProyecto = new DateTime(2023, 11, 13);
+        private static readonly DateTime AnchorCars = new DateTime(2023, 11, 9);
+        private static readonly string[] ValidStates = { "Ejecutado", "En Proceso", "En Ejecución" };
+        private static readonly string[] ValidationHeaders =
+        {
+            "VAL-ESTADO VALIDO", "VAL-GRUPO COMPLETO", "VAL-CAMPOS FALTANTES", "VAL-CARS SIN EJECUTAR",
+            "VAL-SEMANA OK", "VAL-SEMANA ESPERADA", "VAL-CARS OK", "VAL-CARS ESPERADO",
+            "VAL-TIENE ERRORES", "VAL-OBSERVACIONES"
+        };
 
         public void Execute(UIApplication uiApp)
         {
@@ -136,13 +147,19 @@ namespace BimManagement
             {
                 ExcelWorksheet sheet = package.Workbook.Worksheets["Contenido"];
                 if (sheet == null) throw new InvalidOperationException("El template no contiene la hoja Contenido.");
+                const int columnCount = 24;
                 if (sheet.Dimension != null && sheet.Dimension.End.Row >= 2)
-                    sheet.Cells[2, 1, sheet.Dimension.End.Row, 14].Clear();
+                    sheet.Cells[2, 1, sheet.Dimension.End.Row, columnCount].Clear();
 
-                object[,] values = new object[rows.Count, 14];
+                for (int h = 0; h < ValidationHeaders.Length; h++)
+                    sheet.Cells[1, 15 + h].Value = ValidationHeaders[h];
+
+                object[,] values = new object[rows.Count, columnCount];
                 for (int i = 0; i < rows.Count; i++)
                 {
                     ExportRow row = rows[i];
+                    Validate(row);
+
                     values[i, 0] = row.Model;
                     values[i, 1] = row.Id;
                     values[i, 2] = row.Category;
@@ -157,9 +174,36 @@ namespace BimManagement
                     values[i, 11] = row.Cars;
                     values[i, 12] = row.Unit;
                     values[i, 13] = row.Quantity.HasValue ? (object)row.Quantity.Value : "";
+                    values[i, 14] = row.EstadoValido ? "Sí" : "No";
+                    values[i, 15] = row.GrupoCompleto ? "Sí" : "No";
+                    values[i, 16] = row.CamposFaltantes;
+                    values[i, 17] = row.CarsSinEjecutar ? "Sí" : "No";
+                    values[i, 18] = row.SemanaOk;
+                    values[i, 19] = row.SemanaEsperada.HasValue ? (object)row.SemanaEsperada.Value : "";
+                    values[i, 20] = row.CarsOk;
+                    values[i, 21] = row.CarsEsperado.HasValue ? (object)row.CarsEsperado.Value : "";
+                    values[i, 22] = row.TieneErrores ? "Sí" : "No";
+                    values[i, 23] = row.Observaciones;
                 }
-                sheet.Cells[2, 1, rows.Count + 1, 14].Value = values;
+                sheet.Cells[2, 1, rows.Count + 1, columnCount].Value = values;
+                ResizePivotTables(package, rows.Count);
                 package.Save();
+            }
+        }
+
+        private static void ResizePivotTables(ExcelPackage package, int rowCount)
+        {
+            int lastRow = Math.Max(rowCount + 1, 2);
+            foreach (ExcelWorksheet ws in package.Workbook.Worksheets)
+            {
+                foreach (var pivotTable in ws.PivotTables)
+                {
+                    ExcelRangeBase src = pivotTable.CacheDefinition.SourceRange;
+                    ExcelWorksheet contenidoSheet = src.Worksheet;
+                    int lastCol = src.End.Column;
+                    pivotTable.CacheDefinition.SourceRange = contenidoSheet.Cells[1, 1, lastRow, lastCol];
+                    pivotTable.CacheDefinition.Refresh();
+                }
             }
         }
 
@@ -365,6 +409,78 @@ namespace BimManagement
         {
             public string Model, Id, Category, FamilyType, Wbs, Element, Level, Sector, State, Date, Week, Cars, Unit;
             public double? Quantity;
+
+            public bool EstadoValido, GrupoCompleto, CarsSinEjecutar, TieneErrores;
+            public string CamposFaltantes, SemanaOk, CarsOk, Observaciones;
+            public int? SemanaEsperada, CarsEsperado;
+        }
+
+        // ── Validación de consistencia ─────────────────────────────────────────
+
+        private static void Validate(ExportRow row)
+        {
+            string state = (row.State ?? "").Trim();
+            var observaciones = new List<string>();
+
+            row.EstadoValido = state.Length == 0 || ValidStates.Contains(state, StringComparer.Ordinal);
+            if (!row.EstadoValido) observaciones.Add($"Estado inválido: '{state}'");
+
+            bool ejecutado = string.Equals(state, "Ejecutado", StringComparison.Ordinal);
+            if (ejecutado)
+            {
+                var grupo = new[]
+                {
+                    ("PO-WBS", row.Wbs), ("PO-ELEMENTO", row.Element), ("PR-NIVEL", row.Level),
+                    ("PO-SECTOR", row.Sector), ("PO-FECHA CONSTRUIDA", row.Date), ("PO-SEMANA PROYECTO", row.Week)
+                };
+                var faltantes = grupo.Where(g => string.IsNullOrWhiteSpace(g.Item2)).Select(g => g.Item1).ToList();
+                row.GrupoCompleto = faltantes.Count == 0;
+                row.CamposFaltantes = string.Join("; ", faltantes);
+                if (!row.GrupoCompleto) observaciones.Add($"Ejecutado incompleto, faltan: {row.CamposFaltantes}");
+            }
+            else
+            {
+                row.GrupoCompleto = true;
+                row.CamposFaltantes = "";
+            }
+
+            row.CarsSinEjecutar = !string.IsNullOrWhiteSpace(row.Cars) && !ejecutado;
+            if (row.CarsSinEjecutar) observaciones.Add("Tiene PO-CARS pero el estado no es 'Ejecutado'");
+
+            bool dateBlank = string.IsNullOrWhiteSpace(row.Date);
+            bool dateValid = dateBlank || DateTime.TryParseExact(row.Date, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out _);
+            if (!dateBlank && !dateValid) observaciones.Add("PO-FECHA CONSTRUIDA con formato inválido (esperado dd/MM/yyyy)");
+            DateTime? fecha = dateValid && !dateBlank
+                ? DateTime.ParseExact(row.Date, "dd/MM/yyyy", CultureInfo.InvariantCulture)
+                : (DateTime?)null;
+
+            (row.SemanaOk, row.SemanaEsperada) = ValidateWeek(fecha, row.Week, AnchorSemanaProyecto);
+            if (row.SemanaOk == "No")
+                observaciones.Add($"PO-SEMANA PROYECTO inconsistente (esperado: {(row.SemanaEsperada.HasValue ? row.SemanaEsperada.Value.ToString() : "vacío")})");
+
+            (row.CarsOk, row.CarsEsperado) = ValidateWeek(fecha, row.Cars, AnchorCars);
+            if (row.CarsOk == "No")
+                observaciones.Add($"PO-CARS inconsistente (esperado: {(row.CarsEsperado.HasValue ? row.CarsEsperado.Value.ToString() : "vacío")})");
+
+            row.Observaciones = string.Join("; ", observaciones);
+            row.TieneErrores = observaciones.Count > 0;
+        }
+
+        private static (string Estado, int? Esperado) ValidateWeek(DateTime? fecha, string actualText, DateTime anchor)
+        {
+            bool actualPresent = !string.IsNullOrWhiteSpace(actualText);
+            int actualValue = 0;
+            bool actualNumeric = actualPresent && int.TryParse(actualText, out actualValue);
+
+            if (!fecha.HasValue)
+                return (actualPresent ? "No" : "N/A", null);
+
+            if (fecha.Value < anchor)
+                return (actualPresent ? "No" : "N/A", null);
+
+            int esperado = (int)(fecha.Value - anchor).TotalDays / 7 + 1;
+            bool ok = actualNumeric && actualValue == esperado;
+            return (ok ? "Sí" : "No", esperado);
         }
 
         // ── Helpers de UI ──────────────────────────────────────────────────────
