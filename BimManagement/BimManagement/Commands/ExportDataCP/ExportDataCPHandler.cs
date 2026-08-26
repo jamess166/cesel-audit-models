@@ -28,6 +28,7 @@ namespace BimManagement
         {
             "VAL-ESTADO VALIDO", "VAL-GRUPO COMPLETO", "VAL-CAMPOS FALTANTES", "VAL-CARS SIN EJECUTAR",
             "VAL-SEMANA OK", "VAL-SEMANA ESPERADA", "VAL-CARS OK", "VAL-CARS ESPERADO",
+            "VAL-SEMANA PROYECTO OK", "VAL-SEMANA PROYECTO ESPERADO",
             "VAL-TIENE ERRORES", "VAL-OBSERVACIONES"
         };
 
@@ -147,7 +148,7 @@ namespace BimManagement
             {
                 ExcelWorksheet sheet = package.Workbook.Worksheets["Contenido"];
                 if (sheet == null) throw new InvalidOperationException("El template no contiene la hoja Contenido.");
-                const int columnCount = 24;
+                const int columnCount = 26;
                 if (sheet.Dimension != null && sheet.Dimension.End.Row >= 2)
                     sheet.Cells[2, 1, sheet.Dimension.End.Row, columnCount].Clear();
 
@@ -182,8 +183,10 @@ namespace BimManagement
                     values[i, 19] = row.SemanaEsperada.HasValue ? (object)row.SemanaEsperada.Value : "";
                     values[i, 20] = row.CarsOk;
                     values[i, 21] = row.CarsEsperado.HasValue ? (object)row.CarsEsperado.Value : "";
-                    values[i, 22] = row.TieneErrores ? "Sí" : "No";
-                    values[i, 23] = row.Observaciones;
+                    values[i, 22] = row.SemanaOk;
+                    values[i, 23] = row.SemanaEsperada.HasValue ? (object)row.SemanaEsperada.Value : "";
+                    values[i, 24] = row.TieneErrores ? "Sí" : "No";
+                    values[i, 25] = row.Observaciones;
                 }
                 sheet.Cells[2, 1, rows.Count + 1, columnCount].Value = values;
                 ResizePivotTables(package, rows.Count);
@@ -454,11 +457,11 @@ namespace BimManagement
                 ? DateTime.ParseExact(row.Date, "dd/MM/yyyy", CultureInfo.InvariantCulture)
                 : (DateTime?)null;
 
-            (row.SemanaOk, row.SemanaEsperada) = ValidateWeek(fecha, row.Week, AnchorSemanaProyecto);
+            (row.SemanaOk, row.SemanaEsperada) = ValidateWeek(fecha, row.Week, AnchorSemanaProyecto, AnchorSemanaProyecto);
             if (row.SemanaOk == "No")
                 observaciones.Add($"PO-SEMANA PROYECTO inconsistente (esperado: {(row.SemanaEsperada.HasValue ? row.SemanaEsperada.Value.ToString() : "vacío")})");
 
-            (row.CarsOk, row.CarsEsperado) = ValidateWeek(fecha, row.Cars, AnchorCars);
+            (row.CarsOk, row.CarsEsperado) = ValidateWeek(fecha, row.Cars, AnchorCars, AnchorSemanaProyecto);
             if (row.CarsOk == "No")
                 observaciones.Add($"PO-CARS inconsistente (esperado: {(row.CarsEsperado.HasValue ? row.CarsEsperado.Value.ToString() : "vacío")})");
 
@@ -466,7 +469,7 @@ namespace BimManagement
             row.TieneErrores = observaciones.Count > 0;
         }
 
-        private static (string Estado, int? Esperado) ValidateWeek(DateTime? fecha, string actualText, DateTime anchor)
+        private static (string Estado, int? Esperado) ValidateWeek(DateTime? fecha, string actualText, DateTime formulaAnchor, DateTime gateAnchor)
         {
             bool actualPresent = !string.IsNullOrWhiteSpace(actualText);
             int actualValue = 0;
@@ -475,10 +478,10 @@ namespace BimManagement
             if (!fecha.HasValue)
                 return (actualPresent ? "No" : "N/A", null);
 
-            if (fecha.Value < anchor)
+            if (fecha.Value < gateAnchor)
                 return (actualPresent ? "No" : "N/A", null);
 
-            int esperado = (int)(fecha.Value - anchor).TotalDays / 7 + 1;
+            int esperado = (int)(fecha.Value - formulaAnchor).TotalDays / 7 + 1;
             bool ok = actualNumeric && actualValue == esperado;
             return (ok ? "Sí" : "No", esperado);
         }
