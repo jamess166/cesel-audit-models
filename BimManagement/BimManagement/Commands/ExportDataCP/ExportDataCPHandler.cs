@@ -218,28 +218,62 @@ namespace BimManagement
 
             foreach (Element element in collector)
             {
-                if (element is Part || element.Category == null || !HasControlData(element)) continue;
+                if (element is Part || element.Category == null) continue;
                 if (string.Equals(element.Category.Name, "Center Line", StringComparison.OrdinalIgnoreCase)) continue;
-                string wbs = GetValue(element, "PO-WBS");
-                partidas.TryGetValue(wbs, out ReportExcelReader.PartidaData partida);
-                string unit = GetValue(element, "CSL-Unidad");
-                if (string.IsNullOrWhiteSpace(unit) && partida != null) unit = partida.Unidad;
-                bool hasStoredQuantity = GetValue(element, "CSL-Cantidad", out double stored);
-                double? quantity = hasStoredQuantity ? stored : ResolveQuantity(element, unit);
-                if (!hasStoredQuantity && quantity.HasValue && partida != null)
-                    quantity *= partida.Factor == 0 ? 1 : partida.Factor;
 
-                rows.Add(new ExportRow
+                List<Element> targets = TryGetPartsWithWbs(doc, element, out List<Element> parts)
+                    ? parts
+                    : new List<Element> { element };
+
+                foreach (Element target in targets)
                 {
-                    Model = Path.GetFileNameWithoutExtension(doc.Title), Id = element.Id.IntegerValue.ToString(),
-                    Category = element.Category.Name, FamilyType = GetFamilyType(element), Wbs = wbs,
-                    Element = GetValue(element, "PO-ELEMENTO"), Level = GetValue(element, "PR-NIVEL"),
-                    Sector = GetValue(element, "PO-SECTOR"), State = GetValue(element, "PO-ESTADO CONSTRUCCION"),
-                    Date = GetValue(element, "PO-FECHA CONSTRUIDA"), Week = GetValue(element, "PO-SEMANA PROYECTO"),
-                    Cars = GetValue(element, "PO-CARS"), Unit = unit, Quantity = quantity
-                });
+                    if (!HasControlData(target)) continue;
+                    rows.Add(BuildRow(doc, partidas, target));
+                }
             }
             return rows;
+        }
+
+        // ── Partes: si el elemento tiene partes asociadas y alguna tiene PO-WBS, ──
+        // ── se exportan esas partes en lugar del elemento padre. ──────────────────
+
+        private static bool TryGetPartsWithWbs(Document doc, Element host, out List<Element> parts)
+        {
+            parts = new List<Element>();
+            if (!PartUtils.HasAssociatedParts(doc, host.Id)) return false;
+
+            ICollection<ElementId> partIds = PartUtils.GetAssociatedParts(
+                doc, host.Id, includePartsWithAssociatedParts: true, includeAllChildren: false);
+
+            foreach (ElementId id in partIds)
+            {
+                Element part = doc.GetElement(id);
+                if (part != null && !string.IsNullOrWhiteSpace(GetValue(part, "PO-WBS")))
+                    parts.Add(part);
+            }
+            return parts.Count > 0;
+        }
+
+        private static ExportRow BuildRow(Document doc, Dictionary<string, ReportExcelReader.PartidaData> partidas, Element element)
+        {
+            string wbs = GetValue(element, "PO-WBS");
+            partidas.TryGetValue(wbs, out ReportExcelReader.PartidaData partida);
+            string unit = GetValue(element, "CSL-Unidad");
+            if (string.IsNullOrWhiteSpace(unit) && partida != null) unit = partida.Unidad;
+            bool hasStoredQuantity = GetValue(element, "CSL-Cantidad", out double stored);
+            double? quantity = hasStoredQuantity ? stored : ResolveQuantity(element, unit);
+            if (!hasStoredQuantity && quantity.HasValue && partida != null)
+                quantity *= partida.Factor == 0 ? 1 : partida.Factor;
+
+            return new ExportRow
+            {
+                Model = Path.GetFileNameWithoutExtension(doc.Title), Id = element.Id.IntegerValue.ToString(),
+                Category = element.Category?.Name ?? "", FamilyType = GetFamilyType(element), Wbs = wbs,
+                Element = GetValue(element, "PO-ELEMENTO"), Level = GetValue(element, "PR-NIVEL"),
+                Sector = GetValue(element, "PO-SECTOR"), State = GetValue(element, "PO-ESTADO CONSTRUCCION"),
+                Date = GetValue(element, "PO-FECHA CONSTRUIDA"), Week = GetValue(element, "PO-SEMANA PROYECTO"),
+                Cars = GetValue(element, "PO-CARS"), Unit = unit, Quantity = quantity
+            };
         }
 
         private static Dictionary<string, ReportExcelReader.PartidaData> LoadPartidas(Document doc)
