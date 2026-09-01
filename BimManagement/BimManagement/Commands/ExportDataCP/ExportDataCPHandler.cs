@@ -24,6 +24,10 @@ namespace BimManagement
         private static readonly DateTime AnchorSemanaProyecto = new DateTime(2023, 11, 13);
         private static readonly DateTime AnchorCars = new DateTime(2023, 11, 9);
         private static readonly string[] ValidStates = { "Ejecutado", "En Proceso", "En Ejecución" };
+        private static readonly HashSet<BuiltInCategory> ExcludedCategories = new HashSet<BuiltInCategory>
+        {
+            BuiltInCategory.OST_PipingSystem, BuiltInCategory.OST_DuctSystem
+        };
         private static readonly string[] ValidationHeaders =
         {
             "VAL-ESTADO VALIDO", "VAL-GRUPO COMPLETO", "VAL-CAMPOS FALTANTES", "VAL-CARS SIN EJECUTAR",
@@ -218,8 +222,9 @@ namespace BimManagement
 
             foreach (Element element in collector)
             {
-                if (element is Part || element.Category == null) continue;
-                if (string.Equals(element.Category.Name, "Center Line", StringComparison.OrdinalIgnoreCase)) continue;
+                if (IsNonExportableElement(element)) continue;
+                if (element.Category == null) continue;
+                if (IsExcludedCategory(element.Category)) continue;
 
                 List<Element> targets = TryGetPartsWithWbs(doc, element, out List<Element> parts)
                     ? parts
@@ -232,6 +237,18 @@ namespace BimManagement
                 }
             }
             return rows;
+        }
+
+        // ── Elementos que nunca deben exportarse: partes, vistas (incluye planillas/──
+        // ── schedules, que son un tipo de View), viewports y vínculos RVT. ─────────
+
+        private static bool IsNonExportableElement(Element e) =>
+            e is Part || e is View || e is Viewport || e is RevitLinkInstance;
+
+        private static bool IsExcludedCategory(Category category)
+        {
+            if (string.Equals(category.Name, "Center Line", StringComparison.OrdinalIgnoreCase)) return true;
+            return ExcludedCategories.Contains((BuiltInCategory)category.Id.IntegerValue);
         }
 
         // ── Partes: si el elemento tiene partes asociadas y alguna tiene PO-WBS, ──
